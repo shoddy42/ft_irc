@@ -68,6 +68,8 @@ int	main(int ac, char **av)
 
 		// Read data from the clientSocket into the buffer
 		bytesRead = read(clientSocket, buffer, sizeof(buffer));
+		std::string info(buffer);
+		std::cout << info;
 
 		if (bytesRead == -1) {
 			// Handle error
@@ -80,6 +82,18 @@ int	main(int ac, char **av)
 			buffer[bytesRead] = '\0'; // Null-terminate the received data
 			std::cout << "Received data from client: " << buffer << std::endl;
 		}
+
+		//DETECT SERVER MESSAGE AND RESPOND ????????????????? xddd
+
+
+		// if (info.find("CAP LS") == 0)
+		// {
+		// 	std::string response = "CAP * LS :multi-prefix NICK #xd";
+		// 	write (clientSocket, response.c_str(), response.length());
+		// 	std::cout << "RESPONDING TO CAP LS!" << std::endl;
+		// }
+
+
 	}
 
     return (0);
