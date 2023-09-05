@@ -14,7 +14,7 @@
 
 #ifndef Channel_HPP
 # define Channel_HPP
-
+# include "Message.hpp"
 
 class Channel
 {
@@ -25,7 +25,9 @@ class Channel
 		Channel &operator=(Channel const &src);
 		
 	private:
-
+		int users; //tmp
+		Message messages[];
+		
 };
 
 

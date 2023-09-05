@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #ifndef Message_HPP
 # define Message_HPP
-
+# include <string>
 
 class Message
 {
@@ -25,7 +23,9 @@ class Message
 		Message &operator=(Message const &src);
 		
 	private:
-
+		std::string text;		//tmp
+		std::string user;		//tmp
+		int			time_sent;	//tmp
 };
 
 

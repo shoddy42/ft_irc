@@ -63,8 +63,23 @@ int	main(int ac, char **av)
 	//clientSocket is now the FD to write and read on for one user
     while (true)
 	{
-		write(clientSocket, "XD", 2);
-		// sleep(5);
+		char buffer[1024]; // A buffer to store incoming data
+		ssize_t bytesRead; // Number of bytes read
+
+		// Read data from the clientSocket into the buffer
+		bytesRead = read(clientSocket, buffer, sizeof(buffer));
+
+		if (bytesRead == -1) {
+			// Handle error
+			perror("read");
+		} else if (bytesRead == 0) {
+			// Connection closed by the client
+			std::cout << "Client closed the connection." << std::endl;
+		} else {
+			// Process and handle the received data
+			buffer[bytesRead] = '\0'; // Null-terminate the received data
+			std::cout << "Received data from client: " << buffer << std::endl;
+		}
 	}
 
     return (0);
