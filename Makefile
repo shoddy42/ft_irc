@@ -15,16 +15,17 @@
 # ----------------------------------------- #
 
 NAME 	:= irc
-FLAGS 	:= -Wall -Wextra -Werror -std=c++98
+FLAGS 	= -Wall -Wextra 
+# FLAGS	+= -Werror
 DEBUG 	:= -g -fsanitize=address
-MAKEFILE:= makefile
 CC		:= c++
 
 # ---------------------------------------- #
 # --------------- DIRECTORIES ------------ #
 # ---------------------------------------- #
 
-SRC_DIR		:= .
+SRC_DIR		:= src
+HDR_DIR		:= include
 OBJ_DIR		:= obj
 
 # ----------------------------------------- #
@@ -37,10 +38,11 @@ MAIN_FILES	:= main Message User Channel
 
 FILES	:=	$(MAIN_FILES:%=%.cpp)
 
-# SRCS	:=	$(addprefix $(SRC_DIR)/, $(FILES))
-SRCS	:=	$(FILES)
+SRCS	:=	$(addprefix $(SRC_DIR)/, $(FILES))
+# SRCS	:=	$(FILES)
 OBJS	:=	$(addprefix $(OBJ_DIR)/, $(FILES:%.cpp=%.o))
-HEADERS	:=	$(HEADER_FILES:%=%.hpp)
+# HEADERS	:=	$(HEADER_FILES:%=%.hpp)
+HEADERS :=	$(addprefix $(HDR_DIR)/, $(HEADER_FILES:%=%.hpp))
 
 # ----------------------------------------- #
 # --------- COLOURS / FORMATTING ---------- #
@@ -68,25 +70,33 @@ VIOLET	:= \1\33[38;5;183m\2
 # --------------- RECIPES ----------------- #
 # ----------------------------------------- #
 
-$(NAME): $(HEADERS) $(OBJS) $(MAKEFILE)
+$(NAME): $(HEADERS) $(OBJS)
 	@printf "$(BLUE)Compiling $(YELLOW)$(NAME)\n$(END)"
 	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) 
-	@printf "$(YELLOW)$(NAME) compiled!\n$(END)"
+	@printf "$(YELLOW)$(NAME) Compiled!\n$(END)"
+
+debug:
+	@printf "$(BLUE)Compiling With Debug Flags $(YELLOW)$(NAME)\n$(END)"
+	@$(CC) $(FLAGS) $(DEBUG) $(OBJS) -o $(NAME) 
+	@printf "$(BLUE)The Executable $(YELLOW)$(NAME) $(BLUE)Compiled With $(RED)fsantize!\n$(END)"
 
 all: $(NAME)
 
+run: all
+	./$(NAME)
+
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
-	@printf "$(BLUE)Compiling $(D_BLUE)$(notdir $@) $(RESET)from $(L_BLUE)$(notdir $<)$(END)\n"
+	@printf "$(BLUE)Compiling $(D_BLUE)$(notdir $@) $(RESET)From $(L_BLUE)$(notdir $<)$(END)\n"
 	@$(CC) $(FLAGS) -c $< -o $@
 
 clean:
-	@printf "$(BLUE)Cleaning up $(YELLOW)$(NAME)!\n$(END)"
+	@printf "$(BLUE)Cleaning Up $(YELLOW)$(NAME)!\n$(END)"
 	/bin/rm -rf $(OBJ_DIR)
 
 fclean:	clean
 	/bin/rm -f $(NAME)
-	@printf "$(BLUE)Fully cleaned $(YELLOW)$(NAME)\n$(END)"
+	@printf "$(BLUE)Fully Cleaned $(YELLOW)$(NAME)\n$(END)"
 
 re: fclean all
 
