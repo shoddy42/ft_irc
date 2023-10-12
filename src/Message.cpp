@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   User.cpp                                           :+:    :+:            */
+/*   Message.cpp                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -11,18 +11,18 @@
 /* ************************************************************************** */
 
 
-#include "User.hpp"
+#include "../include/Message.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
 
-User::User(void)
+Message::Message(void)
 {
 }
 
-User::User(const User &src)
+Message::Message(const Message &src)
 {
 	if (this != &src)
 		*this = src;
@@ -33,7 +33,7 @@ User::User(const User &src)
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-User::~User(void)
+Message::~Message(void)
 {
 }
 
@@ -42,7 +42,7 @@ User::~User(void)
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-User &User::operator=(User const &src)
+Message &Message::operator=(Message const &src)
 {
 	if (this == &src)
 		return (*this);

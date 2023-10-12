@@ -26,7 +26,7 @@ class Channel
 		
 	private:
 		int users; //tmp
-		Message messages[];
+		// Message messages[];
 		
 };
 
