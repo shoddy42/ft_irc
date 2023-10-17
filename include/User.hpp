@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/10/17 14:00:12 by root          ########   odam.nl         */
+/*   Updated: 2023/10/18 01:03:05 by root          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,19 @@
 class User
 {
 	public:
-		User(void);
+		User(int sock, pollfd poll_data, int id);
 		User(const User &src);
 		~User(void);
-		User &operator=(User const &src);
+		
 		std::string name;
 		std::string nick;
-		pollfd		poll_data;
-		int			sock;
+		pollfd		&poll_data;
+		int			&sock;
+		int			_id; //todo: decide what should be private
 		
 	private:
+		User(void);
+		User &operator=(User const &src);
 		
 };
 

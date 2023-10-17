@@ -9,16 +9,24 @@
 #include <sstream>
 #include <csignal>
 #include <chrono>
+#include <poll.h>
 
-#define DEFAULT_PORT 6667
+#include "../include/Server.hpp"
+
+
 #define BUFFER_SIZE	1024
-#define HTML_HEADER "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: "
 
 bool escape = false;
+
+//todo: move off global server? its still needed for signal
+Server server;
 
 int	error_exit(std::string msg)
 {
 	std::cout << msg << errno << std::endl;
+	//todo: sophisticated closing of all open sockets.
+	close(server.sock);
+
 	exit(EXIT_FAILURE);
 }
 
@@ -27,51 +35,29 @@ int	error_exit(std::string msg)
  * 
  * @param signum automatically gets set by signals.
  * 
- * @todo maybe attempt to use the "escape" global to quit?
  */
 void sig_handler(int signum)
 {
     if (signum == SIGINT) {
 		escape = true;
-		// exit(1);
+		//todo: socket cleanup, just like in error_exit
+		exit(1);
     }
 }
 
-/**
- * @brief Creates a new socket to listen on port
- * 
- * @param port Port to bind socket to. Use 0 for default port.
- * @return int (the socket FD)
- */
-int	create_socket(int port)
+void accept_new_connection(void)
 {
-	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1)
-		error_exit("Failed to create socket. errno: ");
-
-    sockaddr_in sockaddr;
-    sockaddr.sin_family = AF_INET;
-    sockaddr.sin_addr.s_addr = INADDR_ANY;
-
-	if (port == 0)
-		sockaddr.sin_port = htons(DEFAULT_PORT);
-	else
-		sockaddr.sin_port = htons(port);
-
-    if (bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0)
-		error_exit("Failed to bind to port. errno: ");
-
-    if (listen(sockfd, 10) < 0)
-		error_exit("Failed to listen on socket. errno: ");
-
-	struct sockaddr_in clientAddress;
-	socklen_t clientAddressLength = sizeof(clientAddress);
-
-	int clientSocket = accept(sockfd, (struct sockaddr*)&clientAddress, &clientAddressLength);
-	if (clientSocket == -1)
-		error_exit("Failed to accept TOS? errno: ");
-	
-	return (clientSocket);
+	int client_socket = 0;
+	if (server.poll[0].revents & POLLIN)
+	{
+		std::cout << "New connection found. CONNECTING" << std::endl;
+		//possible here to steal client information with sockaddr instead of nullptr.
+		client_socket = accept(server.sock, nullptr, nullptr);
+		if (client_socket == -1)
+			error_exit("Failed to accept TOS? errno: ");
+		std::cout << "client socket created at: " << client_socket << std::endl;
+		server.add_user(client_socket);
+	}
 }
 
 int	main(int ac, char **av)
@@ -79,37 +65,49 @@ int	main(int ac, char **av)
 	//Signals to make ctrl+c to escape from "Accept" being stuck if no client connects.
 	signal(SIGINT, sig_handler);
 
-	int clientSocket;
-	if (ac == 3)
-		clientSocket = create_socket(atoi(av[1]));
+	if (ac == 3) //TODO: input parsing
+		server.start(atoi(av[1]));
 	else
-		clientSocket = create_socket(0);
+		server.start(DEFAULT_PORT);
 
-	//clientSocket is now the FD to write and read on for one user
 
     while (escape == false)
 	{
-		char buffer[BUFFER_SIZE]; // A buffer to store incoming data
-		ssize_t bytesRead = 0; // Number of bytes read
+		if (poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT) < 0)
+			error_exit("poll failed. errno: ");
 
-		// Read data from the clientSocket into the buffer
-		if (bytesRead == 0)
-			bytesRead = recv(clientSocket, buffer, BUFFER_SIZE, 0);
-		std::string info(buffer);
-		std::cout << info;
+		accept_new_connection();
 
-		if (bytesRead == -1) {
-			// Handle error
-			perror("read");
-		} else if (bytesRead == 0) {
-			// Connection closed by the client
-			std::cout << "Client closed the connection." << std::endl;
-			exit (0); //remove this later, just needed to prevent the giga spam rn
-		} else {
-			// Process and handle the received data
-			buffer[bytesRead] = '\0'; // null terminate the received data
-			std::cout << "Received data from client: " << buffer << std::endl;
+		if (server.poll.size() > 1)
+		{
+			if (server.poll[1].revents & POLLOUT) //currently if statements seem broke
+			{
+				send(server.poll[1].fd, "joebiden", 8, 0);
+			}
+			if (server.poll[1].revents & POLLIN)
+			{
+				std::cout << "receiving" << std::endl;
+				char	buffer[BUFFER_SIZE];
+				ssize_t	bytes_read = 0;
+
+				if (bytes_read == 0)
+					bytes_read = recv(server.sock, buffer, BUFFER_SIZE, 0);
+				std::string info(buffer);
+				std::cout << info;
+				if (bytes_read == -1) {
+					// Handle error
+					perror("read");
+				} else if (bytes_read == 0) {
+					// Connection closed by the client
+					std::cout << "Client closed the connection." << std::endl;
+					exit (0); //remove this later, just needed to prevent the giga spam rn
+				} else {
+					// Process and handle the received data
+					buffer[bytes_read] = '\0'; // null terminate the received data
+					std::cout << "Received data from client: " << buffer << std::endl;
+				}
+			}
 		}
 	}
-    return (0);
+	return (0);
 }
