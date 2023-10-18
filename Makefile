@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2023/09/05 18:45:31 by wkonings      ########   odam.nl          #
+#    Updated: 2023/10/18 11:14:36 by root          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,9 +32,9 @@ OBJ_DIR		:= obj
 # --------------- FILES ------------------- #
 # ----------------------------------------- #
 
-HEADER_FILES := Message User Channel
+HEADER_FILES := Message User Channel Server
 
-MAIN_FILES	:= main Message User Channel
+MAIN_FILES	:= main Message User Channel Server
 
 FILES	:=	$(MAIN_FILES:%=%.cpp)
 
