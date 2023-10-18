@@ -99,31 +99,29 @@ int	main(int ac, char **av)
 
 		if (server.poll.size() > 1)
 		{
-			if (server.poll[1].revents & POLLOUT) //currently if statements seem broke
+			if (server.poll[1].revents & POLLOUT)
 			{
-				send(server.poll[1].fd, "joebiden", 8, 0);
+				std::string join_response(":server.name 001 userNickname :Welcome to the IRC server, userNickname!");
+				send(server.poll[1].fd, join_response.c_str(), join_response.length(), 0);
 			}
 			if (server.poll[1].revents & POLLIN)
 			{
-				std::cout << "receiving" << std::endl;
+				std::cout << "receiving: " << std::endl;
 				char	buffer[BUFFER_SIZE];
 				ssize_t	bytes_read = 0;
 
 				if (bytes_read == 0)
-					bytes_read = recv(server.sock, buffer, BUFFER_SIZE, 0);
-				std::string info(buffer);
-				std::cout << info;
+					bytes_read = recv(server.poll[1].fd, buffer, BUFFER_SIZE, 0);
 				if (bytes_read == -1) {
 					// Handle error
 					perror("read");
 				} else if (bytes_read == 0) {
 					// Connection closed by the client
 					std::cout << "Client closed the connection." << std::endl;
-					exit (0); //remove this later, just needed to prevent the giga spam rn
 				} else {
-					// Process and handle the received data
-					buffer[bytes_read] = '\0'; // null terminate the received data
-					std::cout << "Received data from client: " << buffer << std::endl;
+					std::string info(buffer);
+					std::cout << info << std::endl;
+					bzero(buffer, BUFFER_SIZE);
 				}
 			}
 		}
