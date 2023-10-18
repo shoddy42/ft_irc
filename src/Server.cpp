@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/10/18 01:03:49 by root          ########   odam.nl         */
+/*   Updated: 2023/10/18 11:37:40 by root          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int Server::add_user(int sock)
 	return (0);
 }
 
+
 #include <iostream> //todo: delete this
 
 /**
@@ -80,21 +81,24 @@ int Server::add_user(int sock)
  */
 void	Server::start(int port)
 {
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == -1)
-		error_exit("Failed to create socket. errno: ");
-
+	sock = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
+	int flags = guard(fcntl(sock, F_GETFL), "Fcntl failed to get flags. errno: ");
+	guard(fcntl(sock, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 	
     sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);
     sock_address.sin_family = AF_INET;
     sock_address.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(sock, (struct sockaddr*)&sock_address, sizeof(sock_address)) < 0)
-		error_exit("Failed to bind to port. errno: ");
+    guard(bind(sock, (struct sockaddr*)&sock_address, sizeof(sock_address)), "failed to bind to port. errno: ");
+	guard(listen(sock, MAX_CLIENTS), "Failed to listen on socket. errno: ");
+   
+   
+    // if (bind(sock, (struct sockaddr*)&sock_address, sizeof(sock_address)) < 0)
+	// 	error_exit("Failed to bind to port. errno: ");
 
-    if (listen(sock, MAX_CLIENTS) < 0)
-		error_exit("Failed to listen on socket. errno: ");
+    // if (listen(sock, MAX_CLIENTS) < 0)
+	// 	error_exit("Failed to listen on socket. errno: ");
 	
 	pollfd shoe;
 	shoe.fd = sock;

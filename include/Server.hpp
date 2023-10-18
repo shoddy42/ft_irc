@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/10/18 00:09:53 by root          ########   odam.nl         */
+/*   Updated: 2023/10/18 11:39:34 by root          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <list>
+# include <fcntl.h>
 
 # include "../include/User.hpp"
 
 # include <vector>
-int error_exit(std::string msg);
+int error_exit(std::string error_msg);
+int guard(int n, std::string error_msg);
 
 class Server
 {
@@ -48,7 +50,7 @@ class Server
 	//	variables
 		int     sock;
 		// poll[0] is the servers listening client. all others are the users. 
-		std::vector<pollfd> poll; //todo: maybe rename this?
+		std::vector<pollfd> poll; //daw: maybe rename this?
 		std::list<User> users;
 		
 	private:

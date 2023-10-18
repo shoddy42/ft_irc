@@ -21,9 +21,25 @@ bool escape = false;
 //todo: move off global server? its still needed for signal
 Server server;
 
-int	error_exit(std::string msg)
+//todo: decide whether guard is nicer than if statements
+/**
+ * @brief if n == -1, will exit the program, writing error_msg.
+ * 		  use instead of small if blocks.
+ * 
+ * @param n 
+ * @param error_msg 
+ * @return int returns n
+ */
+int guard(int n, std::string error_msg)
+{ 
+	if (n == -1)
+		error_exit(error_msg);
+	return (n);
+}
+
+int	error_exit(std::string error_msg)
 {
-	std::cout << msg << errno << std::endl;
+	std::cout << error_msg << errno << std::endl;
 	//todo: sophisticated closing of all open sockets.
 	close(server.sock);
 
@@ -52,7 +68,10 @@ void accept_new_connection(void)
 	{
 		std::cout << "New connection found. CONNECTING" << std::endl;
 		//possible here to steal client information with sockaddr instead of nullptr.
-		client_socket = accept(server.sock, nullptr, nullptr);
+		client_socket = guard(accept(server.sock, nullptr, nullptr), "Failed to accept socket. errno: ");
+		int flags = guard(fcntl(client_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
+		guard(fcntl(client_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+
 		if (client_socket == -1)
 			error_exit("Failed to accept TOS? errno: ");
 		std::cout << "client socket created at: " << client_socket << std::endl;
