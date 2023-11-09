@@ -12,6 +12,7 @@
 
 
 #include "../include/Server.hpp"
+#include <iostream> //todo: delete this, its only needed for debug messages
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -52,8 +53,13 @@ Server &Server::operator=(Server const &src)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-#include <iostream> //todo: delete
 
+/**
+ * @brief Creates a new pollfd, configures it to check for POLLIN and POLLOUT events. Then creates a new user with this data
+ * 
+ * @param sock 
+ * @return int 
+ */
 int Server::add_user(int sock)
 {
 	int	id = ++last_user_id;
@@ -61,6 +67,7 @@ int Server::add_user(int sock)
 	pollfd new_fd;
 	new_fd.fd = sock;
 	new_fd.events = POLLIN | POLLOUT;
+	new_fd.revents = 0;
 	poll.push_back(new_fd);
 
 	//todo: think if error handling is needed?
@@ -69,9 +76,6 @@ int Server::add_user(int sock)
 	current_users++;
 	return (0);
 }
-
-
-#include <iostream> //todo: delete this
 
 /**
  * @brief Creates a new socket to listen on port. Configures server.poll[0] to be this new socket.

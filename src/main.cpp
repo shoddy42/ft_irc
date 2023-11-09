@@ -61,19 +61,19 @@ void sig_handler(int signum)
     }
 }
 
+/**
+ * @brief Checks if our listening socket has been contacted. Then creates a user.
+ * 
+ */
 void accept_new_connection(void)
 {
-	int client_socket = 0;
 	if (server.poll[0].revents & POLLIN)
 	{
 		std::cout << "New connection found. CONNECTING" << std::endl;
 		//possible here to steal client information with sockaddr instead of nullptr.
-		client_socket = guard(accept(server.sock, nullptr, nullptr), "Failed to accept socket. errno: ");
+		int client_socket = guard(accept(server.sock, nullptr, nullptr), "Failed to accept socket. errno: ");
 		int flags = guard(fcntl(client_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
 		guard(fcntl(client_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
-
-		if (client_socket == -1)
-			error_exit("Failed to accept TOS? errno: ");
 		std::cout << "client socket created at: " << client_socket << std::endl;
 		server.add_user(client_socket);
 	}
@@ -89,39 +89,64 @@ int	main(int ac, char **av)
 	else
 		server.start(DEFAULT_PORT);
 
-
     while (escape == false)
 	{
-		if (poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT) < 0)
-			error_exit("poll failed. errno: ");
+		//Poll every socket we have.
+		// if (poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT) < 0)
+		// 	error_exit("poll failed. errno: ");
+
+		//Check all open sockets, to see if any have written to us.
+		
+		guard(poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT), "poll failed. errno: ");
 
 		accept_new_connection();
-
-		if (server.poll.size() > 1)
+		for (size_t i = 1; i < server.poll.size(); i++)
 		{
-			if (server.poll[1].revents & POLLOUT)
+			if (server.poll[i].revents == 0) //client hasnt done anything
+				continue;
+			if (server.poll[i].revents & POLLHUP) //client disconnected
 			{
-				std::string join_response(":server.name 001 userNickname :Welcome to the IRC server, userNickname!");
-				send(server.poll[1].fd, join_response.c_str(), join_response.length(), 0);
+				std::cout << "Socket " << i << " hung up." << std::endl;
+				exit(0);
+				// continue;
+				//socket cleanup
 			}
-			if (server.poll[1].revents & POLLIN)
+			// All commented out because we should simply reply after we've received the message.
+			// if (server.poll[i].revents & POLLOUT)
+			// {
+			// 	// if (response_counter == 0)
+			// 	// {
+			// 	// 	std::string join_response(":server.name 001 userNickname :Welcome to the IRC server, userNickname!");
+			// 	// 	send(server.poll[i].fd, join_response.c_str(), join_response.length(), 0);
+			// 	// 	response_counter++;
+			// 	// }
+			// }
+			if (server.poll[i].revents & POLLIN) //client sent server a message
 			{
-				std::cout << "receiving: " << std::endl;
+				std::cout << "receiving from socket [" << i << "]: "<< std::endl;
 				char	buffer[BUFFER_SIZE];
-				ssize_t	bytes_read = 0;
+				ssize_t	bytes_read;
 
-				if (bytes_read == 0)
-					bytes_read = recv(server.poll[1].fd, buffer, BUFFER_SIZE, 0);
-				if (bytes_read == -1) {
-					// Handle error
-					perror("read");
-				} else if (bytes_read == 0) {
-					// Connection closed by the client
+				bzero(buffer, BUFFER_SIZE);
+				bytes_read = recv(server.poll[i].fd, buffer, BUFFER_SIZE, 0);
+				if (bytes_read == -1) {		  // Recv failed
+					perror("recv");
+				} else if (bytes_read == 0) { // Connection closed by the client //might not be needed, POLLHUP should already catch
 					std::cout << "Client closed the connection." << std::endl;
-				} else {
+					close(server.poll[i].fd);
+					server.poll[i].fd = -1;
+				} else { 				      // Actually received a message
 					std::string info(buffer);
-					std::cout << info << std::endl;
-					bzero(buffer, BUFFER_SIZE);
+					std::cout << "[" << info << "]" << std::endl;
+					//start parsing, reply
+					//SCUFFED early reply to trick client into thinking its fully connected
+					if (info.find("USER") != std::string::npos && (server.poll[i].fd & POLLOUT))
+					{
+						std::cout << "Responding to client" << std::endl;
+						std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
+						send(server.poll[i].fd, join_response.c_str(), join_response.length(), 0);
+						std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
+					}
 				}
 			}
 		}
