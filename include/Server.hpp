@@ -46,6 +46,7 @@ class Server
 	//	methods
 		int     add_user(int sock);
 		void	start(int port);
+
 		
 	//	variables
 		int     sock;

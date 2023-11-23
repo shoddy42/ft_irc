@@ -79,6 +79,8 @@ void accept_new_connection(void)
 	}
 }
 
+void	parse(std::string buffer);
+
 int	main(int ac, char **av)
 {
 	//Signals to make ctrl+c to escape from "Accept" being stuck if no client connects.
@@ -92,11 +94,7 @@ int	main(int ac, char **av)
     while (escape == false)
 	{
 		//Poll every socket we have.
-		// if (poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT) < 0)
-		// 	error_exit("poll failed. errno: ");
-
 		//Check all open sockets, to see if any have written to us.
-		
 		guard(poll(server.poll.data(), server.poll.size(), POLL_TIMEOUT), "poll failed. errno: ");
 
 		accept_new_connection();
@@ -111,16 +109,6 @@ int	main(int ac, char **av)
 				// continue;
 				//socket cleanup
 			}
-			// All commented out because we should simply reply after we've received the message.
-			// if (server.poll[i].revents & POLLOUT)
-			// {
-			// 	// if (response_counter == 0)
-			// 	// {
-			// 	// 	std::string join_response(":server.name 001 userNickname :Welcome to the IRC server, userNickname!");
-			// 	// 	send(server.poll[i].fd, join_response.c_str(), join_response.length(), 0);
-			// 	// 	response_counter++;
-			// 	// }
-			// }
 			if (server.poll[i].revents & POLLIN) //client sent server a message
 			{
 				std::cout << "receiving from socket [" << i << "]: "<< std::endl;
@@ -139,15 +127,18 @@ int	main(int ac, char **av)
 					std::string info(buffer);
 					std::cout << "[" << info << "]" << std::endl;
 					//start parsing, reply
+					parse(info);
 					//SCUFFED early reply to trick client into thinking its fully connected
 					if (info.find("USER") != std::string::npos && (server.poll[i].fd & POLLOUT))
 					{
 						std::cout << "Responding to client" << std::endl;
 						std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
 						send(server.poll[i].fd, join_response.c_str(), join_response.length(), 0);
-						std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
 					}
 				}
+			}
+			if (server.poll[i].revents & POLLOUT) //respond to client if a response is needed.
+			{
 			}
 		}
 	}

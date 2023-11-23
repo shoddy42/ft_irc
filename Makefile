@@ -32,9 +32,9 @@ OBJ_DIR		:= obj
 # --------------- FILES ------------------- #
 # ----------------------------------------- #
 
-HEADER_FILES := Message User Channel Server
+HEADER_FILES := Message User Channel Server Commands
 
-MAIN_FILES	:= main Message User Channel Server
+MAIN_FILES	:= main Message User Channel Server parse Commands
 
 FILES	:=	$(MAIN_FILES:%=%.cpp)
 

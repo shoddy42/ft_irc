@@ -5,47 +5,78 @@
 
 //check if
 /* */
-bool Commands::checkMsg(std::string &msg) 
+// bool Commands::checkMsg(std::string &msg) 
+// {
+//     for (int i = 0; i < 0; i++)
+//     {
+//         if (buffer[i] == '\r' && (buffer[i + 1]) && buffer[i + 1] == '\n') 
+//             return true;
+//     }
+//     return false;
+// }
+
+Commands::~Commands()
 {
-    for (int i = 0; i < 0, i++)
-    {
-        if (buffer[i] == '\r' && (buffer[i + 1]) && buffer[i + 1] == '\n') 
-            return true;
-    }
-    return false;
+
 }
 
 Commands::Commands()
 {
     //inialize all commands
-    ircCommands[0] = "QUIT";
-    ircCommands[1] = "BAN";
-    ircCommands[2] = "UNBAN";
-    ircCommands[3] = "NICK";
-    ircCommands[4] = "PASS";
-    ircCommands[5] = "TOPIC";
-    ircCommands[6] = "MODE";
-    ircCommands[7] = "KILL";
-    ircCommands[8] = "LIST";
-    ircCommands[9] = "ME";
-    ircCommands[10] = "INVITE";;
-    ircCommands[11] = "OPER";
+    // ircCommands[0] = "QUIT";
+    // ircCommands[1] = "BAN";
+    // ircCommands[2] = "UNBAN";
+    // ircCommands[3] = "NICK";
+    // ircCommands[4] = "PASS";
+    // ircCommands[5] = "TOPIC";
+    // ircCommands[6] = "MODE";
+    // ircCommands[7] = "KILL";
+    // ircCommands[8] = "LIST";
+    // ircCommands[9] = "ME";
+    // ircCommands[10] = "INVITE";;
+    // ircCommands[11] = "OPER";
 }
 
-void Commands::parseCommand(std::string msg)
+
+void printVectorStrings(const std::vector<std::string> &strings)
+{
+    for (int i = 0; i < strings.size(); i++)
+    {
+        std::cout << strings[i].data() << " ";
+    }
+    std::cout << std::endl;
+}
+
+int quit(std::vector<std::string> command)
 {
 
-    size_t found;
+}
+
+int nick(std::vector<std::string> command)
+{
+    std::cout << "NICK COMMAND CALLED WITH: " << std::endl;
+
+    printVectorStrings(command);
+    return (0);
+}
+
+std::unordered_map<std::string, int(*)(std::vector<std::string> command)> Commands::commandMap = {
+    {"QUIT", &quit},
+    {"NICK", &nick}
+};
+
+void Commands::parseCommand(std::vector<std::string> command)
+{
+
+    // size_t found;
     //checkMsg should be called here to check wether the msg is finished (ie. has a line break)
 
-    /* this loop just checks for command within the string and if it finds it will then call the
-    right command function*/
-    for(int i = 0; i < ircCommands.length; i++)
-    {
-        found = msg.find(ircCommands[i]);
-        if (found != std::string::npos) 
-            //send to corrosponding command function
-    }
-    if (found == std::string::npos)
-        std::cout << "no command found lol" << std::endl;
+    std::string key = command[0].data();
+
+    if (commandMap.find(key) != commandMap.end())
+        commandMap[key](command);
+    else
+        std::cerr << "no command found" << std::endl;
+    
+
 }
