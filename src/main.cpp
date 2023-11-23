@@ -111,7 +111,7 @@ int	main(int ac, char **av)
 			}
 			if (server.poll[i].revents & POLLIN) //client sent server a message
 			{
-				std::cout << "receiving from socket [" << i << "]: "<< std::endl;
+				// std::cout << "receiving from socket [" << i << "]: "<< std::endl;
 				char	buffer[BUFFER_SIZE];
 				ssize_t	bytes_read;
 
@@ -125,8 +125,7 @@ int	main(int ac, char **av)
 					server.poll[i].fd = -1;
 				} else { 				      // Actually received a message
 					std::string info(buffer);
-					std::cout << "[" << info << "]" << std::endl;
-					//start parsing, reply
+					// std::cout << "[" << info << "]" << std::endl;
 					parse(info);
 					//SCUFFED early reply to trick client into thinking its fully connected
 					if (info.find("USER") != std::string::npos && (server.poll[i].fd & POLLOUT))
@@ -139,6 +138,7 @@ int	main(int ac, char **av)
 			}
 			if (server.poll[i].revents & POLLOUT) //respond to client if a response is needed.
 			{
+				
 			}
 		}
 	}

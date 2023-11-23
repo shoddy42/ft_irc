@@ -49,8 +49,21 @@ void printVectorStrings(const std::vector<std::string> &strings)
 
 int quit(std::vector<std::string> command)
 {
+    return (0);
+}
+
+int join(std::vector<std::string> command)
+{
+    return (0);
 
 }
+
+int privmsg(std::vector<std::string> command)
+{
+    return (0);
+
+}
+
 
 int nick(std::vector<std::string> command)
 {
@@ -62,7 +75,9 @@ int nick(std::vector<std::string> command)
 
 std::unordered_map<std::string, int(*)(std::vector<std::string> command)> Commands::commandMap = {
     {"QUIT", &quit},
-    {"NICK", &nick}
+    {"NICK", &nick},
+    {"PRIVMSG", &privmsg},
+    {"JOIN", &join}
 };
 
 void Commands::parseCommand(std::vector<std::string> command)
