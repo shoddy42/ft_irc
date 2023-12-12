@@ -24,7 +24,10 @@ CC		:= c++
 # --------------- DIRECTORIES ------------ #
 # ---------------------------------------- #
 
+#src and its subdirectories
 SRC_DIR		:= src
+S_CMD		:= commands
+
 HDR_DIR		:= include
 OBJ_DIR		:= obj
 
@@ -32,11 +35,13 @@ OBJ_DIR		:= obj
 # --------------- FILES ------------------- #
 # ----------------------------------------- #
 
-HEADER_FILES := Message User Channel Server Commands
+HEADER_FILES := Message User Channel Server Command
 
-MAIN_FILES	:= main Message User Channel Server parse Commands
+MAIN_FILES	:= main Message User Channel Server Command
+CMD_FILES := nick
 
-FILES	:=	$(MAIN_FILES:%=%.cpp)
+FILES	:=	$(MAIN_FILES:%=%.cpp) \
+			$(addprefix $(S_CMD)/, $(CMD_FILES:%=%.cpp))
 
 SRCS	:=	$(addprefix $(SRC_DIR)/, $(FILES))
 # SRCS	:=	$(FILES)

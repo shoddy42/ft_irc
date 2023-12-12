@@ -14,24 +14,34 @@
 # define User_HPP
 # include <string>
 # include <poll.h>
+# include <queue>
 
 class User
 {
 	public:
-		User(int sock, pollfd poll_data, int id);
+		User(int sock, int id);
 		User(const User &src);
 		~User(void);
+
+		const int			get_socket(void);
+		const std::string	get_name(void);
+		const std::string	get_nick(void);
+
+		void	set_socket(int socket);
+		void	set_name(std::string);
+		void	set_nick(std::string);
 		
-		std::string name;
-		std::string nick;
-		pollfd		&poll_data;
-		int			&sock;
-		int			_id; //todo: decide what should be private
 		
 	private:
 		User(void);
 		User &operator=(User const &src);
 		
+		std::queue<std::string> _responses;
+		std::string _name;
+		std::string _nick;
+		int			_socket;
+		int			_id;
+		bool		_authenticated;
 };
 
 

@@ -21,6 +21,7 @@
 
 Server::Server(void)
 {
+
 }
 
 Server::Server(const Server &src)
@@ -28,6 +29,7 @@ Server::Server(const Server &src)
 	if (this != &src)
 		*this = src;
 }
+
 
 
 /*
@@ -68,12 +70,10 @@ int Server::add_user(int sock)
 	new_fd.fd = sock;
 	new_fd.events = POLLIN | POLLOUT;
 	new_fd.revents = 0;
-	poll.push_back(new_fd);
+	pollfds.push_back(new_fd);
 
-	//todo: think if error handling is needed?
-	User joe(sock, poll[id], id);
-	users.push_back(joe);
-	current_users++;
+	User new_user(sock, id);
+	users.push_back(new_user);
 	return (0);
 }
 
@@ -85,29 +85,161 @@ int Server::add_user(int sock)
  */
 void	Server::start(int port)
 {
-	sock = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
-	int flags = guard(fcntl(sock, F_GETFL), "Fcntl failed to get flags. errno: ");
-	guard(fcntl(sock, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+	_listen_socket = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
+	int flags = guard(fcntl(_listen_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
+	guard(fcntl(_listen_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 	
     sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);
     sock_address.sin_family = AF_INET;
     sock_address.sin_addr.s_addr = INADDR_ANY;
 
-    guard(bind(sock, (struct sockaddr*)&sock_address, sizeof(sock_address)), "failed to bind to port. errno: ");
-	guard(listen(sock, MAX_CLIENTS), "Failed to listen on socket. errno: ");
+    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sock_address)), "failed to bind to port. errno: ");
+	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
    
-   
-    // if (bind(sock, (struct sockaddr*)&sock_address, sizeof(sock_address)) < 0)
-	// 	error_exit("Failed to bind to port. errno: ");
+	pollfd listen_socket;
+	listen_socket.fd = _listen_socket;
+	listen_socket.events = POLLIN;
+	pollfds.push_back(listen_socket);
+	//create socket that only listens to incoming traffic, and add it as poll[0]
+}
 
-    // if (listen(sock, MAX_CLIENTS) < 0)
-	// 	error_exit("Failed to listen on socket. errno: ");
+
+/**
+ * @brief Checks if our listening socket has been contacted. Then creates a user.
+ * 
+ */
+void	Server::accept_new_connection(void)
+{
+	if (pollfds[0].revents & POLLIN)
+	{
+		std::cout << "New connection found. CONNECTING" << std::endl;
+		//possible here to steal client information with sockaddr instead of nullptr.
+		int client_socket = guard(accept(pollfds[0].fd, nullptr, nullptr), "Failed to accept socket. errno: ");
+		int flags = guard(fcntl(client_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
+		guard(fcntl(client_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+		std::cout << "client socket created at: " << client_socket << std::endl;
+		this->add_user(client_socket);
+	}
+}
+
+//todo: Replace 0 functionality with a Server::Shutdown function, that will close the listening socket, and loops through all users to close their sockets
+/**
+ * @brief Closes socket, and updates pollfds and the users socket to -1 (INVALID_FD) if needed
+ * 
+ * @param sock The socket to cleanup. 0 if it's the server's listen_socket
+ */
+void	Server::socket_cleanup(int sock)
+{
+	std::cout << GREEN << "Socket cleanup on aisle " << sock << RESET << std::endl;
+	if (sock == 0)
+	{
+		close(_listen_socket);
+		return;
+	}
+
+	close(sock);
+	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
+		if (it->get_socket() == sock)
+			it->set_socket(INVALID_FD);
 	
-	pollfd shoe;
-	shoe.fd = sock;
-	shoe.events = POLLIN;
-	poll.push_back(shoe);
+	pollfds[sock].fd = INVALID_FD;
+	pollfds[sock].revents = 0;
+}
+
+void	Server::respond(int sock)
+{
+}
+
+
+//todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
+std::string	Server::receive(int sock)
+{
+	std::cout << "receiving from socket [" << sock << "]: "<< std::endl;
+	char	buffer[BUFFER_SIZE];
+	ssize_t	bytes_read;
+
+	bzero(buffer, BUFFER_SIZE);
+	bytes_read = recv(pollfds[sock].fd, buffer, BUFFER_SIZE, 0);
+	if (bytes_read == -1)	  // Recv failed
+		perror("recv");
+	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
+	{
+		std::cout << "Client closed the connection." << std::endl;
+		socket_cleanup(pollfds[sock].fd);
+	} 
+	else  				      // Actually received a message
+	{
+		std::string data(buffer);
+		//SCUFFED early reply to trick client into thinking its fully connected
+		if (data.find("USER") != std::string::npos && (pollfds[sock].fd & POLLOUT))
+		{
+			std::cout << "Responding to client" << std::endl;
+			std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
+			send(pollfds[sock].fd, join_response.c_str(), join_response.length(), 0);
+		}
+		return (data);
+	}
+	return ("");
+}
+
+void	parse(std::string buffer);
+
+void	Server::serve(void)
+{
+	//Poll every socket we have.
+	//Check all open sockets, to see if any have written to us.
+	//todo: Create proper pollfd management
+	guard(poll(pollfds.data(), pollfds.size(), POLL_TIMEOUT), "poll failed. errno: ");
+
+	accept_new_connection();
+	for (size_t i = 1; i < pollfds.size(); i++)
+	{
+		if (pollfds[i].revents == 0) //client hasnt done anything
+			continue;
+		if (pollfds[i].revents & POLLHUP) //client disconnected
+		{
+			std::cout << "Socket " << i << " hung up." << std::endl;
+			socket_cleanup(pollfds[i].fd);
+			// exit(0);
+		}
+		if (pollfds[i].revents & POLLIN) //client sent server a message
+		{
+			std::string message;
+			message = receive(i);
+			create_command(message);
+		}
+		if (pollfds[i].revents & POLLOUT) //client is ready for a response
+		{
+			respond(i);
+		}
+	}
+}
+
+
+
+void	Server::create_command(std::string buffer)
+{
+	if (buffer.empty())
+		return;
+
+	std::stringstream ss(buffer);
+
+	std::string line;
+	while (std::getline(ss, line, '\n'))
+	{
+		User jeff(69, 69);
+		Command command(*this, jeff); //todo: change to real user
+		std::cout << BLUE << line << RESET << std::endl;
+		if (!line.empty()) //might be useless? might not be good enough? shrug
+		{
+			std::istringstream split(line);
+			std::string token;
+			while (split >> token)
+				command.add_argument(token);
+		}
+		command.execute();
+	}
 }
 
 

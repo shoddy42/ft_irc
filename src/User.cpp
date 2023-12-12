@@ -17,19 +17,12 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-
-// User::User(void)
-// {
-// 	poll_data.fd = sock;
-// 	poll_data.events = POLLIN & POLLOUT;
-// }
-
-User::User(int sock, pollfd shoe, int id): poll_data(shoe), sock(sock), _id(id)
+User::User(int sock, int id): _socket(sock), _id(id)
 {
 
 }
 
-User::User(const User &src): poll_data(src.poll_data), sock(src.sock), _id(src._id)
+User::User(const User &src): _socket(src._socket), _id(src._id)
 {
 	if (this != &src)
 		*this = src;
@@ -49,10 +42,12 @@ User::~User(void)
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
+//todo: actually make this function, or delete if not needed
 User &User::operator=(User const &src)
 {
 	if (this == &src)
 		return (*this);
+
 	return (*this);
 }
 
@@ -63,6 +58,37 @@ User &User::operator=(User const &src)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const int	User::get_socket(void)
+{
+	return (_socket);
+}
+
+const std::string	User::get_name(void)
+{
+	return(_name);
+}
+
+const std::string	User::get_nick(void)
+{
+	return(_nick);
+}
+
+void	User::set_socket(int socket)
+{
+	_socket = socket;
+}
+
+void	User::set_name(std::string name)
+{
+	_name = name;
+}
+
+void	User::set_nick(std::string nick)
+{
+	_nick = nick;
+}
+
 
 
 /* ************************************************************************** */
