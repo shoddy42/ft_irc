@@ -19,18 +19,21 @@
 class User
 {
 	public:
-		User(int sock, int id);
+		User(int sock);
 		User(const User &src);
 		~User(void);
 
-		const int			get_socket(void);
-		const std::string	get_name(void);
-		const std::string	get_nick(void);
+		const int			&get_socket(void);
+		const std::string	&get_name(void);
+		const std::string	&get_nick(void);
 
 		void	set_socket(int socket);
 		void	set_name(std::string);
 		void	set_nick(std::string);
 		
+		void		add_response(std::string response);
+		std::string	give_response(void);
+		int			check_response(void);
 		
 	private:
 		User(void);
@@ -40,7 +43,6 @@ class User
 		std::string _name;
 		std::string _nick;
 		int			_socket;
-		int			_id;
 		bool		_authenticated;
 };
 

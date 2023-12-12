@@ -65,7 +65,7 @@ int	main(int ac, char **av)
 	//Signals to make ctrl+c quit program as expected
 	signal(SIGINT, sig_handler);
 
-	if (ac == 3) //TODO: input parsing
+	if (ac >= 2) //TODO: input parsing
 		server.start(atoi(av[1]));
 	else
 		server.start(DEFAULT_PORT);

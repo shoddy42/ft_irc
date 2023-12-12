@@ -86,12 +86,10 @@ void Command::execute(void)
 	// size_t found;
 	//checkMsg should be called here to check wether the msg is finished (ie. has a line break)
 
-	// std::string key = command[0].data();
 	std::string key = arguments[0].data();
 
 	// if (commandMap.find(key) != commandMap.end())
 	// 	commandMap[key](command);
-
 
 	if (command_map.find(key) != command_map.end())
 	{
@@ -100,7 +98,7 @@ void Command::execute(void)
 			(this->*function)();
 	}
 	else
-		std::cerr << RED << "no command found" << RESET << std::endl;
+		std::cerr << RED << "no command " << "\"" << arguments[0] << "\" " << "found" << RESET << std::endl;
 	
 
 }

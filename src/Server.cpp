@@ -60,9 +60,8 @@ Server &Server::operator=(Server const &src)
  * @brief Creates a new pollfd, configures it to check for POLLIN and POLLOUT events. Then creates a new user with this data
  * 
  * @param sock 
- * @return int 
  */
-int Server::add_user(int sock)
+void Server::add_user(int sock)
 {
 	int	id = ++last_user_id;
 
@@ -72,9 +71,16 @@ int Server::add_user(int sock)
 	new_fd.revents = 0;
 	pollfds.push_back(new_fd);
 
-	User new_user(sock, id);
+	User new_user(sock);
 	users.push_back(new_user);
-	return (0);
+}
+
+User &Server::get_user(int sock)
+{
+	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
+		if (it->get_socket() == sock)
+			return (*it);
+	throw std::runtime_error("User not found");
 }
 
 /**
@@ -147,9 +153,6 @@ void	Server::socket_cleanup(int sock)
 	pollfds[sock].revents = 0;
 }
 
-void	Server::respond(int sock)
-{
-}
 
 
 //todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
@@ -183,7 +186,21 @@ std::string	Server::receive(int sock)
 	return ("");
 }
 
-void	parse(std::string buffer);
+void	Server::respond(User &user)
+{
+	while (user.check_response() > 0)
+	{
+		std::string response = user.give_response();
+		if (response.empty()) //shouldn't be needed but safety /shrug
+			break;
+		//todo: finish packet function that adds CRLF (\r\n) properly?
+		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
+		response += "\r\n";
+		send(user.get_socket(), response.c_str(), response.length(), 0);
+	}
+}
+
+// void	parse(std::string buffer);
 
 void	Server::serve(void)
 {
@@ -207,18 +224,18 @@ void	Server::serve(void)
 		{
 			std::string message;
 			message = receive(i);
-			create_command(message);
+			create_command(message, get_user(pollfds[i].fd));
 		}
 		if (pollfds[i].revents & POLLOUT) //client is ready for a response
 		{
-			respond(i);
+			respond(get_user(pollfds[i].fd));
 		}
 	}
 }
 
 
 
-void	Server::create_command(std::string buffer)
+void	Server::create_command(std::string buffer, User &caller)
 {
 	if (buffer.empty())
 		return;
@@ -228,8 +245,8 @@ void	Server::create_command(std::string buffer)
 	std::string line;
 	while (std::getline(ss, line, '\n'))
 	{
-		User jeff(69, 69);
-		Command command(*this, jeff); //todo: change to real user
+		// User jeff(69);
+		Command command(*this, caller); //todo: change to real user
 		std::cout << BLUE << line << RESET << std::endl;
 		if (!line.empty()) //might be useless? might not be good enough? shrug
 		{

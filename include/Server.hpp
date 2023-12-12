@@ -62,8 +62,11 @@ class Server
 
 	//	methods
 		void	serve(void);
-		int     add_user(int sock);
 		void	start(int port);
+
+	// getters/setters
+		void	add_user(int sock);
+		User	&get_user(int sock);
 
 	// networking
 		void	accept_new_connection(void);
@@ -71,8 +74,8 @@ class Server
 
 	// commands
 		std::string	receive(int sock);
-		void		respond(int sock);
-		void		create_command(std::string buffer);
+		void		respond(User &user);
+		void		create_command(std::string buffer, User &caller);
 
 		
 	//	variables

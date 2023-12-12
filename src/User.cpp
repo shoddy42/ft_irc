@@ -17,12 +17,13 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-User::User(int sock, int id): _socket(sock), _id(id)
+User::User(int sock): _socket(sock), _name(""), _nick(""), _authenticated(false)
 {
 
 }
 
-User::User(const User &src): _socket(src._socket), _id(src._id)
+//todo: actually make copy constru or delete?
+User::User(const User &src): _socket(src._socket)
 {
 	if (this != &src)
 		*this = src;
@@ -59,17 +60,17 @@ User &User::operator=(User const &src)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-const int	User::get_socket(void)
+const int	&User::get_socket(void)
 {
 	return (_socket);
 }
 
-const std::string	User::get_name(void)
+const std::string	&User::get_name(void)
 {
 	return(_name);
 }
 
-const std::string	User::get_nick(void)
+const std::string	&User::get_nick(void)
 {
 	return(_nick);
 }
@@ -89,6 +90,26 @@ void	User::set_nick(std::string nick)
 	_nick = nick;
 }
 
+void	User::add_response(std::string response)
+{
+	_responses.push(response);
+}
+
+std::string	User::give_response(void)
+{
+	std::string response;
+
+	if (_responses.empty())
+		return ("");
+	response = _responses.front();
+	_responses.pop();
+	return (response);
+}
+
+int		User::check_response(void)
+{
+	return (_responses.size());
+}
 
 
 /* ************************************************************************** */
