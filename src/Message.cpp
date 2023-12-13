@@ -66,6 +66,10 @@ const std::string &Message::get_text()
 	return (_text);
 }
 
+const User	&Message::get_sender(void)
+{
+	return (_sender);
+}
 
 
 /* ************************************************************************** */

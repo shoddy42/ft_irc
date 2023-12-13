@@ -18,8 +18,8 @@
 
 bool escape = false;
 
-//todo: move off global server? its still needed for signal
-Server server;
+//todo: figure out if there's another way to get server to signal?
+Server *g_server;
 
 //todo: decide whether guard is nicer than if statements
 /**
@@ -41,8 +41,7 @@ int	error_exit(std::string error_msg)
 {
 	std::cout << error_msg << errno << std::endl;
 	//todo: sophisticated closing of all open sockets.
-	// server.socket_cleanup(0);
-	server.shutdown();
+	g_server->shutdown();
 	exit(EXIT_FAILURE);
 }
 
@@ -56,8 +55,9 @@ void sig_handler(int signum)
 {
     if (signum == SIGINT) {
 		escape = true;
+		g_server->shutdown();
 		//todo: socket cleanup, just like in error_exit
-		exit(1);
+		exit(EXIT_FAILURE);
     }
 }
 
@@ -65,6 +65,8 @@ int	main(int ac, char **av)
 {
 	//Signals to make ctrl+c quit program as expected
 	signal(SIGINT, sig_handler);
+	Server server;
+	g_server = &server;
 
 	if (ac >= 2) //TODO: input parsing
 		server.start(atoi(av[1]));

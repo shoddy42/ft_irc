@@ -47,6 +47,7 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"PING", &Command::ping},
 	{"JOIN", &Command::join},
 	{"PRIVMSG", &Command::privmsg},
+	{"USER", &Command::user},
 	// {"QUIT", &quit},
 };
 
@@ -59,23 +60,6 @@ void printVectorStrings(const std::vector<std::string> &strings)
 	std::cout << std::endl;
 }
 
-// int quit(std::vector<std::string> command)
-// {
-// 	return (0);
-// }
-
-// int join(std::vector<std::string> command)
-// {
-// 	return (0);
-
-// }
-
-// int privmsg(std::vector<std::string> command)
-// {
-// 	return (0);
-
-// }
-
 void Command::add_argument(std::string argument)
 {
 	arguments.push_back(argument);
@@ -85,16 +69,18 @@ void Command::execute(void)
 {
 
 	// size_t found;
-	//checkMsg should be called here to check wether the msg is finished (ie. has a line break)
+	//todo: checkMsg should be called here to check wether the msg is finished (ie. has a line break)
 
 	std::string key = arguments[0].data();
 
 	// std::cout << "Command " << arguments[0] << " found\n";
+
 	if (command_map.find(key) != command_map.end())
 	{
 		CommandFunction function = command_map[key];
-		if (function)
-			(this->*function)();
+		(this->*function)();
+		// CommandFunction function = command_map[key];
+		// if (function)
 	}
 	else
 		std::cerr << RED << "no command " << "\"" << arguments[0] << "\" " << "found" << RESET << std::endl;

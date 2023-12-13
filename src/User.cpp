@@ -17,7 +17,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-User::User(int sock): _socket(sock), _name(""), _nick(""), _authenticated(false)
+User::User(int sock): _socket(sock), _username(""), _nickname(""), _authenticated(false)
 {
 
 }
@@ -65,14 +65,14 @@ const int	&User::get_socket(void)
 	return (_socket);
 }
 
-const std::string	&User::get_name(void)
+const std::string	&User::get_username(void)
 {
-	return(_name);
+	return(_username);
 }
 
-const std::string	&User::get_nick(void)
+const std::string	&User::get_nickname(void)
 {
-	return(_nick);
+	return(_nickname);
 }
 
 void	User::set_socket(int socket)
@@ -80,14 +80,14 @@ void	User::set_socket(int socket)
 	_socket = socket;
 }
 
-void	User::set_name(std::string name)
+void	User::set_username(std::string name)
 {
-	_name = name;
+	_username = name;
 }
 
-void	User::set_nick(std::string nick)
+void	User::set_nickname(std::string nick)
 {
-	_nick = nick;
+	_nickname = nick;
 }
 
 void	User::add_response(std::string response)

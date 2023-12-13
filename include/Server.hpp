@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/10/18 11:39:34 by root          ########   odam.nl         */
+/*   Updated: 2023/12/13 16:52:30 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ class Server
 	private:
 		int	last_user_id = 0; //currently not used
 		int	_listen_socket;
+		std::string _password;
 
 
 };

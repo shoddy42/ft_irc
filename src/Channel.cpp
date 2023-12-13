@@ -58,6 +58,33 @@ Channel &Channel::operator=(Channel const &src)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+void	Channel::send_text(std::string text)
+{
+	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
+	for (std::vector<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	{
+		//todo: dont send to sender
+		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		// User &real_user = _server.get_user((*user)->get_username());
+		(*user)->add_response(text);
+	}
+}
+
+void	Channel::send_message(Message &message)
+{
+	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
+	_message_log.push_back(message);
+	for (std::vector<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	{
+		//todo: dont send to sender
+		if (*user == &message.get_sender())
+			continue;
+		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		// User &real_user = _server.get_user((*user)->get_username());
+		(*user)->add_response(message.get_text());
+	}
+}
+
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
@@ -84,18 +111,6 @@ void	Channel::add_message(Message &message)
 	_message_log.push_back(message);
 }
 
-void	Channel::send_text(std::string text)
-{
-	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
-	for (std::vector<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
-	{
-		//todo: dont send to sender
-		std::cout << GREEN << "added response to " << (*user)->get_name() << RESET << std::endl;
-		User &real_user = _server.get_user((*user)->get_name());
-		(*user)->add_response(text);
-	}
-	
-}
 
 
 

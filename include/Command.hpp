@@ -8,14 +8,12 @@
 # include "../include/Server.hpp"
 # include "../include/User.hpp"
 
-//todo: think about whether this even needs to be a class or not. seems like it would be neater if not?
-
 class Server;
 
 class Command
 {
 	public:
-		Command(Server &server, User &caller); //todo: change caller to reference
+		Command(Server &server, User &caller);
 		~Command(void);
 		Command &operator=(Command const &src);
 
@@ -30,6 +28,7 @@ class Command
 		void	ping(void);
 		void	join(void);
 		void	privmsg(void);
+		void	user(void);
 
 		
 	private:

@@ -15,6 +15,8 @@
 # include <string>
 # include "../include/User.hpp"
 
+//todo: consider deleting the entire class.
+// time sent is useless and we can just pass the sender to relevant functions
 class Message
 {
 	public:
@@ -24,7 +26,8 @@ class Message
 		~Message(void);
 		Message &operator=(Message const &src);
 
-		const std::string &get_text(void);
+		const std::string	&get_text(void);
+		const User			&get_sender(void);
 		
 	private:
 		std::string &_text;		//tmp

@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/10/18 11:37:40 by root          ########   odam.nl         */
+/*   Updated: 2023/12/13 17:02:18 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ Server &Server::operator=(Server const &src)
  */
 void Server::add_user(int sock)
 {
-	// int	id = ++last_user_id;
-
 	pollfd new_fd;
 	new_fd.fd = sock;
 	new_fd.events = POLLIN | POLLOUT;
@@ -89,7 +87,7 @@ User &Server::get_user(std::string name)
 {
 	// for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
 	for (std::list<User>::iterator user = users.begin(); user != users.end(); user++)
-		if (user->get_name() == name)
+		if (user->get_username() == name)
 			return (*user);
 	return (*users.begin());
 	// throw std::runtime_error("User not found");
@@ -133,6 +131,7 @@ void	Server::start(int port)
 
 	Channel dummy_channel("dummy channel", *this);
 	channels.push_back(dummy_channel);
+
 	Channel general("#general", *this);
 	channels.push_back(general);
 
@@ -166,21 +165,16 @@ void	Server::accept_new_connection(void)
 	}
 }
 
-//todo: Replace 0 functionality with a Server::Shutdown function, that will close the listening socket, and loops through all users to close their sockets
 /**
  * @brief Closes socket, and updates pollfds and the users socket to -1 (INVALID_FD) if needed
  * 
- * @param sock The socket to cleanup. 0 if it's the server's listen_socket
+ * @param sock The socket to cleanup.
  */
 void	Server::socket_cleanup(int sock)
 {
 	std::cout << GREEN << "Socket cleanup on aisle " << sock << RESET << std::endl;
-	if (sock == 0)
-	{
-		close(_listen_socket);
+	if (sock == INVALID_FD)
 		return;
-	}
-
 	close(sock);
 	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
 		if (it->get_socket() == sock)
@@ -189,8 +183,6 @@ void	Server::socket_cleanup(int sock)
 	pollfds[sock].fd = INVALID_FD;
 	pollfds[sock].revents = 0;
 }
-
-
 
 //todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
 std::string	Server::receive(int sock)
@@ -241,7 +233,6 @@ void	Server::serve(void)
 {
 	//Poll every socket we have.
 	//Check all open sockets, to see if any have written to us.
-	//todo: Create proper pollfd management
 	guard(poll(pollfds.data(), pollfds.size(), POLL_TIMEOUT), "poll failed. errno: ");
 
 	accept_new_connection();
