@@ -3,6 +3,7 @@
 # include <iostream>
 # include <string>
 # include <unordered_map>
+# include <map>
 # include <vector>
 # include "../include/Server.hpp"
 # include "../include/User.hpp"
@@ -17,23 +18,25 @@ class Command
 		Command(Server &server, User &caller); //todo: change caller to reference
 		~Command(void);
 		Command &operator=(Command const &src);
-        // void parseCommand(std::vector<std::string> commands);
+
 		void execute(void);
 		void add_argument(std::string argument);
 
-		typedef int (Command::*CommandFunction)(); //command function definition for the jump map
+		typedef void (Command::*CommandFunction)(); //command function definition for the jump map
 
     //command functions
 		// void	call_(std::string key);
-		int		nick(void);
+		void	nick(void);
+		void	ping(void);
+		void	join(void);
+		void	privmsg(void);
 
 		
 	private:
 		std::vector<std::string> arguments;
 		Server	&_server;
 		User	&_caller;
-		// static std::unordered_map<std::string, int(*)()> command_map;
-		static std::unordered_map<std::string, Command::CommandFunction> command_map;
+		static std::map<std::string, Command::CommandFunction> command_map;
 		// Command();
 
 };

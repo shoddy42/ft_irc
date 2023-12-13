@@ -42,11 +42,12 @@ Command::Command(Server &server, User &caller): _server(server), _caller(caller)
 // 	// ircCommand[11] = "OPER";
 // }
 
-std::unordered_map<std::string, Command::CommandFunction> Command::command_map = {
+std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"NICK", &Command::nick},
+	{"PING", &Command::ping},
+	{"JOIN", &Command::join},
+	{"PRIVMSG", &Command::privmsg},
 	// {"QUIT", &quit},
-	// {"PRIVMSG", &privmsg},
-	// {"JOIN", &join}
 };
 
 void printVectorStrings(const std::vector<std::string> &strings)
@@ -88,9 +89,7 @@ void Command::execute(void)
 
 	std::string key = arguments[0].data();
 
-	// if (commandMap.find(key) != commandMap.end())
-	// 	commandMap[key](command);
-
+	// std::cout << "Command " << arguments[0] << " found\n";
 	if (command_map.find(key) != command_map.end())
 	{
 		CommandFunction function = command_map[key];

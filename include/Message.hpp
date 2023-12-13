@@ -13,18 +13,22 @@
 #ifndef Message_HPP
 # define Message_HPP
 # include <string>
+# include "../include/User.hpp"
 
 class Message
 {
 	public:
-		Message(void);
+		// Message(void);
+		Message(User &sender, std::string text);
 		Message(const Message &src);
 		~Message(void);
 		Message &operator=(Message const &src);
+
+		const std::string &get_text(void);
 		
 	private:
-		std::string text;		//tmp
-		std::string user;		//tmp
+		std::string &_text;		//tmp
+		User		&_sender;
 		int			time_sent;	//tmp
 };
 

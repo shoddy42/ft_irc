@@ -14,6 +14,8 @@
 # define SERVER_HPP
 
 	//  Variables   //
+# define SERVER_SIGNATURE ":server_name"
+# define HOSTNAME		  "serverhostname"
 
 # define MAX_CLIENTS  512
 # define DEFAULT_PORT 6667
@@ -36,6 +38,7 @@
 
 # include "../include/User.hpp"
 # include "../include/Command.hpp"
+# include "../include/Channel.hpp"
 # include "../include/print.hpp"
 
 # include <vector>
@@ -50,6 +53,8 @@ int quit(std::vector<std::string> command);
 int join(std::vector<std::string> command);
 int privmsg(std::vector<std::string> command);
 int nick(std::vector<std::string> command);
+
+class Channel;
 
 class Server
 {
@@ -67,10 +72,13 @@ class Server
 	// getters/setters
 		void	add_user(int sock);
 		User	&get_user(int sock);
+		User	&get_user(std::string name);
+		Channel	&get_channel(const std::string name);
 
 	// networking
 		void	accept_new_connection(void);
 		void	socket_cleanup(int sock);
+		void	shutdown(void);
 
 	// commands
 		std::string	receive(int sock);
@@ -81,7 +89,10 @@ class Server
 	//	variables
 		// poll[0] is the servers listening client. all others are the users. 
 		std::vector<pollfd>	pollfds;
+		// users[0] is a dummy user in case no user is found
 		std::list<User>		users;
+		// channels[0] is a dummy channel in case no channel is found
+		std::list<Channel>  channels;
 		
 	private:
 		int	last_user_id = 0; //currently not used

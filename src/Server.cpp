@@ -63,7 +63,7 @@ Server &Server::operator=(Server const &src)
  */
 void Server::add_user(int sock)
 {
-	int	id = ++last_user_id;
+	// int	id = ++last_user_id;
 
 	pollfd new_fd;
 	new_fd.fd = sock;
@@ -77,11 +77,35 @@ void Server::add_user(int sock)
 
 User &Server::get_user(int sock)
 {
-	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
-		if (it->get_socket() == sock)
-			return (*it);
-	throw std::runtime_error("User not found");
+	//next to skip dummy at start users
+	for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
+		if (user->get_socket() == sock)
+			return (*user);
+	return (*users.begin());
+	// throw std::runtime_error("User not found");
 }
+
+User &Server::get_user(std::string name)
+{
+	// for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
+	for (std::list<User>::iterator user = users.begin(); user != users.end(); user++)
+		if (user->get_name() == name)
+			return (*user);
+	return (*users.begin());
+	// throw std::runtime_error("User not found");
+}
+
+Channel	&Server::get_channel(const std::string name)
+{
+	// return (*channels.begin());
+	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
+		if (channel->get_name() == name)
+			return (*channel);
+	std::cout << RED << "No channel " << name << " found.\n" << RESET;
+	return (*channels.begin());
+	// throw std::runtime_error("Channel not found");
+}
+
 
 /**
  * @brief Creates a new socket to listen on port. Configures server.poll[0] to be this new socket.
@@ -92,8 +116,7 @@ User &Server::get_user(int sock)
 void	Server::start(int port)
 {
 	_listen_socket = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
-	int flags = guard(fcntl(_listen_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
-	guard(fcntl(_listen_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+	guard(fcntl(_listen_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 	
     sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);
@@ -107,9 +130,24 @@ void	Server::start(int port)
 	listen_socket.fd = _listen_socket;
 	listen_socket.events = POLLIN;
 	pollfds.push_back(listen_socket);
-	//create socket that only listens to incoming traffic, and add it as poll[0]
+
+	Channel dummy_channel("dummy channel", *this);
+	channels.push_back(dummy_channel);
+	Channel general("#general", *this);
+	channels.push_back(general);
+
+	User dummy_user(-42);
+	users.push_back(dummy_user);
+
 }
 
+void	Server::shutdown(void)
+{
+	for (size_t i = 0; i < pollfds.size(); i++)
+		if (pollfds[i].fd > 0)
+			close(pollfds[i].fd);
+	exit(0);
+}
 
 /**
  * @brief Checks if our listening socket has been contacted. Then creates a user.
@@ -122,8 +160,7 @@ void	Server::accept_new_connection(void)
 		std::cout << "New connection found. CONNECTING" << std::endl;
 		//possible here to steal client information with sockaddr instead of nullptr.
 		int client_socket = guard(accept(pollfds[0].fd, nullptr, nullptr), "Failed to accept socket. errno: ");
-		int flags = guard(fcntl(client_socket, F_GETFL), "Fcntl failed to get flags. errno: ");
-		guard(fcntl(client_socket, F_SETFL, flags | O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+		guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 		std::cout << "client socket created at: " << client_socket << std::endl;
 		this->add_user(client_socket);
 	}
@@ -200,8 +237,6 @@ void	Server::respond(User &user)
 	}
 }
 
-// void	parse(std::string buffer);
-
 void	Server::serve(void)
 {
 	//Poll every socket we have.
@@ -233,8 +268,6 @@ void	Server::serve(void)
 	}
 }
 
-
-
 void	Server::create_command(std::string buffer, User &caller)
 {
 	if (buffer.empty())
@@ -245,8 +278,7 @@ void	Server::create_command(std::string buffer, User &caller)
 	std::string line;
 	while (std::getline(ss, line, '\n'))
 	{
-		// User jeff(69);
-		Command command(*this, caller); //todo: change to real user
+		Command command(*this, caller);
 		std::cout << BLUE << line << RESET << std::endl;
 		if (!line.empty()) //might be useless? might not be good enough? shrug
 		{

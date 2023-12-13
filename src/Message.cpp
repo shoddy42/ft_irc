@@ -18,11 +18,15 @@
 */
 
 
-Message::Message(void)
+// Message::Message(void)
+// {
+// }
+
+Message::Message(User &sender, std::string text): _sender(sender), _text(text)
 {
 }
 
-Message::Message(const Message &src)
+Message::Message(const Message &src): _sender(src._sender), _text(src._text)
 {
 	if (this != &src)
 		*this = src;
@@ -56,6 +60,12 @@ Message &Message::operator=(Message const &src)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+const std::string &Message::get_text()
+{
+	return (_text);
+}
+
 
 
 /* ************************************************************************** */

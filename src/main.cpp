@@ -1,4 +1,4 @@
-
+//todo: delete the headers we dont need
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <cstdlib>
@@ -41,7 +41,8 @@ int	error_exit(std::string error_msg)
 {
 	std::cout << error_msg << errno << std::endl;
 	//todo: sophisticated closing of all open sockets.
-	server.socket_cleanup(0);
+	// server.socket_cleanup(0);
+	server.shutdown();
 	exit(EXIT_FAILURE);
 }
 

@@ -2,7 +2,7 @@
 // #include <iostream>
 #include "../../include/Command.hpp"
 
-static void printVectorStrings(const std::vector<std::string> &strings)
+static void printVectorStrings(const std::vector<std::string> &strings) //debug function. todo: remove
 {
 	for (int i = 0; i < strings.size(); i++)
 	{
@@ -13,13 +13,14 @@ static void printVectorStrings(const std::vector<std::string> &strings)
 
 static bool name_exists(std::string name, Server &server)
 {
-	for (std::list<User>::iterator it = server.users.begin(); it != server.users.end(); it++)
-		if (it->get_name() == name)
+	for (std::list<User>::iterator user = server.users.begin(); user != server.users.end(); user++)
+		if (user->get_name() == name)
 			return (true);
 	return (false);
 }
 
-int Command::nick()
+//todo: add checks to make sure names abide by the RFC 2812 standards for user names and nicknames
+void	Command::nick()
 {
 	std::cout << ORANGE << "NICK COMMAND CALLED WITH: " << RESET << std::endl;
 
@@ -41,5 +42,4 @@ int Command::nick()
 		_caller.add_response(response);
 		_caller.set_name(desired_name);
 	}
-	return (0);
 }
