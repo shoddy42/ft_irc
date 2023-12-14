@@ -75,6 +75,12 @@ const std::string	&User::get_nickname(void)
 	return(_nickname);
 }
 
+const bool	&User::get_authenticated(void)
+{
+	return(_authenticated);
+}
+
+
 void	User::set_socket(int socket)
 {
 	_socket = socket;
@@ -89,6 +95,12 @@ void	User::set_nickname(std::string nick)
 {
 	_nickname = nick;
 }
+
+void	User::authenticate(void)
+{
+	_authenticated = true;
+}
+
 
 void	User::add_response(std::string response)
 {

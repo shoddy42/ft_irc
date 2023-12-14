@@ -48,6 +48,7 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"JOIN", &Command::join},
 	{"PRIVMSG", &Command::privmsg},
 	{"USER", &Command::user},
+	{"PASS", &Command::pass},
 	// {"QUIT", &quit},
 };
 
@@ -73,8 +74,11 @@ void Command::execute(void)
 
 	std::string key = arguments[0].data();
 
-	// std::cout << "Command " << arguments[0] << " found\n";
-
+	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
+	{
+		// _caller.add_response("ERROR :Password Required.");
+		return;
+	}
 	if (command_map.find(key) != command_map.end())
 	{
 		CommandFunction function = command_map[key];

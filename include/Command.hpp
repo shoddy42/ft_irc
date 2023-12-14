@@ -29,6 +29,7 @@ class Command
 		void	join(void);
 		void	privmsg(void);
 		void	user(void);
+		void	pass(void);
 
 		
 	private:
