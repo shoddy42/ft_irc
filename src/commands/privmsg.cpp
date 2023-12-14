@@ -26,7 +26,7 @@ void	Command::privmsg(void)
 		// channel.add_message(message);
 		// channel.send_text(msg_text);
 
-		channel.send_message(msg_text);
+		channel.send_message(msg_text, _caller);
 	}
 	else	//message to user
 	{

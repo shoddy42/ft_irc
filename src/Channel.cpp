@@ -70,15 +70,15 @@ Channel &Channel::operator=(Channel const &src)
 // 	}
 // }
 
-void	Channel::send_message(std::string &message)
+void	Channel::send_message(std::string &message, User &sender)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
 	_message_log.push_back(message);
 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
 		//todo: dont send to sender
-		// if (*user == &message.get_sender())
-		// 	continue;
+		if (*user == &sender)
+			continue;
 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
 		// User &real_user = _server.get_user((*user)->get_username());
 		(*user)->add_response(message);

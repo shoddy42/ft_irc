@@ -64,7 +64,7 @@ class Channel
 		// void	send_text(std::string text);
 
 		// void	send_message(Message &message);
-		void	send_message(std::string &message);
+		void	send_message(std::string &message, User &sender);
 };
 
 
