@@ -48,11 +48,8 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"JOIN", &Command::join},
 	{"PRIVMSG", &Command::privmsg},
 	{"USER", &Command::user},
-<<<<<<< HEAD
-	{"KICK", &Command::kick}
-=======
+	{"KICK", &Command::kick},
 	{"PASS", &Command::pass},
->>>>>>> 1004367ea06bb2fff979976d18f8e6121f0d0843
 	// {"QUIT", &quit},
 };
 

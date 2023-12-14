@@ -29,11 +29,8 @@ class Command
 		void	join(void);
 		void	privmsg(void);
 		void	user(void);
-<<<<<<< HEAD
 		void 	kick(void);
-=======
 		void	pass(void);
->>>>>>> 1004367ea06bb2fff979976d18f8e6121f0d0843
 
 		
 	private:
