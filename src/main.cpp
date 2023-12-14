@@ -68,7 +68,9 @@ int	main(int ac, char **av)
 	Server server;
 	g_server = &server;
 
-	if (ac >= 2) //todo: input parsing
+	if (ac == 2)
+		server.start(atoi(av[1]), "");
+	else if (ac >= 3) //todo: input parsing
 		server.start(atoi(av[1]), av[2]);
 	else
 		server.start(DEFAULT_PORT, "");

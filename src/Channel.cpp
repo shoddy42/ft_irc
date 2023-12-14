@@ -58,30 +58,30 @@ Channel &Channel::operator=(Channel const &src)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-void	Channel::send_text(std::string text)
-{
-	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
-	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
-	{
-		//todo: dont send to sender
-		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
-		// User &real_user = _server.get_user((*user)->get_username());
-		(*user)->add_response(text);
-	}
-}
+// void	Channel::send_text(std::string text)
+// {
+// 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
+// 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+// 	{
+// 		//todo: dont send to sender
+// 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+// 		// User &real_user = _server.get_user((*user)->get_username());
+// 		(*user)->add_response(text);
+// 	}
+// }
 
-void	Channel::send_message(Message &message)
+void	Channel::send_message(std::string &message, User &sender)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
 	_message_log.push_back(message);
 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
 		//todo: dont send to sender
-		if (*user == &message.get_sender())
+		if (*user == &sender)
 			continue;
 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
 		// User &real_user = _server.get_user((*user)->get_username());
-		(*user)->add_response(message.get_text());
+		(*user)->add_response(message);
 	}
 }
 
@@ -106,10 +106,10 @@ void	Channel::add_operator(User &user)
 	_operator_list.push_back(&user);
 }
 
-void	Channel::add_message(Message &message)
-{
-	_message_log.push_back(message);
-}
+// void	Channel::add_message(Message &message)
+// {
+// 	_message_log.push_back(message);
+// }
 
 void	Channel::remove_user(User &user)
 {

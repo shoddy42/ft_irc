@@ -20,17 +20,17 @@ void	Command::privmsg(void)
 	if (_arguments[1][0] == '#') //message to channel
 	{
 		Channel &channel = _server.get_channel(_arguments[1]);
-		Message message(_caller, msg_text);
+		// Message message(_caller, msg_text);
 
 		std::cout << GREEN << "usr list size =  " << channel._user_list.size() << RESET << std::endl;
 		// channel.add_message(message);
 		// channel.send_text(msg_text);
 
-		channel.send_message(message);
+		channel.send_message(msg_text, _caller);
 	}
 	else	//message to user
 	{
-		Message message(_caller, msg_text);
+		// Message message(_caller, msg_text);
 		User	&recipient = _server.get_user(_arguments[1]);
 		std::cout << GREEN << "sending privmsg to " << recipient.get_nickname() << RESET << std::endl;
 
