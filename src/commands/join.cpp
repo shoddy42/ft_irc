@@ -27,7 +27,7 @@ void	Command::join(void)
 		new_channel.add_operator(_caller);
 		_server.channels.push_back(new_channel);
 	}
-	std::string response = SERVER_SIGNATURE;
-	response += " 332 " + _caller.get_username() + " " + requested_channel + " :Welcome to the " + requested_channel + " channel.";
-	_caller.add_response(response);
+	// std::string response = SERVER_SIGNATURE;
+	// response += " 332 " + _caller.get_username() + " " + requested_channel + " :Welcome to the " + requested_channel + " channel.";
+	// _caller.add_response(response);
 }

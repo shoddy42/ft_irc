@@ -58,17 +58,6 @@ Channel &Channel::operator=(Channel const &src)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-// void	Channel::send_text(std::string text)
-// {
-// 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
-// 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
-// 	{
-// 		//todo: dont send to sender
-// 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
-// 		// User &real_user = _server.get_user((*user)->get_username());
-// 		(*user)->add_response(text);
-// 	}
-// }
 
 void	Channel::send_message(std::string &message, User &sender)
 {
@@ -99,6 +88,16 @@ const std::string	&Channel::get_name(void)
 void	Channel::add_user(User &user)
 {
 	_user_list.push_back(&user);
+
+	//display the channels topic
+	std::string response = SERVER_SIGNATURE;
+	//todo: update to actually be topic
+	response += " 332 " + user.get_username() + " " + get_name() + " :Welcome to the " + get_name() + " channel.";
+	user.add_response(response);
+	//catch user up to all messages sent in the channel.
+	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
+		user.add_response(*msg);
+
 }
 
 void	Channel::add_operator(User &user)
@@ -106,16 +105,16 @@ void	Channel::add_operator(User &user)
 	_operator_list.push_back(&user);
 }
 
-// void	Channel::add_message(Message &message)
-// {
-// 	_message_log.push_back(message);
-// }
-
 void	Channel::remove_user(User &user)
 {
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+	{
 		if (*usr == &user)
+		{
 			_user_list.erase(usr);
+			break;
+		}
+	}
 } 
 
 /* ************************************************************************** */

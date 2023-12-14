@@ -80,6 +80,8 @@ class Server
 		void	accept_new_connection(void);
 		void	socket_cleanup(int sock);
 		void	shutdown(void);
+		void	delete_user(User &user);
+
 
 	// commands
 		std::string	receive(int sock);
@@ -96,7 +98,6 @@ class Server
 		std::list<Channel>  channels;
 		
 	private:
-		int	last_user_id = 0; //currently not used
 		int	_listen_socket;
 		std::string _password;
 

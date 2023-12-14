@@ -195,12 +195,31 @@ void	Server::socket_cleanup(int sock)
 		if (pollfds[i].fd == sock)
 		{
 			pollfds[sock].fd = INVALID_FD;
-			// pollfds[sock].revents = 0;
 			pollfds[sock].revents = 0;
 		}
+
 	}
+}
 
+void	Server::delete_user(User &user_to_delete)
+{
+	//loop over all channels and delete the user.
+	// for (Channel channel : channels)
+	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
+		channel->remove_user(user_to_delete);
+	
+	//clean up socket
+	socket_cleanup(user_to_delete.get_socket());
 
+	//remove user
+	for(std::list<User>::iterator user = users.begin(); user != users.end(); user++)
+	{
+		if (user->get_socket() == user_to_delete.get_socket())
+		{
+			users.erase(user);
+			break;
+		}
+	}
 }
 
 //todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
@@ -213,7 +232,10 @@ std::string	Server::receive(int sock)
 	bzero(buffer, BUFFER_SIZE);
 	bytes_read = recv(pollfds[sock].fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read == -1)	  // Recv failed
+	{
 		perror("recv");
+		// socket_cleanup(pollfds[sock].fd);
+	}
 	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
 	{
 		std::cout << "Client closed the connection." << std::endl;
@@ -222,13 +244,6 @@ std::string	Server::receive(int sock)
 	else  				      // Actually received a message
 	{
 		std::string data(buffer);
-		//SCUFFED early reply to trick client into thinking its fully connected
-		// if (data.find("USER") != std::string::npos && (pollfds[sock].fd & POLLOUT))
-		// {
-		// 	std::cout << "Responding to client" << std::endl;
-		// 	std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
-		// 	send(pollfds[sock].fd, join_response.c_str(), join_response.length(), 0);
-		// }
 		return (data);
 	}
 	return ("");
@@ -245,6 +260,10 @@ void	Server::respond(User &user)
 		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
 		response += "\r\n";
 		send(user.get_socket(), response.c_str(), response.length(), 0);
+		if (response == "462 :Unauthorized command (already registered)")
+		{
+			socket_cleanup(user.get_socket());
+		}
 	}
 }
 

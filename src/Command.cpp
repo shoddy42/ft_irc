@@ -87,8 +87,6 @@ void Command::execute(void)
 	{
 		CommandFunction function = command_map[key];
 		(this->*function)();
-		// CommandFunction function = command_map[key];
-		// if (function)
 	}
 	else
 		std::cerr << RED << "no command " << "\"" << _arguments[0] << "\" " << "found" << RESET << std::endl;
