@@ -24,9 +24,9 @@ void	Command::nick()
 {
 	std::cout << ORANGE << "NICK COMMAND CALLED WITH: " << RESET << std::endl;
 
-	printVectorStrings(arguments);
+	printVectorStrings(_arguments);
 
-	std::string desired_name = arguments[1];
+	std::string desired_name = _arguments[1];
 	std::cout << "Des name = " << desired_name << std::endl;
 	if (name_exists(desired_name, _server))
 	{

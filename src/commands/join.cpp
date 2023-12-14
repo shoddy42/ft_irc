@@ -6,7 +6,7 @@
 void	Command::join(void)
 {
 	std::cout << ORANGE << "Join called" << RESET << "\n";
-	std::string requested_channel = arguments[1];
+	std::string requested_channel = _arguments[1];
 
 	Channel &channel = _server.get_channel(requested_channel);
 	//todo: filter if user is already in channel

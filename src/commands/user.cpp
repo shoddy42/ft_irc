@@ -15,8 +15,8 @@
 void	Command::user(void)
 {
 	std::cout << ORANGE << "USER CALLED\n" << RESET; 
-	std::string username = arguments[1];
-	std::string nickname = arguments[2];
+	std::string username = _arguments[1];
+	std::string nickname = _arguments[2];
 
 		// 	std::cout << "Responding to client" << std::endl;
 		// 	std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");

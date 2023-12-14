@@ -14,9 +14,9 @@
 
 void	Command::pass(void)
 {
-	std::cout << ORANGE << "PASS called with: [" << arguments[1] << "]\n" << RESET;
+	std::cout << ORANGE << "PASS called with: [" << _arguments[1] << "]\n" << RESET;
 	std::cout << "Server PASS [" << _server.get_password() << "]\n";
-	if (arguments[1] == _server.get_password())
+	if (_arguments[1] == _server.get_password())
 	{
 		std::cout << PURPLE << "Authenticated user\n" << RESET;
 		_caller.authenticate();

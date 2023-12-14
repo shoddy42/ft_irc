@@ -13,13 +13,13 @@ void	Command::privmsg(void)
 	msg_text += HOSTNAME;
 
 	//finish packet, except for CRLF
-	for(size_t i = 0; i < arguments.size(); i++)
-		msg_text += " " + arguments[i];
+	for(size_t i = 0; i < _arguments.size(); i++)
+		msg_text += " " + _arguments[i];
 
 	//todo:? other channel prefixes??
-	if (arguments[1][0] == '#') //message to channel
+	if (_arguments[1][0] == '#') //message to channel
 	{
-		Channel &channel = _server.get_channel(arguments[1]);
+		Channel &channel = _server.get_channel(_arguments[1]);
 		Message message(_caller, msg_text);
 
 		std::cout << GREEN << "usr list size =  " << channel._user_list.size() << RESET << std::endl;
@@ -30,7 +30,7 @@ void	Command::privmsg(void)
 	else	//message to user
 	{
 		Message message(_caller, msg_text);
-		User	&recipient = _server.get_user(arguments[1]);
+		User	&recipient = _server.get_user(_arguments[1]);
 		std::cout << GREEN << "sending privmsg to " << recipient.get_nickname() << RESET << std::endl;
 
 

@@ -33,7 +33,7 @@ class Command
 
 		
 	private:
-		std::vector<std::string> arguments;
+		std::vector<std::string> _arguments;
 		Server	&_server;
 		User	&_caller;
 		static std::map<std::string, Command::CommandFunction> command_map;
