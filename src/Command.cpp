@@ -48,7 +48,11 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"JOIN", &Command::join},
 	{"PRIVMSG", &Command::privmsg},
 	{"USER", &Command::user},
+<<<<<<< HEAD
 	{"KICK", &Command::kick}
+=======
+	{"PASS", &Command::pass},
+>>>>>>> 1004367ea06bb2fff979976d18f8e6121f0d0843
 	// {"QUIT", &quit},
 };
 
@@ -63,7 +67,7 @@ void printVectorStrings(const std::vector<std::string> &strings)
 
 void Command::add_argument(std::string argument)
 {
-	arguments.push_back(argument);
+	_arguments.push_back(argument);
 }
 
 void Command::execute(void)
@@ -72,10 +76,15 @@ void Command::execute(void)
 	// size_t found;
 	//todo: checkMsg should be called here to check wether the msg is finished (ie. has a line break)
 
-	std::string key = arguments[0].data();
+	std::string key = _arguments[0].data();
 
-	// std::cout << "Command " << arguments[0] << " found\n";
-
+	// if (key == "CAP");
+	// 	return;
+	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
+	{
+		// _caller.add_response("ERROR :Password Required.");
+		return;
+	}
 	if (command_map.find(key) != command_map.end())
 	{
 		CommandFunction function = command_map[key];
@@ -84,7 +93,7 @@ void Command::execute(void)
 		// if (function)
 	}
 	else
-		std::cerr << RED << "no command " << "\"" << arguments[0] << "\" " << "found" << RESET << std::endl;
+		std::cerr << RED << "no command " << "\"" << _arguments[0] << "\" " << "found" << RESET << std::endl;
 	
 
 }

@@ -56,6 +56,12 @@ Server &Server::operator=(Server const &src)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+std::string	&Server::get_password(void)
+{
+	return (_password);
+}
+
+
 /**
  * @brief Creates a new pollfd, configures it to check for POLLIN and POLLOUT events. Then creates a new user with this data
  * 
@@ -111,7 +117,7 @@ Channel	&Server::get_channel(const std::string name)
  * @param port Port to bind socket to
  * @return int (the socket FD)
  */
-void	Server::start(int port)
+void	Server::start(int port, std::string password)
 {
 	_listen_socket = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
 	guard(fcntl(_listen_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
@@ -138,6 +144,7 @@ void	Server::start(int port)
 	User dummy_user(-42);
 	users.push_back(dummy_user);
 
+	_password = password;
 }
 
 void	Server::shutdown(void)
@@ -162,6 +169,7 @@ void	Server::accept_new_connection(void)
 		guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 		std::cout << "client socket created at: " << client_socket << std::endl;
 		this->add_user(client_socket);
+		// send(client_socket, "ERROR :Password required\r\n", 6, 0);
 	}
 }
 
@@ -204,12 +212,12 @@ std::string	Server::receive(int sock)
 	{
 		std::string data(buffer);
 		//SCUFFED early reply to trick client into thinking its fully connected
-		if (data.find("USER") != std::string::npos && (pollfds[sock].fd & POLLOUT))
-		{
-			std::cout << "Responding to client" << std::endl;
-			std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
-			send(pollfds[sock].fd, join_response.c_str(), join_response.length(), 0);
-		}
+		// if (data.find("USER") != std::string::npos && (pollfds[sock].fd & POLLOUT))
+		// {
+		// 	std::cout << "Responding to client" << std::endl;
+		// 	std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
+		// 	send(pollfds[sock].fd, join_response.c_str(), join_response.length(), 0);
+		// }
 		return (data);
 	}
 	return ("");

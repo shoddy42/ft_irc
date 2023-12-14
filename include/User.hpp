@@ -28,9 +28,10 @@ class User
 		const std::string	&get_username(void);
 		const std::string	&get_nickname(void);
 
-		void	set_socket(int socket);
-		void	set_username(std::string);
-		void	set_nickname(std::string);
+		void		set_socket(int socket);
+		void		set_username(std::string);
+		void		set_nickname(std::string);
+		void		authenticate(void);
 		
 		void		add_response(std::string response);
 		std::string	give_response(void);

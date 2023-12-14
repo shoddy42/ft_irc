@@ -67,13 +67,14 @@ class Server
 
 	//	methods
 		void	serve(void);
-		void	start(int port);
+		void	start(int port, std::string password);
 
 	// getters/setters
-		void	add_user(int sock);
-		User	&get_user(int sock);
-		User	&get_user(std::string name);
-		Channel	&get_channel(const std::string name);
+		std::string	&get_password(void);
+		void		add_user(int sock);
+		User		&get_user(int sock);
+		User		&get_user(std::string name);
+		Channel		&get_channel(const std::string name);
 
 	// networking
 		void	accept_new_connection(void);
