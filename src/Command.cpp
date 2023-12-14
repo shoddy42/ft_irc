@@ -48,12 +48,13 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"JOIN", &Command::join},
 	{"PRIVMSG", &Command::privmsg},
 	{"USER", &Command::user},
+	{"KICK", &Command::kick}
 	// {"QUIT", &quit},
 };
 
 void printVectorStrings(const std::vector<std::string> &strings)
 {
-	for (int i = 0; i < strings.size(); i++)
+	for (size_t i = 0; i < strings.size(); i++)
 	{
 		std::cout << strings[i].data() << " ";
 	}

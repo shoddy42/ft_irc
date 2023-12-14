@@ -61,7 +61,7 @@ Channel &Channel::operator=(Channel const &src)
 void	Channel::send_text(std::string text)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
-	for (std::vector<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
 		//todo: dont send to sender
 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
@@ -74,7 +74,7 @@ void	Channel::send_message(Message &message)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
 	_message_log.push_back(message);
-	for (std::vector<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
 		//todo: dont send to sender
 		if (*user == &message.get_sender())
@@ -111,7 +111,11 @@ void	Channel::add_message(Message &message)
 	_message_log.push_back(message);
 }
 
-
-
+void	Channel::remove_user(User &user)
+{
+	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+		if (*usr == &user)
+			_user_list.erase(usr);
+} 
 
 /* ************************************************************************** */

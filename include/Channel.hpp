@@ -15,6 +15,7 @@
 # include "Message.hpp"
 # include "User.hpp"
 # include <queue>
+# include <list>
 # include <string>
 # include <iostream>
 # include "../include/User.hpp"
@@ -45,7 +46,7 @@ class Channel
 	
 	public:
 		// Channel(void);
-		std::vector<User *>	_user_list;
+		std::list<User *>	_user_list;
 		Channel(std::string channel_name, Server &server);
 		Channel(const Channel &src);
 		~Channel(void);
@@ -54,6 +55,7 @@ class Channel
 		const std::string &get_name(void);
 
 		void	add_user(User &user);
+		void	remove_user(User &user);
 		void	add_operator(User &user);
 
 		void	add_message(Message &message); //todo: remove add_msg and send_text
