@@ -42,6 +42,7 @@ class Channel
 		std::vector<std::string> _message_log;
 		std::vector<User *>  _operator_list;
 		std::string			 _name;
+		std::string			 _topic;
 		Server				 &_server;
 	
 	public:
@@ -53,6 +54,9 @@ class Channel
 		Channel &operator=(Channel const &src);
 
 		const std::string &get_name(void);
+		void 	set_topic(std::string topic);
+
+		bool 	is_operator(User &user);
 
 		void	add_user(User &user);
 		void	remove_user(User &user);
