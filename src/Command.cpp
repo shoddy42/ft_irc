@@ -50,6 +50,7 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"USER", &Command::user},
 	{"KICK", &Command::kick},
 	{"PASS", &Command::pass},
+	{"TOPIC", &Command::pass},
 	// {"QUIT", &quit},
 };
 
