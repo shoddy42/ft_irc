@@ -12,7 +12,6 @@
 
 #ifndef Channel_HPP
 # define Channel_HPP
-# include "Message.hpp"
 # include "User.hpp"
 # include <queue>
 # include <list>

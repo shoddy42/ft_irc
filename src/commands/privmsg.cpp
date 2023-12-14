@@ -30,7 +30,7 @@ void	Command::privmsg(void)
 	}
 	else	//message to user
 	{
-		Message message(_caller, msg_text);
+		// Message message(_caller, msg_text);
 		User	&recipient = _server.get_user(_arguments[1]);
 		std::cout << GREEN << "sending privmsg to " << recipient.get_nickname() << RESET << std::endl;
 

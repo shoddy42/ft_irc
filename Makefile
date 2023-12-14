@@ -35,9 +35,9 @@ OBJ_DIR		:= obj
 # --------------- FILES ------------------- #
 # ----------------------------------------- #
 
-HEADER_FILES := Message User Channel Server Command
+HEADER_FILES := User Channel Server Command
 
-MAIN_FILES	:= main Message User Channel Server Command
+MAIN_FILES	:= main User Channel Server Command
 CMD_FILES := nick mode pass ping privmsg user join kick topic
 
 FILES	:=	$(MAIN_FILES:%=%.cpp) \
