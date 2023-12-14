@@ -22,7 +22,7 @@
 // {
 // }
 
-Message::Message(User &sender, std::string text): _sender(sender), _text(text)
+Message::Message(User &sender, std::string &text): _sender(sender), _text(text)
 {
 }
 

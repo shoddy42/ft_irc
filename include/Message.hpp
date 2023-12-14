@@ -21,7 +21,7 @@ class Message
 {
 	public:
 		// Message(void);
-		Message(User &sender, std::string text);
+		Message(User &sender, std::string &text);
 		Message(const Message &src);
 		~Message(void);
 		Message &operator=(Message const &src);

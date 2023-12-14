@@ -74,6 +74,8 @@ void Command::execute(void)
 
 	std::string key = _arguments[0].data();
 
+	// if (key == "CAP");
+	// 	return;
 	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
 	{
 		// _caller.add_response("ERROR :Password Required.");

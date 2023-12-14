@@ -25,6 +25,7 @@ void	Command::privmsg(void)
 		std::cout << GREEN << "usr list size =  " << channel._user_list.size() << RESET << std::endl;
 		// channel.add_message(message);
 		// channel.send_text(msg_text);
+
 		channel.send_message(message);
 	}
 	else	//message to user
