@@ -31,6 +31,8 @@ class Command
 		void	user(void);
 		void 	kick(void);
 		void	pass(void);
+		void	topic(void);
+	
 
 		
 	private:

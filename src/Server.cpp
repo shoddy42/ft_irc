@@ -166,6 +166,7 @@ void	Server::accept_new_connection(void)
 		std::cout << "New connection found. CONNECTING" << std::endl;
 		//possible here to steal client information with sockaddr instead of nullptr.
 		int client_socket = guard(accept(pollfds[0].fd, nullptr, nullptr), "Failed to accept socket. errno: ");
+		std::cout << "TEST: " << client_socket << std::endl;
 		guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 		std::cout << "client socket created at: " << client_socket << std::endl;
 		this->add_user(client_socket);
@@ -180,6 +181,7 @@ void	Server::accept_new_connection(void)
  */
 void	Server::socket_cleanup(int sock)
 {
+
 	std::cout << GREEN << "Socket cleanup on aisle " << sock << RESET << std::endl;
 	if (sock == INVALID_FD)
 		return;
@@ -187,15 +189,24 @@ void	Server::socket_cleanup(int sock)
 	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
 		if (it->get_socket() == sock)
 			it->set_socket(INVALID_FD);
-	
-	pollfds[sock].fd = INVALID_FD;
-	pollfds[sock].revents = 0;
+
+	for (size_t i = 0; i < pollfds.size(); i++)
+	{
+		if (pollfds[i].fd == sock)
+		{
+			pollfds[sock].fd = INVALID_FD;
+			// pollfds[sock].revents = 0;
+			pollfds[sock].revents = 0;
+		}
+	}
+
+
 }
 
 //todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
 std::string	Server::receive(int sock)
 {
-	std::cout << "receiving from socket [" << sock << "]: "<< std::endl;
+	std::cout << "receiving from socket [" << pollfds[sock].fd << "] AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 

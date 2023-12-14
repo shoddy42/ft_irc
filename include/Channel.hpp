@@ -39,7 +39,8 @@ class Server;
 class Channel
 {
 	private:
-		std::vector<Message> _message_log;
+		// std::vector<Message> _message_log;
+		std::vector<std::string> _message_log;
 		std::vector<User *>  _operator_list;
 		std::string			 _name;
 		Server				 &_server;
@@ -58,10 +59,12 @@ class Channel
 		void	remove_user(User &user);
 		void	add_operator(User &user);
 
-		void	add_message(Message &message); //todo: remove add_msg and send_text
-		void	send_text(std::string text);
+		// void	add_message(Message &message); //todo: remove add_msg and send_text
+		// void	add_message(std::string &message); //todo: remove add_msg and send_text
+		// void	send_text(std::string text);
 
-		void	send_message(Message &message);
+		// void	send_message(Message &message);
+		void	send_message(std::string &message);
 };
 
 

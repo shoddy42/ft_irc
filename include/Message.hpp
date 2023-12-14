@@ -31,7 +31,7 @@ class Message
 		
 	private:
 		std::string &_text;		//tmp
-		User		&_sender;
+		// User		&_sender;
 		int			time_sent;	//tmp
 };
 

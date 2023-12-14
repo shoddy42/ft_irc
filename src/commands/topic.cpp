@@ -2,3 +2,9 @@
 #include "../../include/Channel.hpp"
 #include "../../include/Command.hpp"
 
+void	Command::topic(void)
+{
+
+
+
+}
