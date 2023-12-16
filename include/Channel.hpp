@@ -21,6 +21,8 @@
 # include "../include/Server.hpp"
 # include "../include/print.hpp"
 
+# define DEFAULT_TOPIC ":Welcome to the channel!"
+
 // typedef struct s_user_list
 // {
 // 	User		*user;
@@ -53,8 +55,9 @@ class Channel
 		~Channel(void);
 		Channel &operator=(Channel const &src);
 
-		const std::string &get_name(void);
-		void 	set_topic(std::string topic);
+		const std::string	&get_name(void);
+		const std::string 	&get_topic(void);
+		void 				set_topic(std::string topic);
 
 		bool 	is_operator(User &user);
 

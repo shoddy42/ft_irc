@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/12/13 17:02:18 by shoddy        ########   odam.nl         */
+/*   Updated: 2023/12/16 14:35:20 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,8 +194,9 @@ void	Server::socket_cleanup(int sock)
 	{
 		if (pollfds[i].fd == sock)
 		{
-			pollfds[sock].fd = INVALID_FD;
-			pollfds[sock].revents = 0;
+			std::cout << GREEN << "Socket actually cleared: " << sock << RESET << std::endl;
+			pollfds[i].fd = INVALID_FD;
+			pollfds[i].revents = 0;
 		}
 
 	}
@@ -206,7 +207,10 @@ void	Server::delete_user(User &user_to_delete)
 	//loop over all channels and delete the user.
 	// for (Channel channel : channels)
 	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
+	{
+		std::cout << PURPLE << "Looking for user in " << channel->get_name() << " channel\n" << RESET;
 		channel->remove_user(user_to_delete);
+	}
 	
 	//clean up socket
 	socket_cleanup(user_to_delete.get_socket());
@@ -225,7 +229,7 @@ void	Server::delete_user(User &user_to_delete)
 //todo: Make this function loop until CLRF (\r\n) is found, instead of assuming BUFFER_SIZE is enough for the whole packet
 std::string	Server::receive(int sock)
 {
-	std::cout << "receiving from socket [" << pollfds[sock].fd << "] AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
+	std::cout << "receiving from socket [" << pollfds[sock].fd << "], at position (" << sock << ") AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
@@ -239,7 +243,8 @@ std::string	Server::receive(int sock)
 	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
 	{
 		std::cout << "Client closed the connection." << std::endl;
-		socket_cleanup(pollfds[sock].fd);
+		// socket_cleanup(pollfds[sock].fd);
+		delete_user(get_user(pollfds[sock].fd));
 	} 
 	else  				      // Actually received a message
 	{
@@ -260,9 +265,13 @@ void	Server::respond(User &user)
 		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
 		response += "\r\n";
 		send(user.get_socket(), response.c_str(), response.length(), 0);
-		if (response == "462 :Unauthorized command (already registered)")
+		if (response == "462 :Unauthorized command (already registered)\r\n")
 		{
-			socket_cleanup(user.get_socket());
+			std::cout << "Registered user getting booted!\n";
+			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
+			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
+			// socket_cleanup(user.get_socket());
+			delete_user(user);
 		}
 	}
 }
@@ -281,7 +290,9 @@ void	Server::serve(void)
 		if (pollfds[i].revents & POLLHUP) //client disconnected
 		{
 			std::cout << "Socket " << i << " hung up." << std::endl;
-			socket_cleanup(pollfds[i].fd);
+			delete_user(get_user(pollfds[i].fd));
+			// socket_cleanup(pollfds[i].fd);
+			
 			// exit(0);
 		}
 		if (pollfds[i].revents & POLLIN) //client sent server a message

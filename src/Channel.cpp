@@ -22,16 +22,22 @@
 // {
 // }
 
-Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _server(server)
+Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _server(server)
 {
 
 }
 
 
-Channel::Channel(const Channel &src): _name(src._name), _server(src._server)
+Channel::Channel(const Channel &src): _server(src._server)
 {
 	if (this != &src)
 		*this = src;
+	_message_log = src._message_log;
+	_user_list = src._user_list;
+	_operator_list = src._operator_list;
+	_name = src._name;
+	_topic = src._topic;
+
 }
 
 
@@ -52,6 +58,11 @@ Channel &Channel::operator=(Channel const &src)
 {
 	if (this == &src)
 		return (*this);
+	_message_log = src._message_log;
+	_user_list = src._user_list;
+	_operator_list = src._operator_list;
+	_name = src._name;
+	_topic = src._topic;
 	return (*this);
 }
 
@@ -85,14 +96,24 @@ const std::string	&Channel::get_name(void)
 	return (_name);
 }
 
+const std::string 	&Channel::get_topic(void)
+{
+	return (_topic);
+}
+
+
 void	Channel::add_user(User &user)
 {
+	//check if user is already in channel //turns out this is useless for irssi
+	for (std::list<User *>::iterator it = _user_list.begin(); it != _user_list.end(); it++)
+		if (*it == &user)
+			return;
+
 	_user_list.push_back(&user);
 
 	//display the channels topic
 	std::string response = SERVER_SIGNATURE;
-	//todo: update to actually be topic
-	response += " 332 " + user.get_username() + " " + get_name() + " :Welcome to the " + get_name() + " channel.";
+	response += " 332 " + user.get_username() + " " + get_name() + " " + get_topic();
 	user.add_response(response);
 	//catch user up to all messages sent in the channel.
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
@@ -111,6 +132,7 @@ void	Channel::remove_user(User &user)
 	{
 		if (*usr == &user)
 		{
+			std::cout << "Removed user from: " << get_name() << std::endl;
 			_user_list.erase(usr);
 			break;
 		}

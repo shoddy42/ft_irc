@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2023/10/18 11:14:36 by root          ########   odam.nl          #
+#    Updated: 2023/12/15 20:13:39 by shoddy        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ OBJ_DIR		:= obj
 HEADER_FILES := User Channel Server Command
 
 MAIN_FILES	:= main User Channel Server Command
-CMD_FILES := nick mode pass ping privmsg user join kick topic
+CMD_FILES := nick mode pass ping privmsg user join kick topic quit
 
 FILES	:=	$(MAIN_FILES:%=%.cpp) \
 			$(addprefix $(S_CMD)/, $(CMD_FILES:%=%.cpp))

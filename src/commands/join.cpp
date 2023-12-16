@@ -20,9 +20,8 @@ void	Command::join(void)
 	}
 	else // channel does not exist
 	{
-		std::cout << "Creating channel\n";
+		std::cout << "Creating channel " << requested_channel << "\n";
 		Channel new_channel(requested_channel, _server);
-
 		new_channel.add_user(_caller);
 		new_channel.add_operator(_caller);
 		_server.channels.push_back(new_channel);
