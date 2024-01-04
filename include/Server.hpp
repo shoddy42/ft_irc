@@ -60,23 +60,28 @@ class Server
 {
 	public:
 	//	constructors
+
 		Server(void);
 		Server(const Server &src);
 		~Server(void);
 		Server &operator=(Server const &src);
 
 	//	methods
+
 		void	serve(void);
 		void	start(int port, std::string password);
 
 	// getters/setters
-		std::string	&get_password(void);
+
+		std::string	&get_password(void); //todo: make const?
 		void		add_user(int sock);
 		User		&get_user(int sock);
 		User		&get_user(std::string name);
 		Channel		&get_channel(const std::string name);
+		void		add_channel();
 
 	// networking
+
 		void	accept_new_connection(void);
 		void	socket_cleanup(int sock);
 		void	shutdown(void);
@@ -84,13 +89,15 @@ class Server
 
 
 	// commands
+
 		std::string	receive(int sock);
 		void		respond(User &user);
 		void		create_command(std::string buffer, User &caller);
 
 		
 	//	variables
-		// poll[0] is the servers listening client. all others are the users. 
+
+		// pollfds[0] is the servers listening client. all others are the users. 
 		std::vector<pollfd>	pollfds;
 		// users[0] is a dummy user in case no user is found
 		std::list<User>		users;

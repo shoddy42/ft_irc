@@ -52,6 +52,7 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"PASS", &Command::pass},
 	{"TOPIC", &Command::topic},
 	{"QUIT", &Command::quit},
+	{"MODE", &Command::mode},
 };
 
 void printVectorStrings(const std::vector<std::string> &strings)
@@ -76,8 +77,6 @@ void Command::execute(void)
 
 	std::string key = _arguments[0].data();
 
-	// if (key == "CAP");
-	// 	return;
 	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
 	{
 		// _caller.add_response("ERROR :Password Required.");

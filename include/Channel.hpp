@@ -45,7 +45,11 @@ class Channel
 		std::vector<User *>  _operator_list;
 		std::string			 _name;
 		std::string			 _topic;
+		std::string			_password;
+		int					_user_limit;
+		bool				_invite_only;
 		Server				 &_server;
+
 	
 	public:
 		// Channel(void);

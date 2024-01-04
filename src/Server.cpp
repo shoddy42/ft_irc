@@ -265,12 +265,20 @@ void	Server::respond(User &user)
 		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
 		response += "\r\n";
 		send(user.get_socket(), response.c_str(), response.length(), 0);
+
+		//todo: split these ifs into a function instead?
 		if (response == "462 :Unauthorized command (already registered)\r\n")
 		{
 			std::cout << "Registered user getting booted!\n";
 			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
 			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-			// socket_cleanup(user.get_socket());
+			delete_user(user);
+		}
+		else if (response == "464 * :Password incorrect!\r\n")
+		{
+			std::cout << "Unregistered user getting booted!\n";
+			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
+			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
 			delete_user(user);
 		}
 	}
@@ -291,9 +299,6 @@ void	Server::serve(void)
 		{
 			std::cout << "Socket " << i << " hung up." << std::endl;
 			delete_user(get_user(pollfds[i].fd));
-			// socket_cleanup(pollfds[i].fd);
-			
-			// exit(0);
 		}
 		if (pollfds[i].revents & POLLIN) //client sent server a message
 		{

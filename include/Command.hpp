@@ -33,6 +33,7 @@ class Command
 		void	pass(void);
 		void 	topic(void);
 		void	quit(void);
+		void	mode(void);
 
 
 		

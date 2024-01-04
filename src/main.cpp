@@ -21,7 +21,6 @@ bool escape = false;
 //todo: figure out if there's another way to get server to signal?
 Server *g_server;
 
-//todo: decide whether guard is nicer than if statements
 /**
  * @brief if n == -1, will exit the program, writing error_msg.
  * 		  use instead of small if blocks.
@@ -39,7 +38,7 @@ int guard(int n, std::string error_msg)
 
 int	error_exit(std::string error_msg)
 {
-	std::cout << error_msg << errno << std::endl;
+	std::cerr << error_msg << errno << std::endl;
 	//todo: sophisticated closing of all open sockets.
 	g_server->shutdown();
 	exit(EXIT_FAILURE);
@@ -64,9 +63,9 @@ void sig_handler(int signum)
 int	main(int ac, char **av)
 {
 	//Signals to make ctrl+c quit program as expected
-	signal(SIGINT, sig_handler);
 	Server server;
 	g_server = &server;
+	signal(SIGINT, sig_handler);
 
 	if (ac == 2)
 		server.start(atoi(av[1]), "");

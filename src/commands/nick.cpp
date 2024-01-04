@@ -14,7 +14,7 @@ static void printVectorStrings(const std::vector<std::string> &strings) //debug 
 static bool name_exists(std::string name, Server &server)
 {
 	for (std::list<User>::iterator user = server.users.begin(); user != server.users.end(); user++)
-		if (user->get_username() == name)
+		if (user->get_nickname() == name)
 			return (true);
 	return (false);
 }

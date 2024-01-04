@@ -24,7 +24,9 @@
 
 Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _server(server)
 {
-
+	// _invite_only = false;
+	// _password = "";
+	// _user_limit = 0;
 }
 
 
@@ -37,7 +39,9 @@ Channel::Channel(const Channel &src): _server(src._server)
 	_operator_list = src._operator_list;
 	_name = src._name;
 	_topic = src._topic;
-
+	_password = src._password;
+	_invite_only = src._invite_only;
+	_user_limit = src._user_limit;
 }
 
 
@@ -63,6 +67,10 @@ Channel &Channel::operator=(Channel const &src)
 	_operator_list = src._operator_list;
 	_name = src._name;
 	_topic = src._topic;
+	_password = src._password;
+	_invite_only = src._invite_only;
+	_user_limit = src._user_limit;
+
 	return (*this);
 }
 
