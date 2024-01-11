@@ -34,6 +34,8 @@ class Command
 		void 	topic(void);
 		void	quit(void);
 		void	mode(void);
+		void	invite(void);
+		
 
 
 		
