@@ -37,8 +37,8 @@ OBJ_DIR		:= obj
 
 HEADER_FILES := User Channel Server Command
 
-MAIN_FILES	:= main User Channel Server Command
-CMD_FILES := nick mode pass ping privmsg user join kick topic quit
+MAIN_FILES	:= main User Channel Server Command parse
+CMD_FILES := nick mode pass ping privmsg user join kick topic quit invite
 
 FILES	:=	$(MAIN_FILES:%=%.cpp) \
 			$(addprefix $(S_CMD)/, $(CMD_FILES:%=%.cpp))
