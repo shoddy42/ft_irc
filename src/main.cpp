@@ -60,6 +60,10 @@ void sig_handler(int signum)
     }
 }
 
+
+int parsePort(std::string portNumber); //todo: move to correct header
+std::string parsePassword(std::string password); //todo: move to correct header
+
 int	main(int ac, char **av)
 {
 	//Signals to make ctrl+c quit program as expected
@@ -68,12 +72,30 @@ int	main(int ac, char **av)
 	signal(SIGINT, sig_handler);
 
 	if (ac == 2)
-		server.start(atoi(av[1]), "");
-	else if (ac >= 3) //todo: input parsing
-		server.start(atoi(av[1]), av[2]);
+		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
+	else if (ac >= 3) //todo: (better) input parsing
+		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), parsePassword(av[2]));
 	else
 		server.start(DEFAULT_PORT, "");
     while (escape == false)
 		server.serve();
 	return (0);
 }
+
+// int	main(int ac, char **av)
+// {
+// 	//Signals to make ctrl+c quit program as expected
+// 	Server server;
+// 	g_server = &server;
+// 	signal(SIGINT, sig_handler);
+
+// 	if (ac == 2)
+// 		server.start(atoi(av[1]), "");
+// 	else if (ac >= 3) //todo: input parsing
+// 		server.start(atoi(av[1]), av[2]);
+// 	else
+// 		server.start(DEFAULT_PORT, "");
+//     while (escape == false)
+// 		server.serve();
+// 	return (0);
+// }
