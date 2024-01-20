@@ -36,7 +36,11 @@ class Command
 		void	mode(void);
 		void	invite(void);
 		
-
+		class InputException
+    	{
+    	public:
+        	const char *what(void) const throw();
+    	};
 
 		
 	private:
