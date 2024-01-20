@@ -85,6 +85,7 @@ User &Server::get_user(int sock)
 	for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
 		if (user->get_socket() == sock)
 			return (*user);
+	std::cout << RED << "No user is connected to sock" << sock << "\n" << RESET;
 	return (*users.begin());
 	// throw std::runtime_error("User not found");
 }
@@ -95,6 +96,7 @@ User &Server::get_user(std::string name)
 	for (std::list<User>::iterator user = users.begin(); user != users.end(); user++)
 		if (user->get_username() == name)
 			return (*user);
+	std::cout << RED << "No user " << name << " found.\n" << RESET;
 	return (*users.begin());
 	// throw std::runtime_error("User not found");
 }
