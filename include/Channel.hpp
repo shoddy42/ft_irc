@@ -64,6 +64,7 @@ class Channel
 		void 				set_topic(std::string topic);
 
 		bool 	is_operator(User &user);
+		bool 	is_user(User &user);
 
 		void	add_user(User &user);
 		void	remove_user(User &user);

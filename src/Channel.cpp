@@ -147,7 +147,15 @@ void	Channel::remove_user(User &user)
 	}
 } 
 
-bool Channel::is_operator(User &user)
+bool Channel::is_operator(User &user) //currently just checks for users, not operators?
+{
+	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+		if (*usr == &user)
+			return(true);
+	return (false);
+}
+
+bool Channel::is_user(User &user)
 {
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
 		if (*usr == &user)
