@@ -81,6 +81,13 @@ Channel &Channel::operator=(Channel const &src)
 void	Channel::send_message(std::string &message, User &sender)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
+	if (is_user_in_channel(sender) == false)
+	{
+		std::string reply = SERVER_SIGNATURE;
+		reply += " 442 " + sender.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+		sender.add_response(reply);
+		return;
+	}
 	_message_log.push_back(message);
 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
@@ -98,6 +105,13 @@ void	Channel::send_message(std::string &message, User &sender)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+bool	Channel::is_user_in_channel(User &user)
+{
+	for (std::list<User *>::iterator it = _user_list.begin(); it != _user_list.end(); it++)
+		if (*it == &user)
+			return (true);
+	return (false);
+}
 
 const std::string	&Channel::get_name(void)
 {
@@ -113,9 +127,8 @@ const std::string 	&Channel::get_topic(void)
 void	Channel::add_user(User &user)
 {
 	//check if user is already in channel //turns out this is useless for irssi
-	for (std::list<User *>::iterator it = _user_list.begin(); it != _user_list.end(); it++)
-		if (*it == &user)
-			return;
+	if (is_user_in_channel(user))
+		return;
 
 	_user_list.push_back(&user);
 
@@ -142,6 +155,10 @@ void	Channel::remove_user(User &user)
 		{
 			std::cout << "Removed user from: " << get_name() << std::endl;
 			_user_list.erase(usr);
+			std::string response = ":" + user.get_nickname() + "!" + user.get_username() + "@";
+			response += HOSTNAME;
+			response += " PART " + get_name() + " :You have left the channel " + get_name();
+			user.add_response(response);
 			break;
 		}
 	}
@@ -149,7 +166,7 @@ void	Channel::remove_user(User &user)
 
 bool Channel::is_operator(User &user) //currently just checks for users, not operators?
 {
-	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
 		if (*usr == &user)
 			return(true);
 	return (false);

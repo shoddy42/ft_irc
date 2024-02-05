@@ -9,7 +9,6 @@ void	Command::join(void)
 	std::string requested_channel = _arguments[1];
 
 	Channel &channel = _server.get_channel(requested_channel);
-	//todo: filter if user is already in channel
 	if (channel.get_name() == requested_channel) //channel exists already
 	{
 		std::cout << "Channel found " << channel.get_name() << std::endl; 

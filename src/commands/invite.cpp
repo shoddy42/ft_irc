@@ -36,6 +36,8 @@ void    Command::invite(void)
 		// std::cout << "UserName IS " << target2invite.get_username() << "\n";
 		// invite_error(_caller, target2invite.get_username());
 		// return ;
+
+		//todo: add proper numeric replies according to RFC 2812
 			// check if channel exists
 		if (channel2join.get_name() == "dummy channel")
 			invite_error(_caller, "Error: This Channel Does Not Exist");
@@ -59,8 +61,9 @@ void    Command::invite(void)
 		// send recipient an invite (essentially privmsg)
 	std::string msg_text = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
 	msg_text += HOSTNAME;
+	msg_text += " INVITE ";
 	User	&recipient = _server.get_user(_arguments[1]);
 	std::cout << GREEN << "sending invite to " << recipient.get_nickname() << RESET << std::endl;
-	msg_text += " " + _caller.get_nickname() + " Has Invited You To Join The Following Channel: " + _arguments[2];
+	msg_text += " " + _caller.get_nickname() + " " + _arguments[2];
 	recipient.add_response(msg_text);
 }

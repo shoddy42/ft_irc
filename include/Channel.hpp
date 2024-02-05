@@ -42,13 +42,15 @@ class Channel
 	private:
 		// std::vector<Message> _message_log;
 		std::vector<std::string> _message_log;
-		std::vector<User *>  _operator_list;
+		std::list<User *>  _operator_list;
 		std::string			 _name;
 		std::string			 _topic;
 		std::string			_password;
 		int					_user_limit;
 		bool				_invite_only;
 		Server				 &_server;
+
+		bool	is_user_in_channel(User &user);
 
 	
 	public:

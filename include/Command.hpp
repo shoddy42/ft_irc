@@ -35,6 +35,7 @@ class Command
 		void	quit(void);
 		void	mode(void);
 		void	invite(void);
+		void	part(void);
 		
 		class InputException
     	{
