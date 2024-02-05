@@ -7,7 +7,6 @@ void	Command::privmsg(void)
 {
 	std::cout << ORANGE << "PRIVMSG called\n" << RESET;
 
-	//todo: figure out what HOSTNAME should actually be
 	//create sender prefix
 	std::string msg_text = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
 	msg_text += HOSTNAME;

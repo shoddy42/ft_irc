@@ -39,7 +39,6 @@ int guard(int n, std::string error_msg)
 int	error_exit(std::string error_msg)
 {
 	std::cerr << error_msg << errno << std::endl;
-	//todo: sophisticated closing of all open sockets.
 	g_server->shutdown();
 	exit(EXIT_FAILURE);
 }
@@ -55,7 +54,6 @@ void sig_handler(int signum)
     if (signum == SIGINT) {
 		escape = true;
 		g_server->shutdown();
-		//todo: socket cleanup, just like in error_exit
 		exit(EXIT_FAILURE);
     }
 }

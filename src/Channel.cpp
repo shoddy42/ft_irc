@@ -91,7 +91,6 @@ void	Channel::send_message(std::string &message, User &sender)
 	_message_log.push_back(message);
 	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
 	{
-		//todo: dont send to sender
 		if (*user == &sender)
 			continue;
 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
@@ -147,6 +146,7 @@ void	Channel::add_operator(User &user)
 	_operator_list.push_back(&user);
 }
 
+//todo: probably need a remove_operator function aswell
 void	Channel::remove_user(User &user)
 {
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
@@ -155,6 +155,7 @@ void	Channel::remove_user(User &user)
 		{
 			std::cout << "Removed user from: " << get_name() << std::endl;
 			_user_list.erase(usr);
+
 			std::string response = ":" + user.get_nickname() + "!" + user.get_username() + "@";
 			response += HOSTNAME;
 			response += " PART " + get_name() + " :You have left the channel " + get_name();
