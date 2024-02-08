@@ -2,7 +2,6 @@
 #include "../../include/Channel.hpp"
 #include "../../include/Command.hpp"
 
-//todo: implement check to see if channel name is valid according to RFC 2812
 //todo: split arg 1 and 2 on , to create channel_list and pass_list?
 void	Command::join(void)
 {
@@ -29,6 +28,7 @@ void	Command::join(void)
 	}
 	else // channel does not exist
 	{
+		//todo: move to add_channel function
 		std::cout << "Creating channel " << requested_channel << "\n";
 		Channel new_channel(requested_channel, _server);
 		new_channel.add_user(_caller);

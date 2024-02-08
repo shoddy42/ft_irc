@@ -12,7 +12,6 @@
 
 
 #include "../include/Server.hpp"
-#include <iostream> //todo: delete this, its only needed for debug messages
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -129,7 +128,8 @@ void	Server::start(int port, std::string password)
     sock_address.sin_family = AF_INET;
     sock_address.sin_addr.s_addr = INADDR_ANY;
 
-    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sock_address)), "failed to bind to port. errno: ");
+    // guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sock_address)), "failed to bind to port. errno: ");
+    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "failed to bind to port. errno: ");
 	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
    
 	pollfd listen_socket;
@@ -200,7 +200,6 @@ void	Server::socket_cleanup(int sock)
 			pollfds[i].fd = INVALID_FD;
 			pollfds[i].revents = 0;
 		}
-
 	}
 }
 
@@ -263,12 +262,10 @@ void	Server::respond(User &user)
 		std::string response = user.give_response();
 		if (response.empty()) //shouldn't be needed but safety /shrug
 			break;
-		//todo: finish packet function that adds CRLF (\r\n) properly?
 		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
 		response += "\r\n";
 		send(user.get_socket(), response.c_str(), response.length(), 0);
 
-		//todo: split these ifs into a function instead?
 		if (response == "462 :Unauthorized command (already registered)\r\n")
 		{
 			std::cout << "Registered user getting booted!\n";

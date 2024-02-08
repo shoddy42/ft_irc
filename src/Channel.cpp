@@ -26,7 +26,7 @@ Channel::Channel(std::string channel_name, Server &server): _name(channel_name),
 {
 	_invite_only = false;
 	_user_limit = -1;
-	_topic_restricted = false;
+	_topic_restricted = true;
 	_password_required = false;
 	_password = "";
 }
@@ -164,7 +164,6 @@ void	Channel::add_operator(User &user)
 	_operator_list.push_back(&user);
 }
 
-//todo: probably need a remove_operator function aswell
 void	Channel::remove_user(User &user)
 {
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)

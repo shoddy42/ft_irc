@@ -16,7 +16,7 @@ void	Command::mode_password(Channel &channel, bool is_plus, std::string password
 
 void	Command::mode(void)
 {
-	std::cout << ORANGE << "MODE called with: [" << _arguments[0] << _arguments[1] << _arguments[2] << "]\n" << RESET;
+	std::cout << ORANGE << "MODE called with: [" << _arguments[0] << " " << _arguments[1] << " " << _arguments[2] << " " << _arguments[3] << "]\n" << RESET;
 	std::string flag = _arguments[2];
 	Channel &channel = _server.get_channel(_arguments[1]);
 	if (flag.empty())
@@ -40,7 +40,7 @@ void	Command::mode(void)
 	}
 	else if (flag[1] == 'k')
 	{
-		std::cout << "ATTEMPTING TO CHANGE PASSWORD PLEASE\n";
+		std::cout << "ATTEMPTING TO CHANGE PASSWORD TO: [" << _arguments[3] << "]\n";
 		mode_password(channel, is_plus, _arguments[3]);
 	}
 

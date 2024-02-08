@@ -48,11 +48,11 @@
 int error_exit(std::string error_msg);
 int guard(int n, std::string error_msg);
 
-// commands to fill the command_map
-int quit(std::vector<std::string> command);
-int join(std::vector<std::string> command);
-int privmsg(std::vector<std::string> command);
-int nick(std::vector<std::string> command);
+// // commands to fill the command_map
+// int quit(std::vector<std::string> command);
+// int join(std::vector<std::string> command);
+// int privmsg(std::vector<std::string> command);
+// int nick(std::vector<std::string> command);
 
 class Channel;
 

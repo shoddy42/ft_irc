@@ -18,7 +18,6 @@
 
 bool escape = false;
 
-//todo: figure out if there's another way to get server to signal?
 Server *g_server;
 
 /**
@@ -71,7 +70,7 @@ int	main(int ac, char **av)
 
 	if (ac == 2)
 		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
-	else if (ac >= 3) //todo: (better) input parsing
+	else if (ac >= 3)
 		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), parsePassword(av[2]));
 	else
 		server.start(DEFAULT_PORT, "");

@@ -26,6 +26,7 @@ void	Command::user(void)
 		//accept user because it doesnt already exist
 		std::cout << PURPLE << "USER " << username << " registered\n" << RESET;
 		std::string response = SERVER_SIGNATURE;
+		//todo change message
 		response += " 001 " + username + " :Welcome to the IRC server, " + username + "!\n";
 		_caller.set_username(username);
 		_caller.set_nickname(nickname);

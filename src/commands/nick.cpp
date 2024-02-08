@@ -19,7 +19,6 @@ static bool name_exists(std::string name, Server &server)
 	return (false);
 }
 
-//todo: add checks to make sure names abide by the RFC 2812 standards for user names and nicknames
 void	Command::nick()
 {
 	std::cout << ORANGE << "NICK COMMAND CALLED WITH: " << RESET << std::endl;
