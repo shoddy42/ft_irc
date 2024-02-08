@@ -53,6 +53,7 @@ void    Command::invite(void)
 			// check if recipient isn't banned from this channel
 
 			// invite only shenanigans
+		// channel2join.
 	}
 	catch (InputException &e)
 	{

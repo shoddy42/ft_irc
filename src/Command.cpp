@@ -25,23 +25,6 @@ Command::Command(Server &server, User &caller): _server(server), _caller(caller)
 
 }
 
-// Command::Command():
-// {
-// 	//inialize all command
-// 	// ircCommand[0] = "QUIT";
-// 	// ircCommand[1] = "BAN";
-// 	// ircCommand[2] = "UNBAN";
-// 	// ircCommand[3] = "NICK";
-// 	// ircCommand[4] = "PASS";
-// 	// ircCommand[5] = "TOPIC";
-// 	// ircCommand[6] = "MODE";
-// 	// ircCommand[7] = "KILL";
-// 	// ircCommand[8] = "LIST";
-// 	// ircCommand[9] = "ME";
-// 	// ircCommand[10] = "INVITE";;
-// 	// ircCommand[11] = "OPER";
-// }
-
 std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"NICK", &Command::nick},
 	{"PING", &Command::ping},
@@ -91,6 +74,4 @@ void Command::execute(void)
 	}
 	else
 		std::cerr << RED << "no command " << "\"" << _arguments[0] << "\" " << "found" << RESET << std::endl;
-	
-
 }

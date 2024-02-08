@@ -23,31 +23,23 @@
 
 # define DEFAULT_TOPIC ":Welcome to the channel!"
 
-// typedef struct s_user_list
-// {
-// 	User		*user;
-// 	s_user_list	*next;
-// } t_user_list;
-
-// typedef struct s_message_list
-// {
-// 	Message			*message;
-// 	s_message_list	*next;
-// } t_message_list;
-
 class Server;
 
 class Channel
 {
 	private:
-		// std::vector<Message> _message_log;
 		std::vector<std::string> _message_log;
-		std::list<User *>  _operator_list;
-		std::string			 _name;
-		std::string			 _topic;
+		std::list<User *>	_operator_list;
+		std::list<User *>	_invited_list;
+		std::list<User *>	_user_list;
+		std::string			_name;
+		std::string			_topic;
+	
 		std::string			_password;
 		int					_user_limit;
+		bool				_password_required;
 		bool				_invite_only;
+		bool				_topic_restricted;
 		Server				 &_server;
 
 		bool	is_user_in_channel(User &user);
@@ -55,7 +47,6 @@ class Channel
 	
 	public:
 		// Channel(void);
-		std::list<User *>	_user_list;
 		Channel(std::string channel_name, Server &server);
 		Channel(const Channel &src);
 		~Channel(void);
@@ -63,16 +54,25 @@ class Channel
 
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
+		const std::string	&get_password(void);
 		void 				set_topic(std::string topic);
+		void				set_password(std::string password);
+		void				set_user_limit(int limit);
 
+		void	send_message(std::string &message, User &sender);
+
+		bool	has_password(void);
+		bool	is_topic_restricted(void);
 		bool 	is_operator(User &user);
+		bool 	is_invited(User &user);
 		bool 	is_user(User &user);
 
 		void	add_user(User &user);
+		void	add_invited(User &user);
 		void	remove_user(User &user);
+		void	remove_invited(User &user);
+		void	remove_operator(User &user);
 		void	add_operator(User &user);
-
-		void	send_message(std::string &message, User &sender);
 };
 
 

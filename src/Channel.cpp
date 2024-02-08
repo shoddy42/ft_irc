@@ -24,9 +24,11 @@
 
 Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _server(server)
 {
-	// _invite_only = false;
-	// _password = "";
-	// _user_limit = 0;
+	_invite_only = false;
+	_user_limit = -1;
+	_topic_restricted = false;
+	_password_required = false;
+	_password = "";
 }
 
 
@@ -122,12 +124,24 @@ const std::string 	&Channel::get_topic(void)
 	return (_topic);
 }
 
+const std::string 	&Channel::get_password(void)
+{
+	return (_password);
+}
 
 void	Channel::add_user(User &user)
 {
 	//check if user is already in channel //turns out this is useless for irssi
 	if (is_user_in_channel(user))
+	{
+
 		return;
+	}
+	if (_user_limit > -1 && _user_list.size() >= _user_limit)
+		return;
+	if (_invite_only == true)
+		if (is_invited(user) == false)
+			return;
 
 	_user_list.push_back(&user);
 
@@ -139,6 +153,11 @@ void	Channel::add_user(User &user)
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
 		user.add_response(*msg);
 
+}
+
+void	Channel::add_invited(User &user)
+{
+	_invited_list.push_back(&user);
 }
 
 void	Channel::add_operator(User &user)
@@ -163,7 +182,32 @@ void	Channel::remove_user(User &user)
 			break;
 		}
 	}
-} 
+}
+
+void	Channel::remove_invited(User &user)
+{
+	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
+		if (*usr == &user)
+			_invited_list.erase(usr);
+}
+
+void	Channel::remove_operator(User &user)
+{
+	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
+		if (*usr == &user)
+			_operator_list.erase(usr);
+}
+
+
+bool Channel::has_password(void)
+{
+	return (_password_required);
+}
+
+bool Channel::is_topic_restricted(void)
+{
+	return (_topic_restricted);
+}
 
 bool Channel::is_operator(User &user) //currently just checks for users, not operators?
 {
@@ -181,8 +225,27 @@ bool Channel::is_user(User &user)
 	return (false);
 }
 
+bool Channel::is_invited(User &user)
+{
+	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
+		if (*usr == &user)
+			return(true);
+	return (false);
+}
+
 void Channel::set_topic(std::string topic)
 {
 	_topic = topic;
+}
+
+void Channel::set_password(std::string password)
+{
+	_password = password;
+}
+
+//a limit of -1 is no limit
+void Channel::set_user_limit(int limit)
+{
+	_user_limit = limit;
 }
 /* ************************************************************************** */
