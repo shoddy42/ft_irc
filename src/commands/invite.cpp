@@ -26,7 +26,6 @@ void    Command::invite(void)
 	try
 	{
 		// grab args
-		//todo: add proper numeric replies according to RFC 2812
 			// check if channel exists
 		if (channel.get_name() == "dummy channel")
 			invite_error(_caller, " 403 " + _arguments[2] + " :No such channel");
