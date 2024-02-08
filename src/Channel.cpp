@@ -259,3 +259,8 @@ void Channel::set_user_limit(int limit)
 	_user_limit = limit;
 }
 /* ************************************************************************** */
+
+void Channel::set_invite_only(bool is_private)
+{
+	_invite_only = is_private;
+}
