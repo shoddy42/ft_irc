@@ -3,19 +3,29 @@
 #include "../../include/Command.hpp"
 
 //todo: implement check to see if channel name is valid according to RFC 2812
+//todo: split arg 1 and 2 on , to create channel_list and pass_list?
 void	Command::join(void)
 {
 	std::cout << ORANGE << "Join called" << RESET << "\n";
 	std::string requested_channel = _arguments[1];
+	std::string key;
+	if (_arguments.size() > 2)
+		key = _arguments[2];
 
 	Channel &channel = _server.get_channel(requested_channel);
 	if (channel.get_name() == requested_channel) //channel exists already
 	{
-		std::cout << "Channel found " << channel.get_name() << std::endl; 
-
-		std::cout << GREEN << "usr list size =  " << channel._user_list.size() << RESET << std::endl;
+		std::cout << "Channel found " << channel.get_name() << std::endl;
+		if (channel.has_password() == true)
+		{
+			std::cout << "Password required for " << channel.get_name() << std::endl;
+			if (key != channel.get_password())
+			{
+				std::cout << "Wrong password" << std::endl; 
+				return;
+			}
+		}
 		channel.add_user(_caller);
-		std::cout << GREEN << "usr list size =  " << channel._user_list.size() << RESET << std::endl;
 	}
 	else // channel does not exist
 	{
