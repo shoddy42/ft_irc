@@ -25,9 +25,5 @@ void	Command::mode(void)
 {
 	std::cout << ORANGE << "MODE called with: [" << _arguments[1] << "]\n" << RESET;
 
-	_a
-
-	
 }
 
-//	while(args.find(modes[i])= )
