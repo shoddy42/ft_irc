@@ -134,7 +134,6 @@ void	Channel::add_user(User &user)
 	//check if user is already in channel //turns out this is useless for irssi
 	if (is_user_in_channel(user))
 	{
-
 		return;
 	}
 	if (_user_limit > -1 && _user_list.size() >= _user_limit)
@@ -179,6 +178,11 @@ void	Channel::remove_user(User &user)
 			response += HOSTNAME;
 			response += " PART " + get_name() + " :You have left the channel " + get_name();
 			user.add_response(response);
+			
+			//test msg
+			std::string reply = SERVER_SIGNATURE;
+			reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+			user.add_response(reply);
 			break;
 		}
 	}
@@ -198,6 +202,11 @@ void	Channel::remove_operator(User &user)
 			_operator_list.erase(usr);
 }
 
+void	Channel::remove_password(void)
+{
+	_password_required = false;
+	_password = "";
+}
 
 bool Channel::has_password(void)
 {
@@ -240,6 +249,7 @@ void Channel::set_topic(std::string topic)
 
 void Channel::set_password(std::string password)
 {
+	_password_required = true;
 	_password = password;
 }
 

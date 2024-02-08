@@ -69,6 +69,7 @@ class Channel
 
 		void	add_user(User &user);
 		void	add_invited(User &user);
+		void	remove_password(void);
 		void	remove_user(User &user);
 		void	remove_invited(User &user);
 		void	remove_operator(User &user);

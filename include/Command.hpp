@@ -6,9 +6,12 @@
 # include <map>
 # include <vector>
 # include "../include/Server.hpp"
+# include "../include/Channel.hpp"
 # include "../include/User.hpp"
 
 class Server;
+
+class Channel;
 
 class Command
 {
@@ -33,9 +36,14 @@ class Command
 		void	pass(void);
 		void 	topic(void);
 		void	quit(void);
-		void	mode(void);
 		void	invite(void);
 		void	part(void);
+		void	mode(void);
+		void	mode_password(Channel &channel, bool is_plus, std::string password);
+		void	mode_operator(Channel &channel, bool is_plus);
+		void	mode_invite(Channel &channel, bool is_plus);
+		void	mode_topic(Channel &channel, bool is_plus);
+		void	mode_limit(Channel &channel, bool is_plus);
 		
 		class InputException
     	{
