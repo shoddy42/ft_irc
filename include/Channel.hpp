@@ -58,6 +58,7 @@ class Channel
 		void 				set_topic(std::string topic);
 		void				set_password(std::string password);
 		void				set_user_limit(int limit);
+		void				set_invite_only(bool is_private);
 
 		void	send_message(std::string &message, User &sender);
 

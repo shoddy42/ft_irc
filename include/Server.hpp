@@ -45,8 +45,10 @@
 # include <map>
 # include <unordered_map>
 
-int error_exit(std::string error_msg);
-int guard(int n, std::string error_msg);
+int			error_exit(std::string error_msg);
+int			guard(int n, std::string error_msg);
+int			parsePort(std::string portNumber);
+std::string	parsePassword(std::string password);
 
 // // commands to fill the command_map
 // int quit(std::vector<std::string> command);
