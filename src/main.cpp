@@ -64,13 +64,13 @@ int	main(int ac, char **av)
 	g_server = &server;
 	signal(SIGINT, sig_handler);
 
-	if (ac == 3) // todo: comment in
-		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), av[2]);
-	else
-	{
-		std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
-		return (1);
-	}
+	// if (ac == 3) // todo: comment in
+	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), av[2]);
+	// else
+	// {
+	// 	std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
+	// 	return (1);
+	// }
 
 	if (ac == 2)
 		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
