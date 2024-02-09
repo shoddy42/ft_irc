@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/12/13 16:51:34 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/09 16:50:17 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,12 @@ class User
 	public:
 		User(int sock);
 		User(const User &src);
+		User &operator=(User const &src);
 		~User(void);
+
+		void		add_response(std::string response);
+		std::string	give_response(void);
+		int			check_response(void);
 
 		const int			&get_socket(void);
 		const bool			&get_authenticated(void);
@@ -32,21 +37,15 @@ class User
 		void		set_username(std::string);
 		void		set_nickname(std::string);
 		void		authenticate(void);
-		
-		void		add_response(std::string response);
-		std::string	give_response(void);
-		int			check_response(void);
-		
+
 	private:
 		User(void);
-		User &operator=(User const &src);
-		
+
 		std::queue<std::string> _responses;
-		std::string _username;
+		std::string	_username;
 		std::string _nickname;
 		int			_socket;
 		bool		_authenticated;
 };
-
 
 #endif

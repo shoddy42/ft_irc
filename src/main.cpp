@@ -17,7 +17,6 @@
 
 
 bool escape = false;
-
 Server *g_server;
 
 /**
@@ -39,7 +38,8 @@ int	error_exit(std::string error_msg)
 {
 	std::cerr << error_msg << errno << std::endl;
 	g_server->shutdown();
-	exit(EXIT_FAILURE);
+	escape = true;
+	return (1);
 }
 
 /**
@@ -53,7 +53,6 @@ void sig_handler(int signum)
     if (signum == SIGINT) {
 		escape = true;
 		g_server->shutdown();
-		exit(EXIT_FAILURE);
     }
 }
 
@@ -83,21 +82,3 @@ int	main(int ac, char **av)
 		server.serve();
 	return (0);
 }
-
-// int	main(int ac, char **av)
-// {
-// 	//Signals to make ctrl+c quit program as expected
-// 	Server server;
-// 	g_server = &server;
-// 	signal(SIGINT, sig_handler);
-
-// 	if (ac == 2)
-// 		server.start(atoi(av[1]), "");
-// 	else if (ac >= 3) //todo: input parsing
-// 		server.start(atoi(av[1]), av[2]);
-// 	else
-// 		server.start(DEFAULT_PORT, "");
-//     while (escape == false)
-// 		server.serve();
-// 	return (0);
-// }

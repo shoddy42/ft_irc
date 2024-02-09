@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2024/02/05 14:59:07 by shoddy        ########   odam.nl          #
+#    Updated: 2024/02/09 16:51:52 by shoddy        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,7 @@
 # ----------------------------------------- #
 
 NAME 	:= irc
-FLAGS 	= -Wall -Wextra 
-# FLAGS	+= -Werror
+FLAGS 	= -Wall -Wextra -Werror
 DEBUG 	:= -g -fsanitize=address
 CC		:= c++
 

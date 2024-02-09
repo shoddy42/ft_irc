@@ -136,7 +136,7 @@ void	Channel::add_user(User &user)
 	{
 		return;
 	}
-	if (_user_limit > -1 && _user_list.size() >= _user_limit)
+	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
 		return;
 	if (_invite_only == true)
 		if (is_invited(user) == false)

@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/09 16:35:21 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/09 16:41:01 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ class Server
 		User		&get_user(std::string name);
 		User		&get_user(int sock);
 		std::string	&get_password(void);
-
-
 };
 
 #endif

@@ -4,7 +4,7 @@
 
 static void printVectorStrings(const std::vector<std::string> &strings) //debug function. todo: remove
 {
-	for (int i = 0; i < strings.size(); i++)
+	for (size_t i = 0; i < strings.size(); i++)
 	{
 		std::cout << strings[i].data() << " ";
 	}
