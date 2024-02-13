@@ -191,14 +191,20 @@ void	Channel::remove_invited(User &user)
 {
 	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
 		if (*usr == &user)
+		{
 			_invited_list.erase(usr);
+			break;
+		}
 }
 
 void	Channel::remove_operator(User &user)
 {
 	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
 		if (*usr == &user)
+		{
 			_operator_list.erase(usr);
+			break;
+		}
 }
 
 void	Channel::remove_password(void)
@@ -217,7 +223,7 @@ bool Channel::is_topic_restricted(void)
 	return (_topic_restricted);
 }
 
-bool Channel::is_operator(User &user) //currently just checks for users, not operators?
+bool Channel::is_operator(User &user)
 {
 	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
 		if (*usr == &user)
