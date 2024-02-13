@@ -147,11 +147,24 @@ void	Channel::remove_user(User &user)
 	}
 }
 
+void	Channel::remove_invited(User &user)
+{
+	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
+		if (*usr == &user)
+		{
+			_invited_list.erase(usr);
+			break;
+		}
+}
+
 void	Channel::remove_operator(User &user)
 {
 	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
 		if (*usr == &user)
+		{
 			_operator_list.erase(usr);
+			break;
+		}
 }
 
 void	Channel::remove_invited(User &user)
@@ -217,14 +230,6 @@ bool Channel::has_password(void)
 bool Channel::is_topic_restricted(void)
 {
 	return (_topic_restricted);
-}
-
-bool	Channel::is_user_in_channel(User &user)
-{
-	for (std::list<User *>::iterator it = _user_list.begin(); it != _user_list.end(); it++)
-		if (*it == &user)
-			return (true);
-	return (false);
 }
 
 bool Channel::is_operator(User &user)

@@ -5,7 +5,12 @@
 #include "../include/Command.hpp"
 #include "../include/print.hpp"
 
-
+/**
+ * @brief Parses portNumber, Throwing An Exception For Non-Numerical Input and ports Below 1024
+ * 
+ * @param portNumber 
+ * @return int 
+ */
 int parsePort(std::string portNumber)
 {
     int port;
@@ -26,6 +31,13 @@ int parsePort(std::string portNumber)
     return (port);
 }
 
+
+/**
+ * @brief Parses password, If Need Be.
+ * 
+ * @param password 
+ * @return std::string 
+ */
 std::string parsePassword(std::string password)
 {
     //123

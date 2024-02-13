@@ -3,12 +3,22 @@
 #include "../../include/Command.hpp"
 #include <vector>
 
-
+/**
+ * @brief Throws An Exception, Allowing For Try/Catch Block Interaction
+ * 
+ * @return const char* 
+ */
 const char *Command::InputException::what(void) const throw()
 {
 	return ("this message might be doodoo but your input was too!");
 }
 
+/**
+ * @brief Adds message To The Server Signature, Sends It To The Client Attempting To Send An Invite & Throws An Exception
+ * 
+ * @param caller 
+ * @param message 
+ */
 static void	invite_error(User &caller, std::string message)
 {
 	std::string reply = SERVER_SIGNATURE;
@@ -17,6 +27,10 @@ static void	invite_error(User &caller, std::string message)
 	throw (Command::InputException());
 }
 
+/**
+ * @brief Checks The Input For Validity, Sending The Invite To The recipient If All Is Valid & Sending An Error To The caller If Something Is Invalid
+ * 
+ */
 void    Command::invite(void)
 {
 	std::cout << ORANGE << "INVITE called\n" << RESET;

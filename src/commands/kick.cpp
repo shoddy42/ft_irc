@@ -30,6 +30,7 @@ void Command::kick(void)
         return;
 
     channel.remove_user(member);
+	channel.remove_invited(member);
     std::string response = SERVER_SIGNATURE;
 	response += "KICK" + chan + _caller.get_username() + " " + reason;
 	channel.send_message(response, _caller);
