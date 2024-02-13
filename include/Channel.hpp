@@ -41,8 +41,6 @@ class Channel
 		bool				_topic_restricted;
 		bool				_invite_only;
 		Server				 &_server;
-
-		bool	is_user_in_channel(User &user);
 	
 	public:
 		Channel(std::string channel_name, Server &server);

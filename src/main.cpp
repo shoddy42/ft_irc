@@ -97,6 +97,6 @@ int	main(int ac, char **av)
 -PRIVMSG, should it work with nick_name?
 -kick doesnt let you kick other chanoperators, correct?
 -topic doesnt display that the topic has been changed
--joining a channel with wrong password still changes the screen
+-joining a channel with wrong password still changes the screen. FIXED
 -RE-poll after accepting a new connection and/or send/receive
 */

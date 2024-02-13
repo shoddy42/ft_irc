@@ -21,14 +21,14 @@ void	Command::mode_operator(Channel &channel, bool is_plus, User &user)
 		if (channel.is_operator(user) == true)
 			return; //usr alrd op
 		else 
-		channel.add_operator(user);
+			channel.add_operator(user);
 	}
 	else 
 	{
 		if (channel.is_operator(user) == false)
 			return; 
 		else 
-		channel.remove_operator(user);
+			channel.remove_operator(user);
 	}
 }
 
@@ -46,7 +46,7 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 	if (is_plus == false)
 		std::cout << ORANGE << "Channel is set to public" << std::endl;
 	if (is_plus == true)
-		std::cout << ORANGE << "Channel is set to public" << std::endl;
+		std::cout << ORANGE << "Channel is set to invite only" << std::endl;
 }
 
 void	Command::mode(void)

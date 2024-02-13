@@ -74,7 +74,7 @@ Channel &Channel::operator=(Channel const &src)
 void	Channel::send_message(std::string &message, User &sender)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
-	if (is_user_in_channel(sender) == false)
+	if (is_user(sender) == false)
 	{
 		std::string reply = SERVER_SIGNATURE;
 		reply += " 442 " + sender.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
@@ -93,7 +93,7 @@ void	Channel::send_message(std::string &message, User &sender)
 
 void	Channel::add_user(User &user)
 {
-	if (is_user_in_channel(user))
+	if (is_user(user))
 		return;
 	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
 		return;
@@ -167,13 +167,6 @@ void	Channel::remove_operator(User &user)
 		}
 }
 
-void	Channel::remove_invited(User &user)
-{
-	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
-		if (*usr == &user)
-			_invited_list.erase(usr);
-}
-
 void	Channel::remove_password(void)
 {
 	_password_required = false;
@@ -198,7 +191,6 @@ const std::string 	&Channel::get_password(void)
 {
 	return (_password);
 }
-
 
 void Channel::set_topic(std::string topic)
 {

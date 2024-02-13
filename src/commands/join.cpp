@@ -21,6 +21,9 @@ void	Command::join(void)
 			if (key != channel.get_password())
 			{
 				std::cout << "Wrong password" << std::endl; 
+				std::string reply = SERVER_SIGNATURE;
+				reply += " 475 " + _caller.get_nickname() + " " + channel.get_name() + " :Wrong key";
+				_caller.add_response(reply);
 				return;
 			}
 		}
