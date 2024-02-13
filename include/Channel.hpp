@@ -12,14 +12,14 @@
 
 #ifndef Channel_HPP
 # define Channel_HPP
-# include "User.hpp"
-# include <queue>
-# include <list>
-# include <string>
-# include <iostream>
-# include "../include/User.hpp"
+// # include "User.hpp"
 # include "../include/Server.hpp"
 # include "../include/print.hpp"
+# include "../include/User.hpp"
+# include <iostream>
+# include <string>
+# include <queue>
+# include <list>
 
 # define DEFAULT_TOPIC ":Welcome to the channel!"
 
@@ -38,43 +38,43 @@ class Channel
 		std::string			_password;
 		int					_user_limit;
 		bool				_password_required;
-		bool				_invite_only;
 		bool				_topic_restricted;
+		bool				_invite_only;
 		Server				 &_server;
 
 		bool	is_user_in_channel(User &user);
-
 	
 	public:
-		// Channel(void);
 		Channel(std::string channel_name, Server &server);
 		Channel(const Channel &src);
 		~Channel(void);
 		Channel &operator=(Channel const &src);
 
+		void	send_message(std::string &message, User &sender);
+
+		void	add_user(User &user);
+		void	add_invited(User &user);
+		void	add_operator(User &user);
+	
+		void	remove_operator(User &user);
+		void	remove_invited(User &user);
+		void	remove_user(User &user);
+		void	remove_password(void);
+
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
 		const std::string	&get_password(void);
-		void 				set_topic(std::string topic);
-		void				set_password(std::string password);
-		void				set_user_limit(int limit);
-		void				set_invite_only(bool is_private);
 
-		void	send_message(std::string &message, User &sender);
+		void 	set_topic(std::string topic);
+		void	set_password(std::string password);
+		void	set_invite_only(bool is_private);
+		void	set_user_limit(int limit);
 
 		bool	has_password(void);
 		bool	is_topic_restricted(void);
 		bool 	is_operator(User &user);
 		bool 	is_invited(User &user);
 		bool 	is_user(User &user);
-
-		void	add_user(User &user);
-		void	add_invited(User &user);
-		void	remove_password(void);
-		void	remove_user(User &user);
-		void	remove_invited(User &user);
-		void	remove_operator(User &user);
-		void	add_operator(User &user);
 };
 
 
