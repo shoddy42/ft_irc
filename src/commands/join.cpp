@@ -33,6 +33,7 @@ void	Command::join(void)
 		std::string reply = SERVER_SIGNATURE;
 		reply += " 473 " + _caller.get_nickname() + " " + channel.get_name() + " :Channel is invite only";
 		_caller.add_response(reply);
+		return;
 	}
 	if (channel.has_password() == true)
 	{

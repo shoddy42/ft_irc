@@ -15,7 +15,7 @@ void	Command::mode_password(Channel &channel, bool is_plus, std::string password
 	channel.remove_password();
 	std::cout << "Password removed" << std::endl;
 	std::string reply = SERVER_SIGNATURE;
-	reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +k " + password + " : " + _caller.get_nickname();
+	reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -k " + password + " : " + _caller.get_nickname();
 	_caller.add_response(reply);
 }
 
@@ -147,4 +147,3 @@ void	Command::mode(void)
 	}
 
 }
-

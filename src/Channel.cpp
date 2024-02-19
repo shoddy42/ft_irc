@@ -131,7 +131,7 @@ void	Channel::add_user(User &user)
 	if (_topic_restricted)
 		mode_reply += " +t";
 	if (_password_required)
-		mode_reply += " +k" + _password;
+		mode_reply += " +k " + _password;
 	if (_invite_only)
 		mode_reply += " +i";
 	user.add_response(mode_reply);
