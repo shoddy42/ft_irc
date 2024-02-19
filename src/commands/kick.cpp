@@ -4,12 +4,12 @@
 
 void Command::kick(void)
 {
-    std::cout << ORANGE << "Kick command called\n" << RESET;
-    std::string mem = _arguments[2];
-    std::string chan = _arguments[1];
-    std::string reason = _arguments[3];
-    Channel &channel = _server.get_channel(chan);
-    User	&member = _server.get_user(mem);
+	std::cout << ORANGE << "Kick command called\n" << RESET;
+	std::string mem = _arguments[2];
+	std::string chan = _arguments[1];
+	std::string reason = _arguments[3];
+	Channel &channel = _server.get_channel(chan);
+	User	&member = _server.get_user(mem);
 
 	//commented out the 482 reply as irssi assumes just because you attempted a command you get kicked for no reason???
 	if (channel.is_operator(_caller) == false)
@@ -21,22 +21,20 @@ void Command::kick(void)
 		return;
 	}
 
-    if (_arguments[3].empty() == true)
-    	reason = "";
-    else
-	{
-        reason = _arguments[3];
-	}
+	if (_arguments[3].empty() == true)
+		reason = "";
+	else
+		reason = _arguments[3];
 
 	if (channel.is_user(member) == false)
 		return;
-    if (channel.is_operator(member) == true)
-        return;
-    channel.remove_user(member);
-	channel.remove_invited(member);
-    std::string response = SERVER_SIGNATURE;
-	response += "KICK " + chan + " " + _caller.get_username() + " " + reason;
+	if (channel.is_operator(member) == true)
+		return;
+	std::string response = SERVER_SIGNATURE;
+	response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
+
 	channel.send_message(response, _caller);
-	// channel.send_message()
-	_caller.add_response(response);
+	channel.remove_user(member);
+	channel.remove_invited(member);
+	// _caller.add_response(response);
 }

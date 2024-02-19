@@ -12,7 +12,7 @@ static bool name_exists(std::string name, Server &server)
 
 void	Command::nick()
 {
-	std::cout << ORANGE << "NICK COMMAND CALLED WITH: " << RESET << std::endl;
+	std::cout << ORANGE << "NICK command called " << RESET << std::endl;
 	std::string desired_name = _arguments[1];
 
 	if (name_exists(desired_name, _server))

@@ -68,6 +68,10 @@ void    Command::invite(void)
 	msg_text += " INVITE ";
 	User	&recipient = _server.get_user(_arguments[1]);
 	std::cout << GREEN << "sending invite to " << recipient.get_nickname() << RESET << std::endl;
-	msg_text += " " + _caller.get_nickname() + " " + _arguments[2];
+	msg_text +=  _caller.get_nickname() + " " + _arguments[2];
 	recipient.add_response(msg_text);
+
+	std::string reply = SERVER_SIGNATURE;
+	reply += " 341 " + _caller.get_nickname() + " " + recipient.get_nickname() + " " + channel.get_name();
+	_caller.add_response(reply);
 }

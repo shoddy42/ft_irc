@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/19 11:49:17 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/19 13:23:04 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,8 +278,11 @@ void	Server::delete_user(User &user_to_delete)
 
 void Server::add_channel(std::string name)
 {
-	// if (name[0] != '#')
-	// 	return;
+	if (name[0] != '#' && name[0] != '&' && name[0] != '!' && name[0] != '+')
+	{
+		std::cout << "Invalid channel prefix!" << std::endl;
+		return;
+	}
 	Channel new_channel(name, *this);
 	channels.push_back(new_channel);
 }

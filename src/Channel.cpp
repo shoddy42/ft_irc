@@ -101,12 +101,42 @@ void	Channel::add_user(User &user)
 		if (is_invited(user) == false)
 			return;
 
+	if (_user_list.size() == 0)
+		_operator_list.push_back(&user);
 	_user_list.push_back(&user);
 
 	//display the channels topic
 	std::string topic = SERVER_SIGNATURE;
 	topic += " 332 " + user.get_nickname() + " " + get_name() + " " + get_topic();
 	user.add_response(topic);
+
+	//display current users in the channel
+	std::string name_reply = SERVER_SIGNATURE;
+	name_reply += " 353 " + user.get_nickname() + " = " + get_name() + " :";
+	for (std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+	{
+		if (is_operator(**usr))
+			name_reply += "@";
+		name_reply += (*usr)->get_nickname() + " ";
+	}
+	user.add_response(name_reply);
+
+	std::string end_of_names = SERVER_SIGNATURE;
+	end_of_names += " 366 " + user.get_nickname() + " " + get_name() + " :End of /NAMES list.";
+	user.add_response(end_of_names);
+
+	//display the current modes of the channel
+	std::string mode_reply = SERVER_SIGNATURE;
+	mode_reply += " 324 " + user.get_nickname() + " " + get_name() + " +n";
+	if (_topic_restricted)
+		mode_reply += " +t";
+	if (_password_required)
+		mode_reply += " +k" + _password;
+	if (_invite_only)
+		mode_reply += " +i";
+	user.add_response(mode_reply);
+
+
 	//catch user up to all messages sent in the channel.
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
 		user.add_response(*msg);
@@ -134,9 +164,11 @@ void	Channel::remove_user(User &user)
 
 			std::string response = ":" + user.get_nickname() + "!" + user.get_username() + "@";
 			response += HOSTNAME;
-			response += " PART " + get_name() + " :You have left the channel " + get_name();
+			// response += " PART " + get_name() + " :You have left the channel " + get_name(); //old
+			response += " PART :" + get_name();
 			user.add_response(response);
-			
+			send_message(response, user);
+
 			//instant reply of error 442, to force irssi to close channel on leave.
 			// std::string reply = SERVER_SIGNATURE;
 			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
@@ -194,6 +226,11 @@ const std::string 	&Channel::get_password(void)
 void Channel::set_topic(std::string topic)
 {
 	_topic = topic;
+}
+
+void Channel::set_topic_restriction(bool deny_plebs)
+{
+	_topic_restricted = deny_plebs;
 }
 
 void Channel::set_password(std::string password)

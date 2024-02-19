@@ -87,16 +87,18 @@ int	main(int ac, char **av)
 
 /*
 	SEGFAULTS!:
+
+
+	OTHER ISSUES ISSUES:
 -user attempting to take chanop priviliges from itself (it appears that all the list removes functions are unsafe, segfaulting if you remove the last element)
 	Fixes:
 -kick doesn't display any messages on the client side
--kick doesn't check for if user exists FIXED
+
 -mode doesn't work with +t/-t for TOPIC
 	Potential Fixes:
 -the extra screen close after leaving, since it trips up /wc
--PRIVMSG, should it work with nick_name?
--kick doesnt let you kick other chanoperators, correct?
+
 -topic doesnt display that the topic has been changed
--joining a channel with wrong password still changes the screen. FIXED
 -RE-poll after accepting a new connection and/or send/receive
+
 */

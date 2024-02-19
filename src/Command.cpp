@@ -66,6 +66,8 @@ void Command::execute(void)
 		return;
 	if (command_map.find(key) != command_map.end())
 	{
+		if (key == "NICK")
+			std::cout << "NICK HAS BEEN LOCATED!!!\n";
 		CommandFunction function = command_map[key];
 		(this->*function)();
 	}

@@ -64,6 +64,7 @@ class Channel
 		const std::string	&get_password(void);
 
 		void 	set_topic(std::string topic);
+		void 	set_topic_restriction(bool deny_plebs);
 		void	set_password(std::string password);
 		void	set_invite_only(bool is_private);
 		void	set_user_limit(int limit);
