@@ -104,13 +104,12 @@ void	Channel::add_user(User &user)
 	_user_list.push_back(&user);
 
 	//display the channels topic
-	std::string response = SERVER_SIGNATURE;
-	response += " 332 " + user.get_username() + " " + get_name() + " " + get_topic();
-	user.add_response(response);
+	std::string topic = SERVER_SIGNATURE;
+	topic += " 332 " + user.get_nickname() + " " + get_name() + " " + get_topic();
+	user.add_response(topic);
 	//catch user up to all messages sent in the channel.
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
 		user.add_response(*msg);
-
 }
 
 void	Channel::add_invited(User &user)
@@ -139,9 +138,9 @@ void	Channel::remove_user(User &user)
 			user.add_response(response);
 			
 			//instant reply of error 442, to force irssi to close channel on leave.
-			std::string reply = SERVER_SIGNATURE;
-			reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
-			user.add_response(reply);
+			// std::string reply = SERVER_SIGNATURE;
+			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+			// user.add_response(reply);
 			break;
 		}
 	}
@@ -234,6 +233,8 @@ bool Channel::is_operator(User &user)
 
 bool Channel::is_invited(User &user)
 {
+	if (_invite_only == false)
+		return (true);
 	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
 		if (*usr == &user)
 			return(true);

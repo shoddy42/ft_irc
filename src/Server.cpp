@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/09 16:40:27 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/19 11:49:17 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ void	Server::respond(User &user)
 			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
 			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
 			delete_user(user);
+			break;
 		}
 		else if (response == "464 * :Password incorrect!\r\n")
 		{
@@ -176,6 +177,7 @@ void	Server::respond(User &user)
 			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
 			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
 			delete_user(user);
+			break;
 		}
 	}
 }
@@ -306,7 +308,7 @@ Channel	&Server::get_channel(const std::string name)
 User &Server::get_user(std::string name)
 {
 	for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
-		if (user->get_username() == name)
+		if (user->get_username() == name || user->get_nickname() == name)
 			return (*user);
 	std::cout << RED << "No user " << name << " found." << std::endl << RESET;
 	return (*users.begin());

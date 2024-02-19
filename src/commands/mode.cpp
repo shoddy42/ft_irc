@@ -42,6 +42,8 @@ void	Command::mode_limit(Channel &channel, bool is_plus, int limit)
 
 void	Command::mode_invite(Channel &channel, bool is_plus)
 {
+	if (channel.is_operator(_caller) == false)
+		return;
 	channel.set_invite_only(is_plus);
 	if (is_plus == false)
 		std::cout << ORANGE << "Channel is set to public" << std::endl;
@@ -77,6 +79,7 @@ void	Command::mode(void)
 		catch(const std::exception& e)
 		{
 			std::cerr << e.what() << '\n';
+			return;
 		}
 		mode_limit(channel, is_plus, limit);
 	}

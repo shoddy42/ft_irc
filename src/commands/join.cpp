@@ -15,6 +15,12 @@ void	Command::join(void)
 	if (channel.get_name() == requested_channel) //channel exists already
 	{
 		std::cout << "Channel found " << channel.get_name() << std::endl;
+		if (channel.is_invited(_caller) == false)
+		{
+			std::string reply = SERVER_SIGNATURE;
+			reply += " 473 " + _caller.get_nickname() + " " + channel.get_name() + " :Channel is invite only";
+			_caller.add_response(reply);
+		}
 		if (channel.has_password() == true)
 		{
 			std::cout << "Password required for " << channel.get_name() << std::endl;
@@ -38,7 +44,4 @@ void	Command::join(void)
 		new_channel.add_operator(_caller);
 		_server.channels.push_back(new_channel);
 	}
-	// std::string response = SERVER_SIGNATURE;
-	// response += " 332 " + _caller.get_username() + " " + requested_channel + " :Welcome to the " + requested_channel + " channel.";
-	// _caller.add_response(response);
 }

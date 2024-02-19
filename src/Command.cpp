@@ -56,16 +56,14 @@ void Command::add_argument(std::string argument)
 
 void Command::execute(void)
 {
-
-	// size_t found;
 	//todo: checkMsg should be called here to check wether the msg is finished (ie. has a line break)
 
 	std::string key = _arguments[0].data();
-	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
-	{
-		// _caller.add_response("ERROR :Password Required.");
+
+	if (key == "CAP" || (key == "NICK" && _caller.get_authenticated() == false))
 		return;
-	}
+	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
+		return;
 	if (command_map.find(key) != command_map.end())
 	{
 		CommandFunction function = command_map[key];

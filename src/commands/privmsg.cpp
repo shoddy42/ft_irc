@@ -16,9 +16,13 @@ void	Command::privmsg(void)
 		msg_text += " " + _arguments[i];
 
 	//todo:? other channel prefixes??
-	if (_arguments[1][0] == '#') //message to channel
+	std::string recipient = _arguments[1];
+	// if (_arguments[1][0] == '#') //message to channel
+	if (recipient[0] == '#' || recipient[0] == '+' || recipient[0] == '&' || recipient[0] == '!') //message to channel
 	{
 		Channel &channel = _server.get_channel(_arguments[1]);
+		std::cout <<  "sending packet to channel: " << YELLOW << msg_text << RESET << std::endl;
+		std::cout << "random test n: " << _caller.get_nickname() << "u: " << _caller.get_username() << std::endl;
 
 		channel.send_message(msg_text, _caller);
 	}

@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 16:49:45 by shoddy        #+#    #+#                 */
-/*   Updated: 2023/12/13 17:19:39 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/19 12:15:12 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,6 @@ void	Command::user(void)
 	std::string username = _arguments[1];
 	std::string nickname = _arguments[2];
 
-		// 	std::cout << "Responding to client" << std::endl;
-		// 	std::string join_response(":localhost 001 jeff :Welcome to the IRC server, jeff!\n");
-		// 	send(pollfds[sock].fd, join_response.c_str(), join_response.length(), 0);
 	if (&_server.get_user(username) == &_server.get_user(-42))
 	{
 		//accept user because it doesnt already exist
