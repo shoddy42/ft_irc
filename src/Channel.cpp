@@ -71,6 +71,10 @@ Channel &Channel::operator=(Channel const &src)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+/**
+ * @brief Sends a message to all users in the channel, except the sender.
+ * 		  Adds the sent message to the channels 
+ */
 void	Channel::send_message(std::string &message, User &sender)
 {
 	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
@@ -86,6 +90,30 @@ void	Channel::send_message(std::string &message, User &sender)
 	{
 		if (*user == &sender)
 			continue;
+		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		(*user)->add_response(message);
+	}
+}
+
+/**
+ * @brief Sends a message to all users in the channel. This message does NOT get logged.
+ */
+void	Channel::send_notice(std::string &message, User &sender)
+{
+	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
+	// if (is_user(sender) == false)
+	// {
+	// 	std::string reply = SERVER_SIGNATURE;
+	// 	reply += " 442 " + sender.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+	// 	sender.add_response(reply);
+	// 	return;
+	// }
+	(void)sender;
+	// _message_log.push_back(message);
+	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	{
+		// if (*user == &sender)
+		// 	continue;
 		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
 		(*user)->add_response(message);
 	}
@@ -115,25 +143,25 @@ void	Channel::send_channel_info(User &user)
 	user.add_response(end_of_names);
 
 	//display the current modes of the channel
-	std::string mode_reply = SERVER_SIGNATURE;
-	mode_reply += " 324 " + user.get_nickname() + " " + get_name() + " +n";
-	if (_topic_restricted)
-		mode_reply += " +t";
-	if (_password_required)
-		mode_reply += " +k " + _password;
-	if (_invite_only)
-		mode_reply += " +i";
-	user.add_response(mode_reply);
+	// std::string mode_reply = SERVER_SIGNATURE;
+	// mode_reply += " 324 " + user.get_nickname() + " " + get_name() + " +n";
+	// if (_topic_restricted)
+	// 	mode_reply += " +t";
+	// if (_password_required)
+	// 	mode_reply += " +k " + _password;
+	// if (_invite_only)
+	// 	mode_reply += " +i";
+	// user.add_response(mode_reply);
 
 	//send end of WHO list for irssi sync
-	std::string who_reply = SERVER_SIGNATURE;
-	who_reply += " 315 " + user.get_nickname() + " " + get_name() + " :End of /WHO list";
-	user.add_response(who_reply);
+	// std::string who_reply = SERVER_SIGNATURE;
+	// who_reply += " 315 " + user.get_nickname() + " " + get_name() + " :End of /WHO list";
+	// user.add_response(who_reply);
 
 	//send end of channel ban list for irssi sync
-	std::string ban_reply = SERVER_SIGNATURE;
-	ban_reply += " 368 " + user.get_nickname() + " " + get_name() + " :End of channel ban list";
-	user.add_response(ban_reply);
+// 	std::string ban_reply = SERVER_SIGNATURE;
+// 	ban_reply += " 368 " + user.get_nickname() + " " + get_name() + " :End of channel ban list";
+// 	user.add_response(ban_reply);
 }
 
 void	Channel::add_user(User &user)
@@ -186,27 +214,39 @@ void	Channel::kick_user(User &user)
 
 void	Channel::remove_user(User &user, std::string reason)
 {
+	std::cout << PURPLE << "Remove user called\n" << RESET;
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
 	{
 		if (*usr == &user)
 		{
-			std::string response = ":" + user.get_nickname() + "!" + user.get_username() + "@";
-			response += HOSTNAME;
-			response += " PART " + get_name() + " " + reason; //old
-			// response += " PART :" + get_name();
-			user.add_response(response);
-			send_message(response, user);
+			// notice += " PART :" + get_name();
+			// user.add_response(notice);
+			// send_message(notice, user);
 
 			std::cout << "Removed user from: " << get_name() << std::endl;
-			_user_list.erase(usr);
-			remove_operator(user);
-			//instant reply of error 442, to force irssi to close channel on leave.
+			std::string notice = ":" + user.get_nickname() + "!" + user.get_username() + "@";
+			notice += HOSTNAME;
+			notice += " PART " + get_name() + " " + reason;
+			send_notice(notice, user);
+
 			// std::string reply = SERVER_SIGNATURE;
 			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
 			// user.add_response(reply);
+			
+			_user_list.erase(usr);
+			remove_operator(user);
+
+			// std::string response = SERVER_SIGNATURE;
+			// response += " PART " + get_name() + " " + reason;
+			// user.add_response(response);
+
+
+			//instant reply of error 442, to force irssi to close channel on leave.
 			break;
 		}
 	}
+	if (_user_list.size() < 1)
+		_server.remove_channel(*this);
 	//todo: else copy the error of user not in channel.
 }
 

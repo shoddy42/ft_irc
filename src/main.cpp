@@ -90,15 +90,13 @@ int	main(int ac, char **av)
 
 
 	OTHER ISSUES ISSUES:
--user attempting to take chanop priviliges from itself (it appears that all the list removes functions are unsafe, segfaulting if you remove the last element)
 	Fixes:
 -kick doesn't display any messages on the client side
-
 -mode doesn't work with +t/-t for TOPIC
+
+
 	Potential Fixes:
 -the extra screen close after leaving, since it trips up /wc
 
--topic doesnt display that the topic has been changed
--RE-poll after accepting a new connection and/or send/receive
 
 */

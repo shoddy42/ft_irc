@@ -50,6 +50,7 @@ class Channel
 		Channel &operator=(Channel const &src);
 
 		void	send_message(std::string &message, User &sender);
+		void	send_notice(std::string &message, User &sender);
 		void	send_channel_info(User &user);
 
 		void	add_user(User &user);

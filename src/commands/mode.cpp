@@ -96,7 +96,6 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 
 void	Command::mode(void)
 {
-	// std::cout << ORANGE << "MODE called with: [" << _arguments[0] << " " << _arguments[1] << " " << _arguments[2] << " " << _arguments[3] << "]\n" << RESET;
 	std::cout << ORANGE << "MODE called\n" << RESET;
 	std::string flag = "illegal flag";
 	if (_arguments.size() > 2)
@@ -132,18 +131,12 @@ void	Command::mode(void)
 		mode_limit(channel, is_plus, limit);
 	}
 	else if (flag[1] == 't')
-	{
 		mode_topic(channel, is_plus);
-	}
 	else if (flag[1] == 'o')
 	{
 		User &user = _server.get_user(_arguments[3]);
 		mode_operator(channel, is_plus, user);
 	}
 	else if (flag[1] == 'k')
-	{
-		std::cout << "ATTEMPTING TO CHANGE PASSWORD TO: [" << _arguments[3] << "]\n";
 		mode_password(channel, is_plus, _arguments[3]);
-	}
-
 }

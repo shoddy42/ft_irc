@@ -37,6 +37,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <poll.h>
+
 # include <sstream>
 # include <string>
 # include <list>
@@ -75,18 +76,21 @@ class Server
 		void		serve(void);
 		std::string	receive(int sock);
 		void		respond(User &user);
+
 		void		create_command(std::string buffer, User &caller);
+		void		add_channel(std::string name);
+		void		add_user(int sock);
+	
+		void		remove_channel(Channel &channel);
+		void		remove_user(User &user);
 
 	// networking
 		void		accept_new_connection(void);
 		void		socket_cleanup(int sock);
-		void		shutdown(void);
 		void		delete_user(User &user);
+		void		shutdown(void);
 
 	// getters/setters
-		void		add_channel(std::string name);
-		void		add_user(int sock);
-
 		Channel		&get_channel(const std::string name);
 		User		&get_user(std::string name);
 		User		&get_user(int sock);

@@ -17,6 +17,6 @@ void Command::topic(void)
 	std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
 	reply += HOSTNAME;
 	reply += " TOPIC " + channel.get_name() + " " + topic;
-	channel.send_message(reply, _caller);
-	_caller.add_response(reply);
+	channel.send_notice(reply, _caller);
+	// _caller.add_response(reply);
 }

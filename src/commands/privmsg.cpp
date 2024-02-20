@@ -19,6 +19,15 @@ void	Command::privmsg(void)
 	if (recipient[0] == '#' || recipient[0] == '+' || recipient[0] == '&' || recipient[0] == '!') //message to channel
 	{
 		Channel &channel = _server.get_channel(_arguments[1]);
+		// if (channel.get_name() == "dummy channel")
+		// {
+		// 	if (is_user(sender) == false)
+		// 	{
+		// 		std::string reply = SERVER_SIGNATURE;
+		// 		reply += " 442 " + sender.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+		// 		sender.add_response(reply);
+		// 		return;
+		// }
 		std::cout <<  "sending packet to channel: " << YELLOW << msg_text << RESET << std::endl;
 
 		channel.send_message(msg_text, _caller);

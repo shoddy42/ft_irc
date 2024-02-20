@@ -53,5 +53,6 @@ void	Command::join(void)
 	reply += " JOIN :" + channel.get_name();
 	
 	channel.add_user(_caller);
-	channel.send_message(reply, _caller);
+	// channel.send_message(reply, _caller);
+	channel.send_notice(reply, _caller);
 }
