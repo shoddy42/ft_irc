@@ -30,11 +30,18 @@ void Command::kick(void)
 		return;
 	if (channel.is_operator(member) == true)
 		return;
+
+	channel.kick_user(member);
+
 	std::string response = SERVER_SIGNATURE;
 	response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
+	member.add_response(response);
 
-	channel.send_message(response, _caller);
-	channel.remove_user(member);
-	channel.remove_invited(member);
-	// _caller.add_response(response);
+	std::string channel_response = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
+	channel_response += HOSTNAME;
+	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname();
+	channel.send_message(channel_response, _caller);
+	_caller.add_response(channel_response);
+	// channel.remove_user(member, reason);
+	// channel.remove_invited(member);
 }

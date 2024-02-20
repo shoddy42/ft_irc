@@ -6,10 +6,9 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/19 13:23:04 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/20 09:54:21 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/Server.hpp"
 
@@ -58,7 +57,7 @@ Server &Server::operator=(Server const &src)
 
 /**
  * @brief Creates a new socket to listen on port. Configures server.poll[0] to be this new socket.
- * 
+ * 		  Also creates dummy channels and general to guarantee that the lists arent empty.
  * @param port Port to bind socket to
  * @return int (the socket FD)
  */
@@ -73,6 +72,7 @@ void	Server::start(int port, std::string password)
     sock_address.sin_addr.s_addr = INADDR_ANY;
 
 	int opt = 1;
+
     guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
 	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable");
 	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
@@ -109,20 +109,11 @@ void	Server::serve(void)
 		if (pollfds[i].revents == 0) //client hasnt done anything
 			continue;
 		if (pollfds[i].revents & POLLHUP) //client disconnected
-		{
-			std::cout << "Socket " << i << " hung up." << std::endl;
 			delete_user(get_user(pollfds[i].fd));
-		}
-		if (pollfds[i].revents & POLLIN) //client sent server a message
-		{
-			std::string message;
-			message = receive(i);
-			create_command(message, get_user(pollfds[i].fd));
-		}
-		if (pollfds[i].revents & POLLOUT) //client is ready for a response
-		{
+		else if (pollfds[i].revents & POLLIN) //client sent server a message
+			create_command(receive(i), get_user(pollfds[i].fd));
+		else if (pollfds[i].revents & POLLOUT && i > 0) //client is ready for a response
 			respond(get_user(pollfds[i].fd));
-		}
 	}
 }
 
@@ -135,10 +126,7 @@ std::string	Server::receive(int sock)
 	bzero(buffer, BUFFER_SIZE);
 	bytes_read = recv(pollfds[sock].fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read == -1)	  // Recv failed
-	{
-		perror("recv");
-		delete_user(get_user(pollfds[sock].fd));
-	}
+		return ("");
 	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
 	{
 		std::cout << "Client closed the connection." << std::endl;
@@ -146,8 +134,9 @@ std::string	Server::receive(int sock)
 	} 
 	else  				      // Actually received a message
 	{
-		std::string data(buffer);
-		return (data);
+		return (std::string(buffer));
+		// std::string data(buffer);
+		// return (data);
 	}
 	return ("");
 }
@@ -161,7 +150,6 @@ void	Server::respond(User &user)
 			break;
 		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
 		response += "\r\n";
-		send(user.get_socket(), response.c_str(), response.length(), 0);
 
 		if (response == "462 :Unauthorized command (already registered)\r\n")
 		{
@@ -179,6 +167,7 @@ void	Server::respond(User &user)
 			delete_user(user);
 			break;
 		}
+		send(user.get_socket(), response.c_str(), response.length(), 0);
 	}
 }
 
@@ -259,7 +248,7 @@ void	Server::delete_user(User &user_to_delete)
 	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
 	{
 		std::cout << PURPLE << "Looking for user in " << channel->get_name() << " channel\n" << RESET;
-		channel->remove_user(user_to_delete);
+		channel->remove_user(user_to_delete, "");
 	}
 	socket_cleanup(user_to_delete.get_socket());
 	for(std::list<User>::iterator user = users.begin(); user != users.end(); user++)

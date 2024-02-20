@@ -91,20 +91,9 @@ void	Channel::send_message(std::string &message, User &sender)
 	}
 }
 
-void	Channel::add_user(User &user)
+void	Channel::send_channel_info(User &user)
 {
-	if (is_user(user))
-		return;
-	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
-		return;
-	if (_invite_only == true)
-		if (is_invited(user) == false)
-			return;
-
-	if (_user_list.size() == 0)
-		_operator_list.push_back(&user);
-	_user_list.push_back(&user);
-
+	//todo: maybe add 331 RPL_NOTOPIC
 	//display the channels topic
 	std::string topic = SERVER_SIGNATURE;
 	topic += " 332 " + user.get_nickname() + " " + get_name() + " " + get_topic();
@@ -136,6 +125,32 @@ void	Channel::add_user(User &user)
 		mode_reply += " +i";
 	user.add_response(mode_reply);
 
+	//send end of WHO list for irssi sync
+	std::string who_reply = SERVER_SIGNATURE;
+	who_reply += " 315 " + user.get_nickname() + " " + get_name() + " :End of /WHO list";
+	user.add_response(who_reply);
+
+	//send end of channel ban list for irssi sync
+	std::string ban_reply = SERVER_SIGNATURE;
+	ban_reply += " 368 " + user.get_nickname() + " " + get_name() + " :End of channel ban list";
+	user.add_response(ban_reply);
+}
+
+void	Channel::add_user(User &user)
+{
+	if (is_user(user))
+		return;
+	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
+		return;
+	if (_invite_only == true)
+		if (is_invited(user) == false)
+			return;
+
+	if (_user_list.size() == 0)
+		_operator_list.push_back(&user);
+	_user_list.push_back(&user);
+
+	send_channel_info(user);
 
 	//catch user up to all messages sent in the channel.
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
@@ -152,23 +167,39 @@ void	Channel::add_operator(User &user)
 	_operator_list.push_back(&user);
 }
 
-void	Channel::remove_user(User &user)
+void	Channel::kick_user(User &user)
 {
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
 	{
 		if (*usr == &user)
 		{
-			std::cout << "Removed user from: " << get_name() << std::endl;
 			_user_list.erase(usr);
-			remove_operator(user);
+			remove_invited(user);
+			//instant reply of error 442, to force irssi to close channel on leave.
+			// std::string reply = SERVER_SIGNATURE;
+			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
+			// user.add_response(reply);
+			break;
+		}
+	}
+}
 
+void	Channel::remove_user(User &user, std::string reason)
+{
+	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
+	{
+		if (*usr == &user)
+		{
 			std::string response = ":" + user.get_nickname() + "!" + user.get_username() + "@";
 			response += HOSTNAME;
-			// response += " PART " + get_name() + " :You have left the channel " + get_name(); //old
-			response += " PART :" + get_name();
+			response += " PART " + get_name() + " " + reason; //old
+			// response += " PART :" + get_name();
 			user.add_response(response);
 			send_message(response, user);
 
+			std::cout << "Removed user from: " << get_name() << std::endl;
+			_user_list.erase(usr);
+			remove_operator(user);
 			//instant reply of error 442, to force irssi to close channel on leave.
 			// std::string reply = SERVER_SIGNATURE;
 			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();

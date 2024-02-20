@@ -50,6 +50,7 @@ class Channel
 		Channel &operator=(Channel const &src);
 
 		void	send_message(std::string &message, User &sender);
+		void	send_channel_info(User &user);
 
 		void	add_user(User &user);
 		void	add_invited(User &user);
@@ -57,8 +58,9 @@ class Channel
 	
 		void	remove_operator(User &user);
 		void	remove_invited(User &user);
-		void	remove_user(User &user);
+		void	remove_user(User &user, std::string reason);
 		void	remove_password(void);
+		void	kick_user(User &user);
 
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
