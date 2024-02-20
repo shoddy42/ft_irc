@@ -7,7 +7,10 @@ void Command::kick(void)
 	std::cout << ORANGE << "Kick command called\n" << RESET;
 	std::string mem = _arguments[2];
 	std::string chan = _arguments[1];
-	std::string reason = _arguments[3];
+	std::string reason = "";
+	for (size_t i = 3; i < _arguments.size(); i++)
+		reason += _arguments[i] + " ";
+	
 	Channel &channel = _server.get_channel(chan);
 	User	&member = _server.get_user(mem);
 
@@ -31,17 +34,20 @@ void Command::kick(void)
 	if (channel.is_operator(member) == true)
 		return;
 
-	channel.kick_user(member);
-
-	std::string response = SERVER_SIGNATURE;
-	response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
-	member.add_response(response);
 
 	std::string channel_response = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
 	channel_response += HOSTNAME;
-	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname();
+	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
+	//todo: maybe create send_notice, which is just send message but instead it doesnt get stored in history to bypass irssi's leave?
 	channel.send_message(channel_response, _caller);
 	_caller.add_response(channel_response);
+
+	std::string response = SERVER_SIGNATURE;
+	std::cout << "REASON IS: " << reason << std::endl;
+	response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
+	// member.add_response(response);
+
+	channel.kick_user(member);
 	// channel.remove_user(member, reason);
 	// channel.remove_invited(member);
 }
