@@ -14,9 +14,6 @@ void Command::topic(void)
             return;
     channel.set_topic(topic);
     // std::cout << ORANGE << "topic set to " << topic << RESET << "\n"; 
-	std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	reply += HOSTNAME;
-	reply += " TOPIC " + channel.get_name() + " " + topic;
-	channel.send_notice(reply, _caller);
-	// _caller.add_response(reply);
+	std::string reply = usermask(_caller) + " TOPIC " + channel.get_name() + " " + topic;
+	channel.send_notice(reply);
 }

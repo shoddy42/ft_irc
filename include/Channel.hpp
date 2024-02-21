@@ -14,7 +14,7 @@
 # define Channel_HPP
 // # include "User.hpp"
 # include "../include/Server.hpp"
-# include "../include/print.hpp"
+# include "../include/colours.hpp"
 # include "../include/User.hpp"
 # include "../include/reply.hpp"
 # include <iostream>
@@ -36,9 +36,10 @@ class Channel
 		std::list<User *>	_invited_list;
 		std::list<User *>	_user_list;
 		std::string			_name;
-		std::string			_topic;
+		std::string			_topic; //todo: maybe store more than just the topic, like topic_who and topic_when for extra style points?
 	
 		std::string			_password;
+		int					_creation_time;
 		int					_user_limit;
 		bool				_password_required;
 		bool				_topic_restricted;
@@ -46,31 +47,38 @@ class Channel
 		Server				 &_server;
 	
 	public:
+	//	constructors  //
+
 		Channel(std::string channel_name, Server &server);
 		Channel(const Channel &src);
-		~Channel(void);
 		Channel &operator=(Channel const &src);
+		~Channel(void);
+
+	//	methods  //
 
 		void	send_message(std::string &message, User &sender);
-		void	send_notice(std::string &message, User &sender);
+		void	send_notice(std::string &message);
 		void	send_channel_info(User &user);
 
 		void	add_user(User &user);
 		void	add_invited(User &user);
 		void	add_operator(User &user);
 	
+		bool	remove_user(User &user, std::string reason); //returns if the channel was deleted or not.
 		void	remove_operator(User &user);
 		void	remove_invited(User &user);
-		bool	remove_user(User &user, std::string reason); //returns if the channel was deleted or not.
 		void	remove_password(void);
 		void	kick_user(User &user);
+
+		void	mode(User &caller);
+		void	who(User &caller);
+
+	//	getters/setters  //
 
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
 		const std::string	&get_password(void);
-
-		void	who(User &caller);
-		void	mode(User &caller);
+		// const std::string	&get_creation_time(void);
 
 		void 	set_topic(std::string topic);
 		void 	set_topic_restriction(bool deny_plebs);
@@ -83,6 +91,9 @@ class Channel
 		bool 	is_operator(User &user);
 		bool 	is_invited(User &user);
 		bool 	is_user(User &user);
+	
+	private:
+		Channel(void);
 };
 
 

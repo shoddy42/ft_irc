@@ -14,8 +14,6 @@
 #include "../include/Server.hpp"
 #include "../include/Command.hpp"
 
-
-
 bool escape = false;
 Server *g_server;
 
@@ -23,9 +21,7 @@ Server *g_server;
  * @brief if n == -1, will exit the program, writing error_msg.
  * 		  use instead of small if blocks.
  * 
- * @param n 
- * @param error_msg 
- * @return int returns n
+ * @return @b int n
  */
 int guard(int n, std::string error_msg)
 {
@@ -50,10 +46,17 @@ int	error_exit(std::string error_msg)
  */
 void sig_handler(int signum)
 {
-    if (signum == SIGINT) {
+    if (signum == SIGINT)
+	{
 		escape = true;
 		g_server->shutdown();
     }
+}
+
+const std::string usermask(User &user)
+{
+	std::string mask = ":" + user.get_nickname() + "!" + user.get_username() + "@" + user.get_hostname();
+	return (mask);
 }
 
 int	main(int ac, char **av)

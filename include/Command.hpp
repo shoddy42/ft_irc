@@ -15,53 +15,59 @@ class Channel;
 
 class Command
 {
+	private: 
+		typedef void (Command::*Function)(); //command function definition for the function pointer map
+		static std::map<std::string, Command::Function> command_map;
+		std::vector<std::string> _arguments;
+		Server	&_server;
+		User	&_caller;
+
 	public:
+	//	constructors  //
+
 		Command(Server &server, User &caller);
 		~Command(void);
 		Command &operator=(Command const &src);
 
+	//	methods  //
+
 		void execute(void);
 		void add_argument(std::string argument);
 
-		typedef void (Command::*CommandFunction)(); //command function definition for the jump map
+	//	command functions  //
 
-    //command functions
-		// void	call_(std::string key);
+		void	privmsg(void);
+		void	invite(void);
+		void 	topic(void);
 		void	nick(void);
 		void	ping(void);
 		void	join(void);
-		void	privmsg(void);
 		void	user(void);
 		void 	kick(void);
 		void	pass(void);
-		void 	topic(void);
 		void	quit(void);
-		void	invite(void);
 		void	part(void);
-		void	mode(void);
 		void	who(void);
+
+	//	mode functions  //
+
+		void	mode(void);
 		void	mode_password(Channel &channel, bool is_plus, std::string password);
+		void	mode_limit(Channel &channel, bool is_plus, std::string limit);
 		void	mode_operator(Channel &channel, bool is_plus, User &user);
 		void	mode_invite(Channel &channel, bool is_plus);
 		void	mode_topic(Channel &channel, bool is_plus);
-		void	mode_limit(Channel &channel, bool is_plus, int limit);
 		void	mode_channel(Channel &channel);
+		void	mode_user(User &user, std::string flag);
 		
 		class InputException
-    	{
-    	public:
-        	const char *what(void) const throw();
-    	};
+		{
+			public:
+				const char *what(void) const throw();
+		};
 
-		
 	private:
-		std::vector<std::string> _arguments;
-		Server	&_server;
-		User	&_caller;
-		static std::map<std::string, Command::CommandFunction> command_map;
-		// Command();
-
+		Command();
 };
 
 #endif
-//invite nick kick topic mode pass ban kill list me unban

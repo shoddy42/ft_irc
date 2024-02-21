@@ -29,19 +29,16 @@ static void	invite_error(User &caller, std::string message)
 
 /**
  * @brief Checks The Input For Validity, Sending The Invite To The recipient If All Is Valid & Sending An Error To The caller If Something Is Invalid
- * 
  */
 void    Command::invite(void)
 {
-	// std::cout << ORANGE << "INVITE called\n" << RESET;
-
 	Channel 	&channel = _server.get_channel(_arguments[2]);
 	User		&target = _server.get_user(_arguments[1]);
 	try
 	{
 		// grab args
 			// check if channel exists
-		if (channel.get_name() == "dummy channel")
+		if (channel.get_name() == NULL_CHANNEL_NAME)
 			invite_error(_caller, " 403 " + _arguments[2] + " :No such channel");
 			// check if recipient exists
 		else if (target.get_username() == "")
@@ -63,9 +60,7 @@ void    Command::invite(void)
 		// invite only shenanigans
 	channel.add_invited(target);
 		// send recipient an invite (essentially privmsg)
-	std::string msg_text = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	msg_text += HOSTNAME;
-	msg_text += " INVITE ";
+	std::string msg_text = usermask(_caller) + " INVITE ";
 	User	&recipient = _server.get_user(_arguments[1]);
 	std::cout << PURPLE << "sending invite to " << recipient.get_nickname() << RESET << std::endl;
 	msg_text +=  _caller.get_nickname() + " " + _arguments[2];

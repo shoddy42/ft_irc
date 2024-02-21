@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/02/21 10:07:06 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/02/21 16:02:22 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 17:00:32 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,11 @@
 
 void	Command::who(void)
 {
-	// std::cout << ORANGE << "Who command called\n" << RESET;
 	if (_arguments.size() < 2)
-		return; //who whole server possibly
-	std::string channel_name = _arguments[1];
-	Channel &channel = _server.get_channel(channel_name);
-
-	if (channel.get_name() == "dummy channel")
-	{
-		std::cout << RED << "SOMEHOW RETURNED DUMMY CHANNEL IN WHO\n" << RESET;
 		return;
-	}
-	channel.who(_caller);
-	//send end of WHO list for irssi sync
-	// std::string who_reply = SERVER_SIGNATURE;
-	// who_reply += " 315 " + _caller.get_nickname() + " " + channel.get_name() + " :End of /WHO list";
-	// _caller.add_response(who_reply);
+	Channel &channel = _server.get_channel(_arguments[1]);
+	if (channel.get_name() == NULL_CHANNEL_NAME)
+		return;
 
+	channel.who(_caller);
 }

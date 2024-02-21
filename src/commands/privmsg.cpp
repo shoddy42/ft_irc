@@ -8,8 +8,7 @@ void	Command::privmsg(void)
 	// std::cout << ORANGE << "PRIVMSG called\n" << RESET;
 
 	//create sender prefix
-	std::string msg_text = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	msg_text += HOSTNAME;
+	std::string msg_text = usermask(_caller);
 
 	//finish packet, except for CRLF
 	for(size_t i = 0; i < _arguments.size(); i++)

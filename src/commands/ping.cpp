@@ -2,10 +2,6 @@
 
 void	Command::ping(void)
 {
-	// std::cout << ORANGE << "Ping called: " << RESET << std::endl;
-
-	std::string response = "PONG ";
-	response += SERVER_SIGNATURE;
-
+	std::string response = "PONG " + std::string(SERVER_SIGNATURE);
 	_caller.add_response(response);
 }

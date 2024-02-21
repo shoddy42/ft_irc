@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 16:49:45 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/02/21 16:02:20 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 23:57:02 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 void	Command::user(void)
 {
-	// std::cout << ORANGE << "USER command called\n" << RESET; 
 	std::string username = _arguments[1];
 	std::string nickname = _arguments[2];
+	std::string hostname = _arguments[3];
+	std::string realname = _arguments[4];
 
 	if (&_server.get_user(username) != &_server.get_user(-42))
 	{
@@ -27,20 +28,19 @@ void	Command::user(void)
 	}
 	//accept user because it doesnt already exist
 	std::cout << PURPLE << "USER " << username << " registered\n" << RESET;
-	std::string response = SERVER_SIGNATURE;
-
-	response += " 001 " + username + " ";
-	response += WELCOME;
+	std::string response = std::string(SERVER_SIGNATURE) + " 001 " + username + " " + std::string(RPL_WELCOME);
 	_caller.set_username(username);
 	_caller.set_nickname(nickname);
-	_caller.set_realname(nickname);
+	_caller.set_hostname(hostname);
+	_caller.set_realname(realname);
 	_caller.add_response(response);
+	
+	std::string creation_date = std::string(SERVER_SIGNATURE) + " 003 " + username + " :This server was created " + _server.get_creation_time();
+	_caller.add_response(creation_date);
 	if (_server.get_password() == "")
 		_caller.authenticate();
 		
-	std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	reply += HOSTNAME;
-	reply += " NICK " + nickname;
+	std::string reply = usermask(_caller) + " NICK " + nickname;
 	std::cout << L_BLUE << reply << RESET << std::endl;
 	_caller.add_response(reply);
 }

@@ -2,29 +2,33 @@
 // #include <iostream>
 #include "../../include/Command.hpp"
 
-static bool name_exists(std::string name, Server &server)
+static bool name_exists(std::string name, Server &server, User &caller)
 {
-	for (std::list<User>::iterator user = server.users.begin(); user != server.users.end(); user++)
-		if (user->get_nickname() == name)
-			return (true);
+	User &user = server.get_user(name);
+	if (user.get_nickname() == name || (user.get_username() == name && &user != &caller))
+		return (true);
 	return (false);
 }
 
+bool is_alnum(const std::string& str) {
+    for (char c : str)
+        if (!std::isalnum(c))
+            return (false);
+    return (true);
+}
 void	Command::nick()
 {
-	// std::cout << ORANGE << "NICK command called " << RESET << std::endl;
 	std::string desired_name = _arguments[1];
 
-	if (name_exists(desired_name, _server))
+	if (!is_alnum(desired_name) )
+		return;
+	if (name_exists(desired_name, _server, _caller))
 	{
-		std::cout << "Name already exists\n";
+		std::string reply = std::string(SERVER_SIGNATURE) + " 433 " + _caller.get_nickname() + " " + desired_name + " :Nickname is already in use";
+		_caller.add_response(reply);
 		return;
 	}
-
-	std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	reply += HOSTNAME;
-	reply += " NICK " + desired_name;
-	std::cout << L_BLUE << reply << RESET << std::endl;
+	std::string reply = usermask(_caller) + " NICK " + desired_name;
 	_caller.add_response(reply);
 	_caller.set_nickname(desired_name);
 }

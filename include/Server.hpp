@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/21 13:46:50 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/22 00:05:26 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define SERVER_HPP
 
 	//  Variables   //
-# define SERVER_SIGNATURE ":FT_IRC"
-# define HOSTNAME		  "ft.irc.com"
-# define WELCOME		  "Welcome to the FT_IRC!"
+	
+# define SERVER_SIGNATURE ":ft.irc.com"
+# define HOSTNAME		  "localhost"
+# define RPL_WELCOME "Welcome to the FT_IRC!"
+
 
 # define MAX_CLIENTS  512
 # define DEFAULT_PORT 6667
@@ -24,12 +26,15 @@
 # define BUFFER_SIZE  1024 //recommended to keep above 512.
 
 # define INVALID_FD   -1
+# define NULL_CHANNEL_NAME "null channel"
 
 	//  Dependencies    //
+	
 # include "../include/User.hpp"
 # include "../include/Command.hpp"
 # include "../include/Channel.hpp"
-# include "../include/print.hpp"
+# include "../include/colours.hpp"
+# include "../include/reply.hpp"
 
 # include <netinet/in.h>
 # include <sys/socket.h>
@@ -40,61 +45,67 @@
 
 # include <sstream>
 # include <string>
+# include <chrono>
+# include <ctime>
 # include <list>
 
 # include <unordered_map>
 # include <vector>
 # include <map>
 
-int			error_exit(std::string error_msg);
-int			guard(int n, std::string error_msg);
-int			parsePort(std::string portNumber);
-std::string	parsePassword(std::string password);
-
 class Channel;
+
+const std::string	usermask(User &user);
+int					error_exit(std::string error_msg);
+int					guard(int n, std::string error_msg);
+int					parsePort(std::string portNumber);
+std::string			parsePassword(std::string password);
 
 class Server
 {
 	private:
-		int			_listen_socket;
-		std::string _password;
+		int					_listen_socket;
+		std::string 		_password;
+		std::string			_creation_time;
+		std::vector<pollfd>	pollfds;  // pollfds[0] is the servers listening client. all others are the users. 
+		std::list<Channel>  channels; // channels[0] is a null channel in case no channel is found
+		std::list<User>		users;    // users[0] is a null user in case no user is found
 
 	public:
-	//	variables
-		std::vector<pollfd>	pollfds;  // pollfds[0] is the servers listening client. all others are the users. 
-		std::list<User>		users;    // users[0] is a dummy user in case no user is found
-		std::list<Channel>  channels; // channels[0] is a dummy channel in case no channel is found
-
-	//	constructors
+	//	constructors  //
+	
 		Server(void);
 		Server(const Server &src);
-		~Server(void);
 		Server &operator=(Server const &src);
+		~Server(void);
 
-	//	methods
+	//	methods  //
+	
 		void		start(int port, std::string password);
 		void		serve(void);
 		std::string	receive(int sock);
 		void		respond(User &user);
 
-		void		create_command(std::string buffer, User &caller);
-		void		add_channel(std::string name);
+		void		do_command(std::string buffer, User &caller);
+		void		add_channel(std::string name, User &creator);
 		void		add_user(int sock);
 	
 		void		remove_channel(Channel &channel);
 		void		remove_user(User &user);
 
-	// networking
+	//	networking  //
+
 		void		accept_new_connection(void);
 		void		socket_cleanup(int sock);
-		void		delete_user(User &user);
 		void		shutdown(void);
 
-	// getters/setters
+	//	getters/setters  //
+	
 		Channel		&get_channel(const std::string name);
 		User		&get_user(std::string name);
 		User		&get_user(int sock);
 		std::string	&get_password(void);
+		std::string	&get_creation_time(void);
 };
 
 #endif

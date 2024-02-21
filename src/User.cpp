@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/21 14:04:44 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 19:57:29 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-User::User(int sock): _username(""), _nickname(""), _socket(sock), _authenticated(false)
+User::User(int sock): _username(""), _nickname(""), _authenticated(false), _socket(sock)
 {
 
 }
@@ -46,6 +46,8 @@ User &User::operator=(User const &src)
 	_responses = src._responses;
 	_username = src._username;
 	_nickname = src._nickname;
+	_realname = src._realname;
+	_hostname = src._hostname;
 	_socket = src._socket;
 	_authenticated = src._authenticated;
 	return (*this);
@@ -106,15 +108,15 @@ const std::string	&User::get_realname(void)
 	return(_realname);
 }
 
+const std::string	&User::get_hostname(void)
+{
+	return(_hostname);
+}
+
 // setters
 void	User::set_socket(int socket)
 {
 	_socket = socket;
-}
-
-void	User::set_username(std::string name)
-{
-	_username = name;
 }
 
 void	User::set_nickname(std::string nick)
@@ -122,9 +124,19 @@ void	User::set_nickname(std::string nick)
 	_nickname = nick;
 }
 
-void	User::set_realname(std::string nick)
+void	User::set_username(std::string username)
 {
-	_realname = nick;
+	_username = username;
+}
+
+void	User::set_realname(std::string realname)
+{
+	_realname = realname;
+}
+
+void	User::set_hostname(std::string hostname)
+{
+	_hostname = hostname;
 }
 
 void	User::authenticate(void)

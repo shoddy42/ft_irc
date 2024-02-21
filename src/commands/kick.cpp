@@ -29,13 +29,9 @@ void Command::kick(void)
 	// if (channel.is_operator(member) == true)
 	// 	return;
 
-
-	std::string channel_response = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
-	channel_response += HOSTNAME;
+	std::string channel_response = usermask(member);
 	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
-	//todo: maybe create send_notice, which is just send message but instead it doesnt get stored in history to bypass irssi's leave?
-	// channel.send_message(channel_response, _caller);
-	channel.send_notice(channel_response, _caller);
+	channel.send_notice(channel_response);
 
 	// std::string response = SERVER_SIGNATURE;
 	// std::cout << "REASON IS: " << reason << std::endl;

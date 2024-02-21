@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/21 16:11:28 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/22 00:03:43 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 
 Server::Server(void)
 {
+	time_t now = time(0);
+	_creation_time = ctime(&now);
+	if (!_creation_time.empty() && _creation_time[_creation_time.length() - 1] == '\n')
+		_creation_time.pop_back();
 }
 
 Server::Server(const Server &src)
@@ -57,7 +61,7 @@ Server &Server::operator=(Server const &src)
 
 /**
  * @brief Creates a new socket to listen on port. Configures server.poll[0] to be this new socket.
- * 		  Also creates dummy channels and general to guarantee that the lists arent empty.
+ * 		  Also creates null channels and general to guarantee that the lists arent empty.
  * @param port Port to bind socket to
  * @return int (the socket FD)
  */
@@ -73,7 +77,7 @@ void	Server::start(int port, std::string password)
 
 	int opt = 1;
     guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
-	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable");
+	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable. errno: ");
 	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
    
 	pollfd listen_socket;
@@ -81,11 +85,11 @@ void	Server::start(int port, std::string password)
 	listen_socket.events = POLLIN;
 	pollfds.push_back(listen_socket);
 
-	Channel dummy_channel("dummy channel", *this);
-	channels.push_back(dummy_channel);
+	Channel null_channel(NULL_CHANNEL_NAME, *this);
+	channels.push_back(null_channel);
 
-	User dummy_user(-42);
-	users.push_back(dummy_user);
+	User null_user(-42);
+	users.push_back(null_user);
 
 	_password = password;
 }
@@ -96,7 +100,6 @@ void	Server::start(int port, std::string password)
 void	Server::serve(void)
 {
 	//Poll every socket we have.
-	//Check all open sockets, to see if any have written to us.
 	poll(pollfds.data(), pollfds.size(), POLL_TIMEOUT);
 	accept_new_connection();
 	for (size_t i = 1; i < pollfds.size(); i++)
@@ -104,17 +107,16 @@ void	Server::serve(void)
 		if (pollfds[i].revents == 0) //client hasnt done anything
 			continue;
 		if (pollfds[i].revents & POLLHUP) //client disconnected
-			delete_user(get_user(pollfds[i].fd));
+			remove_user(get_user(pollfds[i].fd));
 		else if (pollfds[i].revents & POLLIN) //client sent server a message
-			create_command(receive(i), get_user(pollfds[i].fd));
-		else if (pollfds[i].revents & POLLOUT && i > 0) //client is ready for a response
+			do_command(receive(i), get_user(pollfds[i].fd));
+		else if (pollfds[i].revents & POLLOUT) //client is ready for a response
 			respond(get_user(pollfds[i].fd));
 	}
 }
 
 std::string	Server::receive(int sock)
 {
-	// std::cout << "receiving from socket [" << pollfds[sock].fd << "], at position (" << sock << ") AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
@@ -123,7 +125,7 @@ std::string	Server::receive(int sock)
 	if (bytes_read == -1)	  // Recv failed
 		return ("");
 	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
-		delete_user(get_user(pollfds[sock].fd));
+		remove_user(get_user(pollfds[sock].fd));
 	else  				      // Actually received a message
 		return (std::string(buffer));
 	return ("");
@@ -144,7 +146,7 @@ void	Server::respond(User &user)
 			std::cout << "Registered user getting booted!\n";
 			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
 			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-			delete_user(user);
+			remove_user(user);
 			break;
 		}
 		else if (response == "464 * :Password incorrect!\r\n")
@@ -152,14 +154,19 @@ void	Server::respond(User &user)
 			std::cout << "Unregistered user getting booted!\n";
 			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
 			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-			delete_user(user);
+			remove_user(user);
 			break;
 		}
 		send(user.get_socket(), response.c_str(), response.length(), 0);
 	}
 }
 
-void	Server::create_command(std::string buffer, User &caller)
+/**
+ * @brief Creates and executes all commands within the buffer.
+ * 
+ * @param buffer The received data from server.receive()
+ */
+void	Server::do_command(std::string buffer, User &caller)
 {
 	if (buffer.empty())
 		return;
@@ -183,15 +190,12 @@ void	Server::create_command(std::string buffer, User &caller)
 
 void	Server::shutdown(void)
 {
-	for (size_t i = 0; i < pollfds.size(); i++)
+	for (size_t i = 1; i < pollfds.size(); i++)
 		if (pollfds[i].fd > 0)
 			socket_cleanup(pollfds[i].fd);
+	socket_cleanup(pollfds[0].fd);
 }
 
-/**
- * @brief Checks if our listening socket has been contacted. Then creates a user.
- * 
- */
 void	Server::accept_new_connection(void)
 {
 	if (pollfds[0].revents & POLLIN)
@@ -205,8 +209,6 @@ void	Server::accept_new_connection(void)
 
 /**
  * @brief Closes socket, and updates pollfds and the users socket to -1 (INVALID_FD) if needed
- * 
- * @param sock The socket to cleanup.
  */
 void	Server::socket_cleanup(int sock)
 {
@@ -230,7 +232,7 @@ void	Server::socket_cleanup(int sock)
 	}
 }
 
-void	Server::delete_user(User &user_to_delete)
+void	Server::remove_user(User &user_to_delete)
 {
 	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
 		if (channel->remove_user(user_to_delete, "User has left the server") == true)
@@ -250,14 +252,20 @@ void	Server::delete_user(User &user_to_delete)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-void Server::add_channel(std::string name)
+void Server::add_channel(std::string name, User &creator)
 {
+	std::cout << "Creating channel " << name << "\n";
 	if (name[0] != '#' && name[0] != '&' && name[0] != '!' && name[0] != '+')
 	{
 		std::cout << "Invalid channel prefix!" << std::endl;
 		return;
 	}
 	Channel new_channel(name, *this);
+	new_channel.add_operator(creator);
+	new_channel.add_invited(creator);
+	new_channel.add_user(creator);
+	std::string reply = usermask(creator) + " JOIN :" + new_channel.get_name();
+	creator.add_response(reply);
 	channels.push_back(new_channel);
 }
 
@@ -275,7 +283,7 @@ void Server::add_user(int sock)
 
 void Server::remove_channel(Channel &channel)
 {
-	if (channel.get_name() == "dummy channel")
+	if (channel.get_name() == NULL_CHANNEL_NAME)
 		return;
 	for(std::list<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
@@ -318,6 +326,11 @@ User &Server::get_user(int sock)
 std::string	&Server::get_password(void)
 {
 	return (_password);
+}
+
+std::string	&Server::get_creation_time(void)
+{
+	return (_creation_time);
 }
 
 /* ************************************************************************** */
