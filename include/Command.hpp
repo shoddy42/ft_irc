@@ -39,11 +39,13 @@ class Command
 		void	invite(void);
 		void	part(void);
 		void	mode(void);
+		void	who(void);
 		void	mode_password(Channel &channel, bool is_plus, std::string password);
 		void	mode_operator(Channel &channel, bool is_plus, User &user);
 		void	mode_invite(Channel &channel, bool is_plus);
 		void	mode_topic(Channel &channel, bool is_plus);
 		void	mode_limit(Channel &channel, bool is_plus, int limit);
+		void	mode_channel(Channel &channel);
 		
 		class InputException
     	{

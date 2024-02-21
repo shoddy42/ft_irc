@@ -1,5 +1,5 @@
-#ifndef PRINT_H
-# define PRINT_H
+#ifndef PRINT_HPP
+# define PRINT_HPP
 
 // #Colours
 # define RESET	"\1\33[0m\2"

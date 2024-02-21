@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _server(server)
+Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _topic_restricted(true), _server(server)
 {
 	_invite_only = false;
 	_user_limit = -1;
@@ -163,6 +163,34 @@ void	Channel::send_channel_info(User &user)
 // 	ban_reply += " 368 " + user.get_nickname() + " " + get_name() + " :End of channel ban list";
 // 	user.add_response(ban_reply);
 }
+void	Channel::who(User &caller)
+{
+	for (std::list<User *>::iterator user = _user_list.begin(); user != _user_list.end() ; user++)
+	{
+		// if (*user == &caller)
+		// 	continue;
+		std::string reply = RPL_WHOREPLY(get_name(), "user.get_username()", "user.get_nickname()", "0", "a", "real name");
+		// std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		caller.add_response(reply);
+	}
+	
+	std::string who_reply = SERVER_SIGNATURE;
+	who_reply += " 315 " + caller.get_nickname() + " " + get_name() + " :End of /WHO list";
+	caller.add_response(who_reply);
+}
+
+void	Channel::mode(User &caller)
+{
+	std::string mode_reply = SERVER_SIGNATURE;
+	mode_reply += " 324 " + caller.get_nickname() + " " + get_name() + " +n";
+	if (_topic_restricted)
+		mode_reply += " +t";
+	if (_password_required)
+		mode_reply += " +k " + _password;
+	if (_invite_only)
+		mode_reply += " +i";
+	caller.add_response(mode_reply);
+}
 
 void	Channel::add_user(User &user)
 {
@@ -212,7 +240,7 @@ void	Channel::kick_user(User &user)
 	}
 }
 
-void	Channel::remove_user(User &user, std::string reason)
+bool	Channel::remove_user(User &user, std::string reason)
 {
 	std::cout << PURPLE << "Remove user called\n" << RESET;
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
@@ -235,6 +263,11 @@ void	Channel::remove_user(User &user, std::string reason)
 			
 			_user_list.erase(usr);
 			remove_operator(user);
+			if (_user_list.size() < 1 && get_name() != "dummy channel")
+			{
+				_server.remove_channel(*this);
+				return (true);
+			}
 
 			// std::string response = SERVER_SIGNATURE;
 			// response += " PART " + get_name() + " " + reason;
@@ -245,8 +278,7 @@ void	Channel::remove_user(User &user, std::string reason)
 			break;
 		}
 	}
-	if (_user_list.size() < 1)
-		_server.remove_channel(*this);
+	return (false);
 	//todo: else copy the error of user not in channel.
 }
 

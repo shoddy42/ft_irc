@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/20 09:54:21 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 11:59:17 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,10 +234,8 @@ void	Server::socket_cleanup(int sock)
 void	Server::delete_user(User &user_to_delete)
 {
 	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
-	{
-		std::cout << PURPLE << "Looking for user in " << channel->get_name() << " channel\n" << RESET;
-		channel->remove_user(user_to_delete, "");
-	}
+		if (channel->remove_user(user_to_delete, "User has left the server") == true)
+			channel = channels.begin();
 	socket_cleanup(user_to_delete.get_socket());
 	for(std::list<User>::iterator user = users.begin(); user != users.end(); user++)
 	{
@@ -281,11 +279,13 @@ void Server::remove_channel(Channel &channel)
 	if (channel.get_name() == "dummy channel")
 		return;
 	for(std::list<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
-	if (it->get_name() == channel.get_name())
 	{
-		std::cout << PURPLE << "Channel " << channel.get_name() << " erased!\n" << RESET;
-		channels.erase(it);
-		break;
+		if (it->get_name() == channel.get_name())
+		{
+			std::cout << PURPLE << "Channel " << channel.get_name() << " erased!\n" << RESET;
+			channels.erase(it);
+			break;
+		}
 	}
 }
 

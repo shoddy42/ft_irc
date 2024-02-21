@@ -38,6 +38,7 @@ std::map<std::string, Command::CommandFunction> Command::command_map = {
 	{"MODE", &Command::mode},
 	{"INVITE", &Command::invite},
 	{"PART", &Command::part},
+	{"WHO", &Command::who},
 };
 
 void printVectorStrings(const std::vector<std::string> &strings)

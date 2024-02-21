@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/19 17:05:25 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 11:15:28 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define SERVER_HPP
 
 	//  Variables   //
-# define SERVER_SIGNATURE ":server_name"
-# define HOSTNAME		  "serverhostname"
+# define SERVER_SIGNATURE ":FT_IRC"
+# define HOSTNAME		  "FT_IRC"
 # define WELCOME		  "Welcome to the FT_IRC!"
 
 # define MAX_CLIENTS  512

@@ -16,6 +16,7 @@
 # include "../include/Server.hpp"
 # include "../include/print.hpp"
 # include "../include/User.hpp"
+# include "../include/reply.hpp"
 # include <iostream>
 # include <string>
 # include <queue>
@@ -59,13 +60,16 @@ class Channel
 	
 		void	remove_operator(User &user);
 		void	remove_invited(User &user);
-		void	remove_user(User &user, std::string reason);
+		bool	remove_user(User &user, std::string reason); //returns if the channel was deleted or not.
 		void	remove_password(void);
 		void	kick_user(User &user);
 
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
 		const std::string	&get_password(void);
+
+		void	who(User &caller);
+		void	mode(User &caller);
 
 		void 	set_topic(std::string topic);
 		void 	set_topic_restriction(bool deny_plebs);

@@ -24,11 +24,6 @@ void Command::kick(void)
 		return;
 	}
 
-	if (_arguments[3].empty() == true)
-		reason = "";
-	else
-		reason = _arguments[3];
-
 	if (channel.is_user(member) == false)
 		return;
 	// if (channel.is_operator(member) == true)

@@ -94,17 +94,31 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 	}
 }
 
+void	Command::mode_channel(Channel &channel)
+{
+	std::cout << "Mode channel called!\n";
+	if (_arguments.size() == 3 && _arguments[2] == "b")
+	{
+		// send end of channel ban list for irssi sync
+		std::string ban_reply = SERVER_SIGNATURE;
+		ban_reply += " 368 " + _caller.get_nickname() + " " + channel.get_name() + " :End of channel ban list";
+		_caller.add_response(ban_reply);
+		return;
+	}
+	channel.mode(_caller);
+}
+
 void	Command::mode(void)
 {
 	std::cout << ORANGE << "MODE called\n" << RESET;
-	std::string flag = "illegal flag";
+	std::string flag = "";
 	if (_arguments.size() > 2)
 		flag = _arguments[2];
 	Channel &channel = _server.get_channel(_arguments[1]);
+	if (flag.empty() || flag == "b")
+		mode_channel(channel);
 	if (channel.is_operator(_caller) == false)
 		return;
-	if (flag.empty())
-		return; //or error
 	if(flag[0] != '-' && flag[0] != '+')
 		return;
 	bool is_plus = false;
@@ -113,9 +127,7 @@ void	Command::mode(void)
 
 	std::cout << "TEST: " << flag << std::endl;
 	if (flag[1] == 'i')
-	{
 		mode_invite(channel, is_plus);
-	}
 	else if (flag[1] == 'l')
 	{
 		int limit = 0;
@@ -133,10 +145,7 @@ void	Command::mode(void)
 	else if (flag[1] == 't')
 		mode_topic(channel, is_plus);
 	else if (flag[1] == 'o')
-	{
-		User &user = _server.get_user(_arguments[3]);
-		mode_operator(channel, is_plus, user);
-	}
+		mode_operator(channel, is_plus, _server.get_user(_arguments[3]));
 	else if (flag[1] == 'k')
 		mode_password(channel, is_plus, _arguments[3]);
 }
