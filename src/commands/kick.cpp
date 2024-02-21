@@ -4,7 +4,7 @@
 
 void Command::kick(void)
 {
-	std::cout << ORANGE << "Kick command called\n" << RESET;
+	// std::cout << ORANGE << "Kick command called\n" << RESET;
 	std::string mem = _arguments[2];
 	std::string chan = _arguments[1];
 	std::string reason = "";

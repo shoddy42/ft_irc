@@ -5,7 +5,7 @@
 
 void	Command::privmsg(void)
 {
-	std::cout << ORANGE << "PRIVMSG called\n" << RESET;
+	// std::cout << ORANGE << "PRIVMSG called\n" << RESET;
 
 	//create sender prefix
 	std::string msg_text = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
@@ -35,7 +35,7 @@ void	Command::privmsg(void)
 	else	//message to user
 	{
 		User	&recipient = _server.get_user(_arguments[1]);
-		std::cout << GREEN << "sending privmsg to " << recipient.get_nickname() << RESET << std::endl;
+		std::cout << PURPLE << "sending privmsg to " << recipient.get_nickname() << RESET << std::endl;
 
 		recipient.add_response(msg_text);
 	}

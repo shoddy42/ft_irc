@@ -2,7 +2,7 @@
 
 void	Command::ping(void)
 {
-	std::cout << ORANGE << "Ping called: " << RESET << std::endl;
+	// std::cout << ORANGE << "Ping called: " << RESET << std::endl;
 
 	std::string response = "PONG ";
 	response += SERVER_SIGNATURE;

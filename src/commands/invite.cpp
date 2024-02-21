@@ -33,7 +33,7 @@ static void	invite_error(User &caller, std::string message)
  */
 void    Command::invite(void)
 {
-	std::cout << ORANGE << "INVITE called\n" << RESET;
+	// std::cout << ORANGE << "INVITE called\n" << RESET;
 
 	Channel 	&channel = _server.get_channel(_arguments[2]);
 	User		&target = _server.get_user(_arguments[1]);
@@ -67,7 +67,7 @@ void    Command::invite(void)
 	msg_text += HOSTNAME;
 	msg_text += " INVITE ";
 	User	&recipient = _server.get_user(_arguments[1]);
-	std::cout << GREEN << "sending invite to " << recipient.get_nickname() << RESET << std::endl;
+	std::cout << PURPLE << "sending invite to " << recipient.get_nickname() << RESET << std::endl;
 	msg_text +=  _caller.get_nickname() + " " + _arguments[2];
 	recipient.add_response(msg_text);
 

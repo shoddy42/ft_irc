@@ -13,7 +13,7 @@ void Command::topic(void)
         if (channel.is_operator(_caller) == false)
             return;
     channel.set_topic(topic);
-    std::cout << ORANGE << "topic set to " << topic << RESET << "\n"; 
+    // std::cout << ORANGE << "topic set to " << topic << RESET << "\n"; 
 	std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@";
 	reply += HOSTNAME;
 	reply += " TOPIC " + channel.get_name() + " " + topic;

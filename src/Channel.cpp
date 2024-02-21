@@ -16,11 +16,11 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC), _topic_restricted(true), _server(server)
+Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(DEFAULT_TOPIC),  _server(server)
 {
 	_invite_only = false;
 	_user_limit = -1;
-	_topic_restricted = true;
+	_topic_restricted = DEFAULT_RESTRICT;
 	_password_required = false;
 	_password = "";
 }
@@ -30,13 +30,17 @@ Channel::Channel(const Channel &src): _server(src._server)
 	if (this != &src)
 		*this = src;
 	_message_log = src._message_log;
-	_user_list = src._user_list;
 	_operator_list = src._operator_list;
+	_invited_list = src._invited_list;
+	_user_list = src._user_list;
 	_name = src._name;
 	_topic = src._topic;
+
 	_password = src._password;
-	_invite_only = src._invite_only;
 	_user_limit = src._user_limit;
+	_password_required = src._password_required;
+	_topic_restricted = src._topic_restricted;
+	_invite_only = src._invite_only;
 }
 
 /*
@@ -77,7 +81,6 @@ Channel &Channel::operator=(Channel const &src)
  */
 void	Channel::send_message(std::string &message, User &sender)
 {
-	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
 	if (is_user(sender) == false)
 	{
 		std::string reply = SERVER_SIGNATURE;
@@ -90,7 +93,7 @@ void	Channel::send_message(std::string &message, User &sender)
 	{
 		if (*user == &sender)
 			continue;
-		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		// std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
 		(*user)->add_response(message);
 	}
 }
@@ -100,7 +103,6 @@ void	Channel::send_message(std::string &message, User &sender)
  */
 void	Channel::send_notice(std::string &message, User &sender)
 {
-	std::cout << GREEN << "usr list size =  " << _user_list.size() << RESET << std::endl;
 	// if (is_user(sender) == false)
 	// {
 	// 	std::string reply = SERVER_SIGNATURE;
@@ -114,7 +116,7 @@ void	Channel::send_notice(std::string &message, User &sender)
 	{
 		// if (*user == &sender)
 		// 	continue;
-		std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		// std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
 		(*user)->add_response(message);
 	}
 }
@@ -123,9 +125,16 @@ void	Channel::send_channel_info(User &user)
 {
 	//todo: maybe add 331 RPL_NOTOPIC
 	//display the channels topic
-	std::string topic = SERVER_SIGNATURE;
-	topic += " 332 " + user.get_nickname() + " " + get_name() + " " + get_topic();
-	user.add_response(topic);
+	if (_topic.empty())
+	{
+
+	}
+	else
+	{
+		std::string topic = SERVER_SIGNATURE;
+		topic += " 332 " + user.get_nickname() + " " + get_name() + " " + _topic;
+		user.add_response(topic);
+	}
 
 	//display current users in the channel
 	std::string name_reply = SERVER_SIGNATURE;
@@ -169,8 +178,9 @@ void	Channel::who(User &caller)
 	{
 		// if (*user == &caller)
 		// 	continue;
-		std::string reply = RPL_WHOREPLY(get_name(), "user.get_username()", "user.get_nickname()", "0", "a", "real name");
-		// std::cout << GREEN << "added response to " << (*user)->get_nickname() << RESET << std::endl;
+		// std::cout << GREEN << "added response" << RESET << std::endl;
+		std::string beep;
+		std::string reply = RPL_WHOREPLY(get_name(), (**user).get_username(), (**user).get_nickname(), "0", "a", "real name");
 		caller.add_response(reply);
 	}
 	

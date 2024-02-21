@@ -5,7 +5,7 @@
 //todo: split arg 1 and 2 on , to create channel_list and pass_list?
 void	Command::join(void)
 {
-	std::cout << ORANGE << "Join called" << RESET << "\n";
+	// std::cout << ORANGE << "Join called" << RESET << "\n";
 	std::string requested_channel = _arguments[1];
 	std::string key;
 	if (_arguments.size() > 2)

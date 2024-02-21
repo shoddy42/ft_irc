@@ -4,7 +4,7 @@
 
 void Command::part(void)
 {
-    std::cout << ORANGE << "Part command called\n" << RESET;
+    // std::cout << ORANGE << "Part command called\n" << RESET;
     Channel &channel	= _server.get_channel(_arguments[1]);
 	std::string reason	= "";
 	for (size_t i = 2; i < _arguments.size(); i++)

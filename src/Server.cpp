@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/21 11:59:17 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 16:11:28 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	Server::serve(void)
 
 std::string	Server::receive(int sock)
 {
-	std::cout << "receiving from socket [" << pollfds[sock].fd << "], at position (" << sock << ") AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
+	// std::cout << "receiving from socket [" << pollfds[sock].fd << "], at position (" << sock << ") AKA " << get_user(pollfds[sock].fd).get_username() << std::endl;
 	char	buffer[BUFFER_SIZE];
 	ssize_t	bytes_read;
 
@@ -136,7 +136,7 @@ void	Server::respond(User &user)
 		std::string response = user.give_response();
 		if (response.empty())
 			break;
-		std::cout << "Sending Packet: " << YELLOW << response << RESET << " to client " << user.get_socket() << std::endl;
+		std::cout << user.get_nickname() << " (" << user.get_username() << ")" " >> " << YELLOW << response << RESET << std::endl;
 		response += "\r\n";
 
 		if (response == "462 :Unauthorized command (already registered)\r\n")
@@ -169,7 +169,7 @@ void	Server::create_command(std::string buffer, User &caller)
 	while (std::getline(ss, line, '\n'))
 	{
 		Command command(*this, caller);
-		std::cout << BLUE << line << RESET << std::endl;
+		std::cout << caller.get_nickname() << " (" << caller.get_username() << ") << " << BLUE << line << RESET << std::endl;
 		if (!line.empty())
 		{
 			std::istringstream split(line);
@@ -196,11 +196,10 @@ void	Server::accept_new_connection(void)
 {
 	if (pollfds[0].revents & POLLIN)
 	{
-		std::cout << "New connection found. CONNECTING" << std::endl;
+		std::cout << "New connection found." << std::endl;
 		int client_socket = guard(accept(pollfds[0].fd, nullptr, nullptr), "Failed to accept socket. errno: ");
 		guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
-		std::cout << "client socket created at: " << client_socket << std::endl;
-		this->add_user(client_socket);
+		add_user(client_socket);
 	}
 }
 
@@ -212,7 +211,7 @@ void	Server::accept_new_connection(void)
 void	Server::socket_cleanup(int sock)
 {
 
-	std::cout << GREEN << "Socket cleanup on aisle " << sock << RESET << std::endl;
+	std::cout << PURPLE << "Socket cleanup on aisle " << sock << RESET << std::endl;
 	if (sock == INVALID_FD)
 		return;
 	close(sock);
@@ -224,7 +223,7 @@ void	Server::socket_cleanup(int sock)
 	{
 		if (pollfds[i].fd == sock)
 		{
-			std::cout << GREEN << "Socket actually cleared: " << sock << RESET << std::endl;
+			// std::cout << GREEN << "Socket actually cleared: " << sock << RESET << std::endl;
 			pollfds[i].fd = INVALID_FD;
 			pollfds[i].revents = 0;
 		}
@@ -312,7 +311,7 @@ User &Server::get_user(int sock)
 	for (std::list<User>::iterator user = std::next(users.begin()); user != users.end(); user++)
 		if (user->get_socket() == sock)
 			return (*user);
-	std::cout << RED << "No user is connected to sock" << sock << std::endl << RESET;
+	// std::cout << RED << "No user is connected to sock " << sock << std::endl << RESET;
 	return (*users.begin());
 }
 

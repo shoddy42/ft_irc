@@ -3,21 +3,8 @@
 # include "../include/Command.hpp"
 # include "../include/print.hpp"
 
-//check if
-/* */
-// bool Command::checkMsg(std::string &msg) 
-// {
-//     for (int i = 0; i < 0; i++)
-//     {
-//         if (buffer[i] == '\r' && (buffer[i + 1]) && buffer[i + 1] == '\n') 
-//             return true;
-//     }
-//     return false;
-// }
-
 Command::~Command()
 {
-
 }
 
 Command::Command(Server &server, User &caller): _server(server), _caller(caller)

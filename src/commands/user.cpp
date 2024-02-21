@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 16:49:45 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/02/19 17:12:41 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 16:02:20 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	Command::user(void)
 {
-	std::cout << ORANGE << "USER command called\n" << RESET; 
+	// std::cout << ORANGE << "USER command called\n" << RESET; 
 	std::string username = _arguments[1];
 	std::string nickname = _arguments[2];
 
@@ -33,6 +33,7 @@ void	Command::user(void)
 	response += WELCOME;
 	_caller.set_username(username);
 	_caller.set_nickname(nickname);
+	_caller.set_realname(nickname);
 	_caller.add_response(response);
 	if (_server.get_password() == "")
 		_caller.authenticate();

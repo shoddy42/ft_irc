@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/09 16:49:51 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 14:04:44 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,11 @@ const std::string	&User::get_nickname(void)
 	return(_nickname);
 }
 
+const std::string	&User::get_realname(void)
+{
+	return(_realname);
+}
+
 // setters
 void	User::set_socket(int socket)
 {
@@ -115,6 +120,11 @@ void	User::set_username(std::string name)
 void	User::set_nickname(std::string nick)
 {
 	_nickname = nick;
+}
+
+void	User::set_realname(std::string nick)
+{
+	_realname = nick;
 }
 
 void	User::authenticate(void)

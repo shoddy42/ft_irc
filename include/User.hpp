@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/09 16:50:17 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/02/21 14:04:30 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,12 @@ class User
 		const bool			&get_authenticated(void);
 		const std::string	&get_username(void);
 		const std::string	&get_nickname(void);
+		const std::string	&get_realname(void);
 
 		void		set_socket(int socket);
 		void		set_username(std::string);
 		void		set_nickname(std::string);
+		void		set_realname(std::string);
 		void		authenticate(void);
 
 	private:
@@ -44,6 +46,7 @@ class User
 		std::queue<std::string> _responses;
 		std::string	_username;
 		std::string _nickname;
+		std::string _realname;
 		int			_socket;
 		bool		_authenticated;
 };

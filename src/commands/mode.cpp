@@ -62,15 +62,20 @@ void	Command::mode_topic(Channel &channel, bool is_plus)
 	if (is_plus == true)
 	{
 		channel.set_topic_restriction(is_plus);
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +t : " + _caller.get_nickname();
+		// std::string reply = SERVER_SIGNATURE;
+		// reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +t : " + _caller.get_nickname();
+		std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@" + std::string(HOSTNAME);
+		reply += " MODE " + channel.get_name() + " +t";
 		_caller.add_response(reply);
 	}
 	else
 	{
 		channel.set_topic_restriction(is_plus);
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -t : " + _caller.get_nickname();
+		std::cout << PURPLE << "Channel " << channel.get_name() << " is set to invite only" << RESET << std::endl;
+		std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@" + std::string(HOSTNAME);
+		reply += " MODE " + channel.get_name() + " -t";
+		// std::string reply = SERVER_SIGNATURE;
+		// reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -t : " + _caller.get_nickname();
 		_caller.add_response(reply);
 	}
 }
@@ -80,16 +85,17 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 	channel.set_invite_only(is_plus);
 	if (is_plus == false)
 	{
-		std::cout << ORANGE << "Channel is set to public" << std::endl;
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -i : " + _caller.get_nickname();
+		std::cout << PURPLE << "Channel is set to public" << std::endl;
+		// std::string reply = SERVER_SIGNATURE;
+		std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@" + std::string(HOSTNAME);
+		reply += " MODE " + channel.get_name() + " -i";
 		_caller.add_response(reply);
 	}
 	if (is_plus == true)
 	{
-		std::cout << ORANGE << "Channel is set to invite only" << std::endl;
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +i : " + _caller.get_nickname();
+		std::cout << PURPLE << "Channel is set to invite only" << std::endl;
+		std::string reply = ":" + _caller.get_nickname() + "!" + _caller.get_username() + "@" + std::string(HOSTNAME);
+		reply += " MODE " + channel.get_name() + " +i";
 		_caller.add_response(reply);
 	}
 }
@@ -110,7 +116,7 @@ void	Command::mode_channel(Channel &channel)
 
 void	Command::mode(void)
 {
-	std::cout << ORANGE << "MODE called\n" << RESET;
+	// std::cout << ORANGE << "MODE called\n" << RESET;
 	std::string flag = "";
 	if (_arguments.size() > 2)
 		flag = _arguments[2];
@@ -125,7 +131,6 @@ void	Command::mode(void)
 	if (flag[0] == '+')
 		is_plus = true;	
 
-	std::cout << "TEST: " << flag << std::endl;
 	if (flag[1] == 'i')
 		mode_invite(channel, is_plus);
 	else if (flag[1] == 'l')

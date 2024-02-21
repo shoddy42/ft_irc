@@ -24,6 +24,7 @@
 
 // default settings for channels.
 # define DEFAULT_TOPIC ":Welcome to the channel!"
+# define DEFAULT_RESTRICT true
 
 class Server;
 
