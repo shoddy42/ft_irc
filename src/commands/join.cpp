@@ -17,8 +17,6 @@ void	Command::join(void)
 		std::string key = "";
 		if (i < channel_passwords.size())
 			key = channel_passwords[i].data();
-		// if (_arguments.size() > 2)
-			// key = _arguments[2];
 
 		Channel &channel = _server.get_channel(requested_channel);
 

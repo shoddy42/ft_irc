@@ -68,7 +68,7 @@ void    Command::invite(void)
 		}
 		catch (InputException &e)
 		{
-			continue; ;
+			continue;
 		}
 			// invite only shenanigans
 		channel.add_invited(target);
