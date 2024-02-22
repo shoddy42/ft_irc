@@ -103,7 +103,7 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 
 void	Command::mode_channel(Channel &channel)
 {
-	std::cout << "Mode channel called!\n";
+	// std::cout << "Mode channel called!\n";
 	if (_arguments.size() == 3 && _arguments[2] == "b")
 	{
 		std::string ban_reply = SERVER_SIGNATURE;
@@ -130,12 +130,12 @@ void	Command::mode_user(User &user, std::string flag)
 
 void	Command::mode(void)
 {
-	std::cout << ORANGE << "MODE CALLED!\n" << RESET;
+	// std::cout << ORANGE << "MODE CALLED!\n" << RESET;
 	std::string flag = "";
 	if (_arguments.size() > 2)
 		flag = _arguments[2];
 	Channel &channel = _server.get_channel(_arguments[1]);
-	if (flag.empty() || flag == "b")
+	if ((flag.empty() || flag == "b") && channel.get_name() != NULL_CHANNEL_NAME)
 		mode_channel(channel);
 	if (channel.is_operator(_caller) == false)
 		return;

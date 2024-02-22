@@ -222,7 +222,7 @@ bool	Channel::remove_user(User &user, std::string reason)
 		if (*usr == &user)
 		{
 			std::cout << "Removed user from: " << get_name() << std::endl;
-			std::string notice = usermask(user) + " PART :" + get_name()+ " " + reason;
+			std::string notice = usermask(user) + " PART " + get_name() + reason;
 			send_notice(notice);
 
 			_user_list.erase(usr);

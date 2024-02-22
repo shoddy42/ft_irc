@@ -16,7 +16,6 @@
 	//  Variables   //
 	
 # define SERVER_SIGNATURE ":ft.irc.com"
-# define HOSTNAME		  "localhost"
 # define RPL_WELCOME "Welcome to the FT_IRC!"
 
 
