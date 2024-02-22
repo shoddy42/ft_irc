@@ -4,7 +4,6 @@
 
 void	Command::join(void)
 {
-	// std::vector<std::string> channel_names = split_input(_arguments[1]);
 	std::vector<std::string> channel_names = split_argument(_arguments[1]);
 	std::vector<std::string> channel_passwords;
 	if (_arguments.size() > 2)
@@ -12,7 +11,6 @@ void	Command::join(void)
 
 	for (size_t i = 0; i < channel_names.size(); i++)
 	{
-		// std::string requested_channel = _arguments[1];
 		std::string requested_channel = channel_names[i].data();
 		std::string key = "";
 		if (i < channel_passwords.size())
