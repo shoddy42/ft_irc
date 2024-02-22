@@ -33,8 +33,8 @@ int guard(int n, std::string error_msg)
 int	error_exit(std::string error_msg)
 {
 	std::cerr << error_msg << errno << std::endl;
-	g_server->shutdown();
 	escape = true;
+	g_server->shutdown();
 	return (1);
 }
 
@@ -42,7 +42,6 @@ int	error_exit(std::string error_msg)
  * @brief Just makes ctrl+c quit the program when used with Signal()
  * 
  * @param signum automatically gets set by signals.
- * 
  */
 void sig_handler(int signum)
 {
@@ -53,6 +52,10 @@ void sig_handler(int signum)
     }
 }
 
+/**
+ * @brief Creates the full usermask. "nick!username\@hostname".
+ * 		  No space at the end.
+ */
 const std::string usermask(User &user)
 {
 	std::string mask = ":" + user.get_nickname() + "!" + user.get_username() + "@" + user.get_hostname();
@@ -83,23 +86,5 @@ int	main(int ac, char **av)
 	
     while (escape == false)
 		server.serve();
-	// Cleanup?
 	return (0);
 }
-
-
-/*
-	SEGFAULTS!:
-
-
-	OTHER ISSUES ISSUES:
-	Fixes:
--kick doesn't display any messages on the client side
--mode doesn't work with +t/-t for TOPIC
-
-
-	Potential Fixes:
--the extra screen close after leaving, since it trips up /wc
-
-
-*/

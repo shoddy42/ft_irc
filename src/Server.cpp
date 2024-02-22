@@ -61,7 +61,7 @@ Server &Server::operator=(Server const &src)
 
 /**
  * @brief Creates a new socket to listen on port. Configures server.poll[0] to be this new socket.
- * 		  Also creates null channels and general to guarantee that the lists arent empty.
+ * 		  Also creates null channel and user to guarantee that the lists arent empty.
  * @param port Port to bind socket to
  * @return int (the socket FD)
  */
@@ -73,11 +73,11 @@ void	Server::start(int port, std::string password)
     sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);
     sock_address.sin_family = AF_INET;
-    sock_address.sin_addr.s_addr = INADDR_ANY;
+    sock_address.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	int opt = 1;
-    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
 	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable. errno: ");
+    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
 	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
    
 	pollfd listen_socket;
@@ -124,7 +124,7 @@ std::string	Server::receive(int sock)
 	bytes_read = recv(pollfds[sock].fd, buffer, BUFFER_SIZE, 0);
 	if (bytes_read == -1)	  // Recv failed
 		return ("");
-	else if (bytes_read == 0) // Connection closed by the client //might not be needed, POLLHUP should already catch
+	else if (bytes_read == 0) // Connection closed by the client
 		remove_user(get_user(pollfds[sock].fd));
 	else  				      // Actually received a message
 		return (std::string(buffer));
@@ -212,10 +212,9 @@ void	Server::accept_new_connection(void)
  */
 void	Server::socket_cleanup(int sock)
 {
-
-	std::cout << PURPLE << "Socket cleanup on aisle " << sock << RESET << std::endl;
 	if (sock == INVALID_FD)
 		return;
+	std::cout << PURPLE << "Socket cleanup on aisle " << sock << RESET << std::endl;
 	close(sock);
 	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
 		if (it->get_socket() == sock)
@@ -225,7 +224,6 @@ void	Server::socket_cleanup(int sock)
 	{
 		if (pollfds[i].fd == sock)
 		{
-			// std::cout << GREEN << "Socket actually cleared: " << sock << RESET << std::endl;
 			pollfds[i].fd = INVALID_FD;
 			pollfds[i].revents = 0;
 		}

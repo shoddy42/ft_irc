@@ -26,7 +26,7 @@ Channel::Channel(std::string channel_name, Server &server): _name(channel_name),
 
     // get the current time
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    // convert the time to a duration since the epoch
+    // convert the time to a duration since epoch
     std::chrono::system_clock::duration duration = now.time_since_epoch();
     // convert the duration to seconds
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
@@ -86,7 +86,7 @@ Channel &Channel::operator=(Channel const &src)
 
 /**
  * @brief Sends a message to all users in the channel, except the sender.
- * 		  Adds the sent message to the channels 
+ * 		  Adds the sent message to the channels message_log
  */
 void	Channel::send_message(std::string &message, User &sender)
 {
@@ -108,7 +108,7 @@ void	Channel::send_message(std::string &message, User &sender)
 }
 
 /**
- * @brief Sends a message to all users in the channel. This message does NOT get logged.
+ * @brief Sends a message to ALL users in the channel. This message does NOT get logged.
  */
 void	Channel::send_notice(std::string &message)
 {
@@ -164,7 +164,7 @@ void	Channel::mode(User &caller)
 	if (_topic_restricted)
 		mode_reply += "t";
 	if (_password_required)
-		mode_reply += "k " + _password;
+		mode_reply += "k [" + _password+ "] ";
 	if (_invite_only)
 		mode_reply += "i";
 	caller.add_response(mode_reply);
@@ -173,6 +173,9 @@ void	Channel::mode(User &caller)
 	caller.add_response(time_reply);
 }
 
+/**
+ * @brief Adds a user to a channel. Also sends all needed information about the channel.
+ */
 void	Channel::add_user(User &user)
 {
 	if (is_user(user))
@@ -218,19 +221,10 @@ bool	Channel::remove_user(User &user, std::string reason)
 	{
 		if (*usr == &user)
 		{
-			// notice += " PART :" + get_name();
-			// user.add_response(notice);
-			// send_message(notice, user);
-
 			std::cout << "Removed user from: " << get_name() << std::endl;
-			(void)reason;
-			std::string notice = usermask(user) + " PART :" + get_name();// + " " + reason;
+			std::string notice = usermask(user) + " PART :" + get_name()+ " " + reason;
 			send_notice(notice);
 
-			// std::string reply = SERVER_SIGNATURE;
-			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
-			// user.add_response(reply);
-			
 			_user_list.erase(usr);
 			remove_operator(user);
 			if (_user_list.size() < 1 && get_name() != NULL_CHANNEL_NAME)
@@ -238,13 +232,6 @@ bool	Channel::remove_user(User &user, std::string reason)
 				_server.remove_channel(*this);
 				return (true);
 			}
-
-			// std::string response = SERVER_SIGNATURE;
-			// response += " PART " + get_name() + " " + reason;
-			// user.add_response(response);
-
-
-			//instant reply of error 442, to force irssi to close channel on leave.
 			break;
 		}
 	}
@@ -255,21 +242,25 @@ bool	Channel::remove_user(User &user, std::string reason)
 void	Channel::remove_invited(User &user)
 {
 	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
+	{
 		if (*usr == &user)
 		{
 			_invited_list.erase(usr);
 			break;
 		}
+	}
 }
 
 void	Channel::remove_operator(User &user)
 {
 	for(std::list<User *>::iterator usr = _operator_list.begin(); usr != _operator_list.end(); usr++)
+	{
 		if (*usr == &user)
 		{
 			_operator_list.erase(usr);
 			break;
 		}
+	}
 }
 
 void	Channel::remove_password(void)
@@ -286,10 +277,7 @@ void	Channel::kick_user(User &user)
 		{
 			_user_list.erase(usr);
 			remove_invited(user);
-			//instant reply of error 442, to force irssi to close channel on leave.
-			// std::string reply = SERVER_SIGNATURE;
-			// reply += " 442 " + user.get_nickname() + " " + get_name() + " :You are not in the channel " + get_name();
-			// user.add_response(reply);
+			remove_operator(user);
 			break;
 		}
 	}
@@ -313,12 +301,6 @@ const std::string 	&Channel::get_password(void)
 {
 	return (_password);
 }
-
-// const std::string 	&Channel::get_creation_time(void)
-// {
-// 	std::string time;
-// 	return (time);
-// }
 
 void Channel::set_topic(std::string topic)
 {
