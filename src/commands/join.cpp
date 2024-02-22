@@ -2,37 +2,38 @@
 #include "../../include/Channel.hpp"
 #include "../../include/Command.hpp"
 
-static std::vector<std::string> split_input(std::string input)
-{
-	std::vector<std::string>	args;
-	size_t	pos;
-	size_t	len;
+// static std::vector<std::string> split_input(std::string input)
+// {
+// 	std::vector<std::string>	args;
+// 	size_t	pos;
+// 	size_t	len;
 	
-	pos = input.find(',');
-	args.push_back(input.substr(0, pos));
-	if (pos == std::string::npos)
-		return (args);
-	len = pos + 1;
-	while (len < input.length())
-	{
-		pos = input.find(',', len);
-		if (pos == std::string::npos)
-		{
-			args.push_back(input.substr(len, std::string::npos));
-			return (args);
-		}
-		args.push_back(input.substr(len, pos - len));
-		len = pos + 1;
-	}
-	return (args);
-}
+// 	pos = input.find(',');
+// 	args.push_back(input.substr(0, pos));
+// 	if (pos == std::string::npos)
+// 		return (args);
+// 	len = pos + 1;
+// 	while (len < input.length())
+// 	{
+// 		pos = input.find(',', len);
+// 		if (pos == std::string::npos)
+// 		{
+// 			args.push_back(input.substr(len, std::string::npos));
+// 			return (args);
+// 		}
+// 		args.push_back(input.substr(len, pos - len));
+// 		len = pos + 1;
+// 	}
+// 	return (args);
+// }
 
 void	Command::join(void)
 {
-	std::vector<std::string> channel_names = split_input(_arguments[1]);
+	// std::vector<std::string> channel_names = split_input(_arguments[1]);
+	std::vector<std::string> channel_names = split_argument(_arguments[1]);
 	std::vector<std::string> channel_passwords;
 	if (_arguments.size() > 2)
-		channel_passwords = split_input(_arguments[2]);
+		channel_passwords = split_argument(_arguments[2]);
 
 	for (size_t i = 0; i < channel_names.size(); i++)
 	{

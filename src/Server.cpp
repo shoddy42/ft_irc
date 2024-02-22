@@ -249,6 +249,7 @@ void	Server::remove_user(User &user_to_delete)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+//todo: further parsing. again alphanum
 void Server::add_channel(std::string name, User &creator)
 {
 	std::cout << "Creating channel " << name << "\n";

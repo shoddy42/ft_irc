@@ -52,3 +52,36 @@ void Command::execute(void)
 	Function function = command_map[key];
 	(this->*function)();
 }
+
+/**
+ * @brief Splits a given string on commas ','
+ * 
+ * @returns A vector of strings with the substrings excluding the commas ','
+ */
+std::vector<std::string> Command::split_argument(std::string input)
+{
+	std::vector<std::string>	args;
+	size_t	pos;
+	size_t	len;
+	
+	pos = input.find(',');
+	if (pos == std::string::npos)
+	{ 
+		args.push_back(input);
+		return (args);
+	}
+	args.push_back(input.substr(0, pos));
+	len = pos + 1;
+	while (len < input.length())
+	{
+		pos = input.find(',', len);
+		if (pos == std::string::npos)
+		{
+			args.push_back(input.substr(len, std::string::npos));
+			return (args);
+		}
+		args.push_back(input.substr(len, pos - len));
+		len = pos + 1;
+	}
+	return (args);
+}

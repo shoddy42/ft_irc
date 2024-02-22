@@ -32,7 +32,8 @@ class Command
 	//	methods  //
 
 		void execute(void);
-		void add_argument(std::string argument);
+		void add_argument(std::string input);
+		std::vector<std::string> split_argument(std::string argument);
 
 	//	command functions  //
 
