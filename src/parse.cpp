@@ -19,19 +19,28 @@ int parsePort(std::string portNumber)
     try
     {
         port = std::stoi(portNumber);
-        if (port < 1024)
-            throw (std::invalid_argument("The Port Must Be A Positive Number Above '1023'"));
+        if (port < 1024 || port > 65535)
+            throw (std::invalid_argument("The Port Must Be Between '1023' And '65535'"));
     }
     catch (std::exception &e)
     {
         // std::cout << e.what() << std::endl;
-        std::cout << "The Port Must Be A Positive Number Above '1023'" << std::endl;
+        std::cout << "The Port Must Be Between '1023' And '65535'" << std::endl;
         return (-1);
     }
     return (port);
 }
 
+// static bool is_alnum(const std::string& str) {
+//     for (char c : str)
+//         if (!std::isalnum(c))
+//             return (false);
+//     return (true);
+// }
 
+//^^^^^^use this
+
+//todo: actual parsing, alphanum only, < 500?
 /**
  * @brief Parses password, If Need Be.
  * 

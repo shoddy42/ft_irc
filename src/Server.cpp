@@ -190,10 +190,9 @@ void	Server::do_command(std::string buffer, User &caller)
 
 void	Server::shutdown(void)
 {
-	for (size_t i = 1; i < pollfds.size(); i++)
+	for (size_t i = 0; i < pollfds.size(); i++)
 		if (pollfds[i].fd > 0)
 			socket_cleanup(pollfds[i].fd);
-	socket_cleanup(pollfds[0].fd);
 }
 
 void	Server::accept_new_connection(void)

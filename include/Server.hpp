@@ -54,7 +54,7 @@
 class Channel;
 
 const std::string	usermask(User &user);
-int					error_exit(std::string error_msg);
+void				error_exit(std::string error_msg);
 int					guard(int n, std::string error_msg);
 int					parsePort(std::string portNumber);
 std::string			parsePassword(std::string password);

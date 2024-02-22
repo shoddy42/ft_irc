@@ -10,12 +10,13 @@ static bool name_exists(std::string name, Server &server, User &caller)
 	return (false);
 }
 
-bool is_alnum(const std::string& str) {
+static bool is_alnum(const std::string& str) {
     for (char c : str)
         if (!std::isalnum(c))
             return (false);
     return (true);
 }
+
 void	Command::nick()
 {
 	std::string desired_name = _arguments[1];

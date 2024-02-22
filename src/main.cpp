@@ -30,12 +30,12 @@ int guard(int n, std::string error_msg)
 	return (n);
 }
 
-int	error_exit(std::string error_msg)
+void	error_exit(std::string error_msg)
 {
 	std::cerr << error_msg << errno << std::endl;
 	escape = true;
 	g_server->shutdown();
-	return (1);
+	exit(1);
 }
 
 /**
@@ -69,20 +69,20 @@ int	main(int ac, char **av)
 	g_server = &server;
 	signal(SIGINT, sig_handler);
 
-	// if (ac == 3) // todo: comment in
-	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), av[2]);
-	// else
-	// {
-	// 	std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
-	// 	return (1);
-	// }
-
-	if (ac == 2)
-		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
-	else if (ac >= 3)
-		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), parsePassword(av[2]));
+	if (ac == 3) // todo: comment in
+		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), av[2]);
 	else
-		server.start(DEFAULT_PORT, ""); // todo: comment out
+	{
+		std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
+		return (1);
+	}
+
+	// if (ac == 2)
+	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
+	// else if (ac >= 3)
+	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), parsePassword(av[2]));
+	// else
+	// 	server.start(DEFAULT_PORT, ""); // todo: comment out
 	
     while (escape == false)
 		server.serve();
