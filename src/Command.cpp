@@ -65,12 +65,9 @@ std::vector<std::string> Command::split_argument(std::string input)
 	size_t	len;
 	
 	pos = input.find(',');
-	if (pos == std::string::npos)
-	{ 
-		args.push_back(input);
-		return (args);
-	}
 	args.push_back(input.substr(0, pos));
+	if (pos == std::string::npos)
+		return (args);
 	len = pos + 1;
 	while (len < input.length())
 	{
