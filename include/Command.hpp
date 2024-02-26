@@ -34,6 +34,7 @@ class Command
 		void execute(void);
 		void add_argument(std::string input);
 		std::vector<std::string> split_argument(std::string argument);
+		bool is_alnum(const std::string &str);
 
 	//	command functions  //
 

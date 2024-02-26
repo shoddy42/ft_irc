@@ -31,15 +31,6 @@ int parsePort(std::string portNumber)
     return (port);
 }
 
-// static bool is_alnum(const std::string& str) {
-//     for (char c : str)
-//         if (!std::isalnum(c))
-//             return (false);
-//     return (true);
-// }
-
-//^^^^^^use this
-
 //todo: actual parsing, alphanum only, < 500?
 /**
  * @brief Parses password, If Need Be.

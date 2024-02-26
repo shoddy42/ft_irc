@@ -27,6 +27,7 @@ static void	invite_error(User &caller, std::string message)
 	throw (Command::InputException());
 }
 
+//todo: also make it accept single user, with list of channels.
 /**
  * @brief Checks The Input For Validity, Sending The Invite To The recipient If All Is Valid & Sending An Error To The caller If Something Is Invalid
  */
@@ -41,7 +42,7 @@ void    Command::invite(void)
 		_caller.add_response(msg_text);
 		return ;
 	}
-	for (int i = 0; i < user_names.size(); i++)
+	for (size_t i = 0; i < user_names.size(); i++)
 	{
 		User		&target = _server.get_user(user_names[i].data());
 		Channel 	&channel = _server.get_channel(channel_names[0].data());

@@ -82,3 +82,11 @@ std::vector<std::string> Command::split_argument(std::string input)
 	}
 	return (args);
 }
+
+bool Command::is_alnum(const std::string &str) {
+    // for (char c : str)
+	for (size_t i = 0; i < str.size(); i++)
+        if (!std::isalnum(str[i]))
+            return (false);
+    return (true);
+}
