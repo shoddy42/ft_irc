@@ -14,13 +14,12 @@ void Command::kick(void)
 	Channel &channel = _server.get_channel(chan);
 	User	&member = _server.get_user(mem);
 
-	//commented out the 482 reply as irssi assumes just because you attempted a command you get kicked for no reason???
 	if (channel.is_operator(_caller) == false)
 	{
 		std::cout << "Unauthorized call for kick\n";
-		// std::string reply = SERVER_SIGNATURE;
-		// reply += " 482 " + _caller.get_nickname() + " " + channel.get_name() + " :You are not an operator in the channel " + channel.get_name();
-		// _caller.add_response(reply);
+		std::string reply = SERVER_SIGNATURE;
+		reply += " 482 " + _caller.get_nickname() + " " + channel.get_name() + " :You are not an operator in the channel " + channel.get_name();
+		_caller.add_response(reply);
 		return;
 	}
 
@@ -32,13 +31,5 @@ void Command::kick(void)
 	std::string channel_response = usermask(member);
 	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
 	channel.send_notice(channel_response);
-
-	// std::string response = SERVER_SIGNATURE;
-	// std::cout << "REASON IS: " << reason << std::endl;
-	// response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;
-	// member.add_response(response);
-
 	channel.kick_user(member);
-	// channel.remove_user(member, reason);
-	// channel.remove_invited(member);
 }
