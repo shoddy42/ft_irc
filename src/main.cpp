@@ -70,12 +70,19 @@ int	main(int ac, char **av)
 	signal(SIGINT, sig_handler);
 
 	if (ac == 3) // todo: comment in
+	{
 		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), av[2]);
+		if (parsePassword == false)
+		{
+			std::cout << RED << "Error: Please Provide The Correct Password Syntax.\n" << GREEN << "Must be: alphanumeric & >100 characters" << std::endl;
+		}
+	}
 	else
 	{
 		std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
 		return (1);
 	}
+
 
 	// if (ac == 2)
 	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");

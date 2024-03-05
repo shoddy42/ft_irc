@@ -38,8 +38,23 @@ int parsePort(std::string portNumber)
  * @param password 
  * @return std::string 
  */
-std::string parsePassword(std::string password)
+
+bool parsePassword(const std::string &password)
 {
-    //123
-    return (password);
+    if (password.length() > 100) 
+    {
+        std::cout << "Password is too long. Maximum length is 100 characters." << std::endl;
+        return false;
+    }
+
+    for (char ch : password) 
+    {
+        if (!std::isalnum(ch)) 
+        {
+            std::cout << "Password must be alphanumeric." << std::endl;
+            return false;
+        }
+    }
+
+    return true;
 }
