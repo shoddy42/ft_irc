@@ -238,7 +238,6 @@ bool	Channel::remove_user(User &user, std::string reason)
 		}
 	}
 	return (false);
-	//todo: else copy the error of user not in channel.
 }
 
 void	Channel::remove_invited(User &user)

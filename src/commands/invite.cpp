@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:06:19 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:06:23 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:11:29 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ static void	invite_error(User &caller, std::string message)
 	throw (Command::InputException());
 }
 
-//todo: also make it accept single user, with list of channels.
 /**
  * @brief Checks The Input For Validity, Sending The Invite To The recipient If All Is Valid & Sending An Error To The caller If Something Is Invalid
  */

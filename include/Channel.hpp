@@ -34,7 +34,7 @@ class Channel
 		std::list<User *>	_invited_list;
 		std::list<User *>	_user_list;
 		std::string			_name;
-		std::string			_topic; //todo: maybe store more than just the topic, like topic_who and topic_when for extra style points?
+		std::string			_topic;
 	
 		std::string			_password;
 		int					_creation_time;
