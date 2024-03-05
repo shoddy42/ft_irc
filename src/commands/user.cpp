@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 16:49:45 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/02/21 23:57:02 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:39:28 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	Command::user(void)
 {
-	std::string username = _arguments[1];
-	std::string nickname = _arguments[2];
-	std::string hostname = _arguments[3];
-	std::string realname = _arguments[4];
+	std::string username = limit_name_length(_arguments[1]);
+	std::string nickname = limit_name_length(_arguments[2]);
+	std::string hostname = limit_name_length(_arguments[3]);
+	std::string realname = limit_name_length(_arguments[4]);
 
 	if (&_server.get_user(username) != &_server.get_user(-42))
 	{

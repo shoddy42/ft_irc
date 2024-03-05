@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(""),  _server(server)
+Channel::Channel(std::string channel_name, Server &server): _name(limit_name_length(channel_name)), _topic(""),  _server(server)
 {
 	_invite_only = false;
 	_user_limit = -1;

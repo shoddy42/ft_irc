@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:08:22 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:44:21 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	error_exit(std::string error_msg)
  */
 void sig_handler(int signum)
 {
-    if (signum == SIGINT)
+	if (signum == SIGINT)
 	{
 		escape = true;
 		g_server->shutdown();
-    }
+	}
 }
 
 /**
@@ -85,7 +85,7 @@ int	main(int ac, char **av)
 	// else
 	// 	server.start(DEFAULT_PORT, ""); // todo: comment out
 	
-    while (escape == false)
+	while (escape == false)
 		server.serve();
 	return (0);
 }

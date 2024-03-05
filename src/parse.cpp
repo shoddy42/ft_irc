@@ -5,6 +5,14 @@
 #include "../include/Command.hpp"
 #include "../include/colours.hpp"
 
+
+std::string	limit_name_length(std::string name) 
+{
+	if (name.length() > MAX_LENGTH)
+		return name.substr(0, MAX_LENGTH);
+	return (name);
+}
+
 /**
  * @brief Parses portNumber, Throwing An Exception For Non-Numerical Input and ports Below 1024
  * 
@@ -13,22 +21,22 @@
  */
 int parsePort(std::string portNumber)
 {
-    int port;
+	int port;
 
-    port = -1;
-    try
-    {
-        port = std::stoi(portNumber);
-        if (port < 1024 || port > 65535)
-            throw (std::invalid_argument("The Port Must Be Between '1023' And '65535'"));
-    }
-    catch (std::exception &e)
-    {
-        // std::cout << e.what() << std::endl;
-        std::cout << "The Port Must Be Between '1023' And '65535'" << std::endl;
-        return (-1);
-    }
-    return (port);
+	port = -1;
+	try
+	{
+		port = std::stoi(portNumber);
+		if (port < 1024 || port > 65535)
+			throw (std::invalid_argument("The Port Must Be Between '1023' And '65535'"));
+	}
+	catch (std::exception &e)
+	{
+		// std::cout << e.what() << std::endl;
+		std::cout << "The Port Must Be Between '1023' And '65535'" << std::endl;
+		return (-1);
+	}
+	return (port);
 }
 
 // todo: actual parsing, alphanum only, < 500
@@ -40,6 +48,6 @@ int parsePort(std::string portNumber)
  */
 std::string parsePassword(std::string password)
 {
-    //123
-    return (password);
+	//123
+	return (password);
 }

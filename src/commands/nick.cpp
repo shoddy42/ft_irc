@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:05:41 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:05:47 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:40:58 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static bool name_exists(std::string name, Server &server, User &caller)
 
 void	Command::nick()
 {
-	std::string desired_name = _arguments[1];
+	std::string desired_name = limit_name_length(_arguments[1]);
 
 	if (!is_alnum(desired_name) )
 		return;
