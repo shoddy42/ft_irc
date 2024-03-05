@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 16:14:57 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 17:21:03 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class Server
 		std::vector<pollfd>	pollfds;  // pollfds[0] is the servers listening client. all others are the users. 
 		std::list<Channel>  channels; // channels[0] is a null channel in case no channel is found
 		std::list<User>		users;    // users[0] is a null user in case no user is found
+		std::vector<std::string> _unfinished_packets; // stores packets until newline is found
 
 	public:
 	//	constructors  //

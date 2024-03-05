@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 15:45:39 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 17:10:23 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class User
 		bool		_authenticated;
 		int			_socket;
 
+		std::string _unfinished_packet;
 	public:
 	//	constructors  //
 	
@@ -41,7 +42,6 @@ class User
 		std::string	give_response(void);
 		int			check_response(void);
 		void		authenticate(void);
-
 
 	//	getters/setters  //
 	
