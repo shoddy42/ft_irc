@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/22 00:05:26 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:53:17 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@
 # define SERVER_SIGNATURE ":ft.irc.com"
 # define RPL_WELCOME "Welcome to the FT_IRC!"
 
-
-# define MAX_CLIENTS  512
-# define DEFAULT_PORT 6667
+# define MAX_CLIENTS  512 //maximum clients the server will accept
+# define MAX_LENGTH   512 //maximum length for user/nick/real/channel names. Sadly bugged with irssi, keep at 512.
+# define DEFAULT_PORT 6667 //the default TCP/IP port to use for the server
 # define POLL_TIMEOUT 2000 //in ms
-# define BUFFER_SIZE  1024 //recommended to keep above 512.
 
-# define INVALID_FD   -1
-# define NULL_CHANNEL_NAME "null channel"
+	// Variables you shouldn't change //
+
+# define BUFFER_SIZE  1024 //Amount of data read by receive. recommended to keep above 512.
+# define INVALID_FD   -1 //the default FD set to invalid.
+# define NULL_CHANNEL_NAME "null channel" //the empty channel created by the server to ensure safety. 
 
 	//  Dependencies    //
 	
@@ -58,6 +60,7 @@ void				error_exit(std::string error_msg);
 int					guard(int n, std::string error_msg);
 int					parsePort(std::string portNumber);
 std::string			parsePassword(std::string password);
+std::string			limit_name_length(std::string name);
 
 class Server
 {

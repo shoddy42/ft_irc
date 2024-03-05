@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/26 18:59:25 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:44:03 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ void	Server::start(int port, std::string password)
 	_listen_socket = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
 	guard(fcntl(_listen_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 	
-    sockaddr_in sock_address;
+	sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);
-    sock_address.sin_family = AF_INET;
-    sock_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock_address.sin_family = AF_INET;
+	sock_address.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	int opt = 1;
 	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable. errno: ");
-    guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
+	guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
 	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
    
 	pollfd listen_socket;
@@ -249,15 +249,14 @@ void	Server::remove_user(User &user_to_delete)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-//todo: further parsing. again alphanum
 void Server::add_channel(std::string name, User &creator)
 {
-	std::cout << "Creating channel " << name << "\n";
 	if (name[0] != '#' && name[0] != '&' && name[0] != '!' && name[0] != '+')
 	{
-		std::cout << "Invalid channel prefix!" << std::endl;
+		std::cout << RED <<  "Invalid channel prefix!" << RESET << std::endl;
 		return;
 	}
+	std::cout << PURPLE <<  "Creating channel " << name << RESET << std::endl;
 	Channel new_channel(name, *this);
 	new_channel.add_operator(creator);
 	new_channel.add_invited(creator);

@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Channel.hpp                                           :+:    :+:            */
+/*   Channel.hpp                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2023/09/05 18:43:26 by wkonings      ########   odam.nl         */
+/*   Updated: 2024/03/05 15:46:53 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef Channel_HPP
 # define Channel_HPP
-// # include "User.hpp"
 # include "../include/Server.hpp"
-# include "../include/colours.hpp"
 # include "../include/User.hpp"
+# include "../include/colours.hpp"
 # include <iostream>
 # include <string>
-# include <queue>
+// # include <queue>
 # include <list>
 
 // default settings for channels.
@@ -35,7 +34,7 @@ class Channel
 		std::list<User *>	_invited_list;
 		std::list<User *>	_user_list;
 		std::string			_name;
-		std::string			_topic; //todo: maybe store more than just the topic, like topic_who and topic_when for extra style points?
+		std::string			_topic;
 	
 		std::string			_password;
 		int					_creation_time;

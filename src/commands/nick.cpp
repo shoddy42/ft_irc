@@ -1,5 +1,15 @@
-// #include <Server.hpp>
-// #include <iostream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   nick.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:41 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:40:58 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
 
 static bool name_exists(std::string name, Server &server, User &caller)
@@ -10,16 +20,9 @@ static bool name_exists(std::string name, Server &server, User &caller)
 	return (false);
 }
 
-static bool is_alnum(const std::string& str) {
-    for (char c : str)
-        if (!std::isalnum(c))
-            return (false);
-    return (true);
-}
-
 void	Command::nick()
 {
-	std::string desired_name = _arguments[1];
+	std::string desired_name = limit_name_length(_arguments[1]);
 
 	if (!is_alnum(desired_name) )
 		return;

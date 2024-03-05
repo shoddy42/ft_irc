@@ -1,15 +1,16 @@
-//todo: delete the headers we dont need
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <cstdlib>
-#include <iostream>
-#include <unistd.h>
-#include <cstring>
-#include <fstream>
-#include <sstream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:44:21 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <csignal>
-#include <chrono>
-#include <poll.h>
 
 #include "../include/Server.hpp"
 #include "../include/Command.hpp"
@@ -35,7 +36,7 @@ void	error_exit(std::string error_msg)
 	std::cerr << error_msg << errno << std::endl;
 	escape = true;
 	g_server->shutdown();
-	exit(1);
+	exit(EXIT_SUCCESS);
 }
 
 /**
@@ -45,11 +46,11 @@ void	error_exit(std::string error_msg)
  */
 void sig_handler(int signum)
 {
-    if (signum == SIGINT)
+	if (signum == SIGINT)
 	{
 		escape = true;
 		g_server->shutdown();
-    }
+	}
 }
 
 /**
@@ -91,7 +92,7 @@ int	main(int ac, char **av)
 	// else
 	// 	server.start(DEFAULT_PORT, ""); // todo: comment out
 	
-    while (escape == false)
+	while (escape == false)
 		server.serve();
 	return (0);
 }

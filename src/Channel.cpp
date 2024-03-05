@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel(std::string channel_name, Server &server): _name(channel_name), _topic(""),  _server(server)
+Channel::Channel(std::string channel_name, Server &server): _name(limit_name_length(channel_name)), _topic(""),  _server(server)
 {
 	_invite_only = false;
 	_user_limit = -1;
@@ -164,7 +164,7 @@ void	Channel::mode(User &caller)
 	if (_topic_restricted)
 		mode_reply += "t";
 	if (_password_required)
-		mode_reply += "k [" + _password+ "] ";
+		mode_reply += "k";
 	if (_invite_only)
 		mode_reply += "i";
 	caller.add_response(mode_reply);
@@ -187,7 +187,7 @@ void	Channel::add_user(User &user)
 			return;
 
 	if (_user_list.size() == 0)
-		_operator_list.push_back(&user);
+		add_operator(user);
 	_user_list.push_back(&user);
 
 	send_channel_info(user);
@@ -199,12 +199,14 @@ void	Channel::add_user(User &user)
 
 void	Channel::add_invited(User &user)
 {
-	_invited_list.push_back(&user);
+	if (is_invited(user) == false)
+		_invited_list.push_back(&user);
 }
 
 void	Channel::add_operator(User &user)
 {
-	_operator_list.push_back(&user);
+	if (is_operator(user) == false)
+		_operator_list.push_back(&user);
 }
 
 /**
@@ -236,7 +238,6 @@ bool	Channel::remove_user(User &user, std::string reason)
 		}
 	}
 	return (false);
-	//todo: else copy the error of user not in channel.
 }
 
 void	Channel::remove_invited(User &user)

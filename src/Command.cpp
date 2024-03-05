@@ -1,7 +1,16 @@
-# include "../include/User.hpp"
-# include "../include/Server.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   Command.cpp                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:06:47 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:44:32 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "../include/Command.hpp"
-# include "../include/colours.hpp"
 
 Command::~Command()
 {
@@ -84,9 +93,9 @@ std::vector<std::string> Command::split_argument(std::string input)
 }
 
 bool Command::is_alnum(const std::string &str) {
-    // for (char c : str)
+	// for (char c : str)
 	for (size_t i = 0; i < str.size(); i++)
-        if (!std::isalnum(str[i]))
-            return (false);
-    return (true);
+		if (!std::isalnum(str[i]))
+			return (false);
+	return (true);
 }

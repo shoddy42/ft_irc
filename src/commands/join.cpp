@@ -1,5 +1,15 @@
-#include "../../include/User.hpp"
-#include "../../include/Channel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   join.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:59 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:45:28 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
 
 void	Command::join(void)
@@ -30,7 +40,6 @@ void	Command::join(void)
 		if (channel.is_invited(_caller) == false) //user is not invited
 		{
 			std::string reply = std::string(SERVER_SIGNATURE) + " 473 " + _caller.get_nickname() + " " + channel.get_name() + " :Channel is invite only";
-			// _caller.add_response(ERR_INVITE_ONLY_CHANNEL(_caller.get_nickname(), channel.get_name()));
 			_caller.add_response(reply);
 			continue;
 		}
