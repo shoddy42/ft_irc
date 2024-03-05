@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 15:44:03 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 17:32:24 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Server::Server(void)
 	_creation_time = ctime(&now);
 	if (!_creation_time.empty() && _creation_time[_creation_time.length() - 1] == '\n')
 		_creation_time.pop_back();
+	_unfinished_packets.resize(MAX_CLIENTS);
 }
 
 Server::Server(const Server &src)
@@ -107,9 +108,21 @@ void	Server::serve(void)
 		if (pollfds[i].revents == 0) //client hasnt done anything
 			continue;
 		if (pollfds[i].revents & POLLHUP) //client disconnected
+		{
 			remove_user(get_user(pollfds[i].fd));
+			_unfinished_packets[i].clear();
+		}
 		else if (pollfds[i].revents & POLLIN) //client sent server a message
-			do_command(receive(i), get_user(pollfds[i].fd));
+		{
+			_unfinished_packets[i] += receive(i);
+			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos)
+				std::cout << RED << "Received Unfinished packet [" << _unfinished_packets[i] << "]" << std::endl << RESET;
+			else
+			{
+				do_command(_unfinished_packets[i], get_user(pollfds[i].fd));
+				_unfinished_packets[i].clear();
+			}
+		}
 		else if (pollfds[i].revents & POLLOUT) //client is ready for a response
 			respond(get_user(pollfds[i].fd));
 	}
@@ -225,6 +238,7 @@ void	Server::socket_cleanup(int sock)
 		{
 			pollfds[i].fd = INVALID_FD;
 			pollfds[i].revents = 0;
+			_unfinished_packets[i].clear();
 		}
 	}
 }
