@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 15:53:17 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 16:14:57 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ const std::string	usermask(User &user);
 void				error_exit(std::string error_msg);
 int					guard(int n, std::string error_msg);
 int					parsePort(std::string portNumber);
-std::string			parsePassword(std::string password);
+bool				parsePassword(const std::string &password);
 std::string			limit_name_length(std::string name);
 
 class Server

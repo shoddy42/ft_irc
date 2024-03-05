@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2024/02/22 00:04:28 by shoddy        ########   odam.nl          #
+#    Updated: 2024/03/05 16:37:31 by shoddy        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 # --------------- VARIABLES --------------- #
 # ----------------------------------------- #
 
-NAME 	:= irc
+NAME 	:= ircserv
 FLAGS 	= -Wall -Wextra -Werror
 DEBUG 	:= -g -fsanitize=address
 CC		:= c++
