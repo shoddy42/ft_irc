@@ -6,34 +6,32 @@ void	Command::mode_password(Channel &channel, bool is_plus, std::string password
 	{
 		channel.set_password(password);
 		std::cout << "Password set to: " << password << std::endl;
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +k " + password + " : " + _caller.get_nickname();
+		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +k";
 		_caller.add_response(reply);
 
 		return;
 	}
 	channel.remove_password();
 	std::cout << "Password removed" << std::endl;
-	std::string reply = SERVER_SIGNATURE;
-	reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -k " + password + " : " + _caller.get_nickname();
+	std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -k";
 	_caller.add_response(reply);
 }
 
 void	Command::mode_operator(Channel &channel, bool is_plus, User &user)
 {
+	std::cout << ORANGE << "mode op: " << channel.is_operator(_caller) << " ? " << _caller.get_nickname() << END_LINE;
+	std::cout << ORANGE << "mode op2: " << channel.is_operator(user) << " ? " << user.get_nickname() << END_LINE;
 	if (is_plus == false)
 	{
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + user.get_nickname() + " " + channel.get_name() + " -o : " + user.get_nickname();
+		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -o :" + user.get_nickname();
 		user.add_response(reply);
 
 		channel.remove_operator(user);
 		return;
 	}
 	if (channel.is_operator(user) == true)
-		return; //user alrd op
-	std::string reply = SERVER_SIGNATURE;
-	reply += " 324 " + user.get_nickname() + " " + channel.get_name() + " +o : " + user.get_nickname();
+		return;
+	std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +o";
 	user.add_response(reply);
 
 	channel.add_operator(user);
@@ -103,7 +101,6 @@ void	Command::mode_invite(Channel &channel, bool is_plus)
 
 void	Command::mode_channel(Channel &channel)
 {
-	// std::cout << "Mode channel called!\n";
 	if (_arguments.size() == 3 && _arguments[2] == "b")
 	{
 		std::string ban_reply = SERVER_SIGNATURE;
@@ -130,7 +127,6 @@ void	Command::mode_user(User &user, std::string flag)
 
 void	Command::mode(void)
 {
-	// std::cout << ORANGE << "MODE CALLED!\n" << RESET;
 	std::string flag = "";
 	if (_arguments.size() > 2)
 		flag = _arguments[2];

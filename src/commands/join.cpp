@@ -30,7 +30,6 @@ void	Command::join(void)
 		if (channel.is_invited(_caller) == false) //user is not invited
 		{
 			std::string reply = std::string(SERVER_SIGNATURE) + " 473 " + _caller.get_nickname() + " " + channel.get_name() + " :Channel is invite only";
-			// _caller.add_response(ERR_INVITE_ONLY_CHANNEL(_caller.get_nickname(), channel.get_name()));
 			_caller.add_response(reply);
 			continue;
 		}

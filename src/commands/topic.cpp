@@ -11,11 +11,14 @@ void Command::topic(void)
 
     Channel &channel = _server.get_channel(chan);
 
-    if (channel.is_topic_restricted() == true)
-        if (channel.is_operator(_caller) == false)
-            return;
+    if (channel.is_topic_restricted() == true && channel.is_operator(_caller) == false)
+	{
+		std::string reply = std::string(SERVER_SIGNATURE) + " 482 " + channel.get_name() + " :You're not channel operator";
+		_caller.add_response(reply);
+		return;
+	}
+
     channel.set_topic(topic);
-    // std::cout << ORANGE << "topic set to " << topic << RESET << "\n"; 
 	std::string reply = usermask(_caller) + " TOPIC " + channel.get_name() + " " + topic;
 	channel.send_notice(reply);
 }

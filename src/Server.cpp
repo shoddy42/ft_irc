@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/02/26 18:59:25 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 13:55:50 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,10 +252,10 @@ void	Server::remove_user(User &user_to_delete)
 //todo: further parsing. again alphanum
 void Server::add_channel(std::string name, User &creator)
 {
-	std::cout << "Creating channel " << name << "\n";
+	std::cout << PURPLE <<  "Creating channel " << name << RESET << std::endl;
 	if (name[0] != '#' && name[0] != '&' && name[0] != '!' && name[0] != '+')
 	{
-		std::cout << "Invalid channel prefix!" << std::endl;
+		std::cout << RED <<  "Invalid channel prefix!" << RESET << std::endl;
 		return;
 	}
 	Channel new_channel(name, *this);

@@ -35,7 +35,7 @@ void	error_exit(std::string error_msg)
 	std::cerr << error_msg << errno << std::endl;
 	escape = true;
 	g_server->shutdown();
-	exit(1);
+	exit(EXIT_SUCCESS);
 }
 
 /**
