@@ -52,7 +52,10 @@ void	Command::join(void)
 		}
 		//user succesfully joins channel!
 		std::string reply = usermask(_caller) + " JOIN :" + channel.get_name();
-		channel.add_user(_caller);
-		channel.send_notice(reply);
+		if (channel.add_user(_caller) == true)
+		{
+			channel.send_notice(reply);
+		}
+			// does it need to send an error to the client if it fails
 	}
 }

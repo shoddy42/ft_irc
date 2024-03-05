@@ -58,7 +58,7 @@ class Channel
 		void	send_notice(std::string &message);
 		void	send_channel_info(User &user);
 
-		void	add_user(User &user);
+		bool	add_user(User &user);
 		void	add_invited(User &user);
 		void	add_operator(User &user);
 	
@@ -76,6 +76,7 @@ class Channel
 		const std::string	&get_name(void);
 		const std::string 	&get_topic(void);
 		const std::string	&get_password(void);
+		int					get_user_limit(void) const;
 		// const std::string	&get_creation_time(void);
 
 		void 	set_topic(std::string topic);

@@ -176,15 +176,15 @@ void	Channel::mode(User &caller)
 /**
  * @brief Adds a user to a channel. Also sends all needed information about the channel.
  */
-void	Channel::add_user(User &user)
+bool	Channel::add_user(User &user)
 {
 	if (is_user(user))
-		return;
+		return false;
 	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
-		return;
+		return false;
 	if (_invite_only == true)
 		if (is_invited(user) == false)
-			return;
+			return false;
 
 	if (_user_list.size() == 0)
 		add_operator(user);
@@ -195,6 +195,7 @@ void	Channel::add_user(User &user)
 	//catch user up to all messages sent in the channel.
 	for (std::vector<std::string>::iterator msg = _message_log.begin(); msg != _message_log.end(); msg++)
 		user.add_response(*msg);
+	return true;
 }
 
 void	Channel::add_invited(User &user)
@@ -301,6 +302,10 @@ const std::string 	&Channel::get_topic(void)
 const std::string 	&Channel::get_password(void)
 {
 	return (_password);
+}
+int			Channel::get_user_limit(void) const
+{
+	return (_user_limit);
 }
 
 void Channel::set_topic(std::string topic)
