@@ -12,13 +12,12 @@
 
 #ifndef Channel_HPP
 # define Channel_HPP
-// # include "User.hpp"
 # include "../include/Server.hpp"
-# include "../include/colours.hpp"
 # include "../include/User.hpp"
+# include "../include/colours.hpp"
 # include <iostream>
 # include <string>
-# include <queue>
+// # include <queue>
 # include <list>
 
 // default settings for channels.

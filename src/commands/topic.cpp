@@ -1,5 +1,15 @@
-#include "../../include/User.hpp"
-#include "../../include/Channel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   topic.cpp                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:06 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:05:06 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
 
 void Command::topic(void)

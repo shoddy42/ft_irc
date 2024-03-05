@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   mode.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:52 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:05:52 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
 
 void	Command::mode_password(Channel &channel, bool is_plus, std::string password)

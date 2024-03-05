@@ -1,7 +1,16 @@
-#include "../../include/User.hpp"
-#include "../../include/Channel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   privmsg.cpp                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:11 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:05:17 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
-#include <vector>
 
 void	Command::privmsg(void)
 {

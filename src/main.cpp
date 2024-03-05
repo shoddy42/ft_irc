@@ -1,15 +1,16 @@
-//todo: delete the headers we dont need
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <cstdlib>
-#include <iostream>
-#include <unistd.h>
-#include <cstring>
-#include <fstream>
-#include <sstream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:08:22 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <csignal>
-#include <chrono>
-#include <poll.h>
 
 #include "../include/Server.hpp"
 #include "../include/Command.hpp"

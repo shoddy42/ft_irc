@@ -6,12 +6,10 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/02/21 10:07:06 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 14:30:25 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/05 15:06:30 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../../include/User.hpp"
-// #include "../../include/Channel.hpp"
 #include "../../include/Command.hpp"
 
 void	Command::who(void)

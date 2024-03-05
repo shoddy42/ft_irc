@@ -1,7 +1,16 @@
-# include "../include/User.hpp"
-# include "../include/Server.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   Command.cpp                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:06:47 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:06:55 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include "../include/Command.hpp"
-# include "../include/colours.hpp"
 
 Command::~Command()
 {

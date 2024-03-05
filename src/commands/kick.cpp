@@ -1,5 +1,15 @@
-#include "../../include/User.hpp"
-#include "../../include/Channel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   kick.cpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:05:54 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:05:56 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
 
 void Command::kick(void)

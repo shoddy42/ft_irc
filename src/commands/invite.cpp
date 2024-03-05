@@ -1,7 +1,16 @@
-#include "../../include/User.hpp"
-#include "../../include/Channel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   invite.cpp                                         :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/03/05 15:06:19 by shoddy        #+#    #+#                 */
+/*   Updated: 2024/03/05 15:06:23 by shoddy        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Command.hpp"
-#include <vector>
 
 /**
  * @brief Throws An Exception, Allowing For Try/Catch Block Interaction
@@ -39,22 +48,17 @@ void    Command::invite(void)
 	if (channel_names.size() != 1 && user_names.size() != 1 && channel_names.size() != user_names.size())
 	{
 		std::string msg_text = usermask(_caller) + " ERROR :Invite List Mismatch";
-		// std::string reply = std::string(SERVER_SIGNATURE) + " 461 INVITE :Invite list size mismatch";
 		_caller.add_response(msg_text);
 		return ;
 	}
 	for (size_t i = 0; i < user_names.size() || i < channel_names.size(); i++)
 	{
-		// User		*target = &_server.get_user(user_names[0].data());
 		std::string user_name = user_names[0];
 		if (user_names.size() != 1 && user_names[0] != user_names[i])
 			user_name = user_names[i];
-			// target = &_server.get_user(user_names[i].data());
-		// Channel 	*channel = &_server.get_channel(channel_names[0].data());
 		std::string channel_name = channel_names[0];
 		if	(channel_names.size() != 1 && channel_names[0] != channel_names[i])
 			channel_name = channel_names[i];
-			// channel = &_server.get_channel(channel_names[i].data());
 		User		*target = &_server.get_user(user_name);
 		Channel 	*channel = &_server.get_channel(channel_name);
 
