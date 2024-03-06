@@ -181,7 +181,11 @@ bool	Channel::add_user(User &user)
 	if (is_user(user))
 		return false;
 	if (_user_limit > -1 && (int)_user_list.size() >= _user_limit)
+	{
+		std::string reply = std::string(SERVER_SIGNATURE) + " 471 " + user.get_nickname() + " " + get_name() + " :Channel is full (+l)";
+		user.add_response(reply);
 		return false;
+	}
 	if (_invite_only == true)
 		if (is_invited(user) == false)
 			return false;
@@ -343,6 +347,11 @@ bool Channel::has_password(void)
 bool Channel::is_topic_restricted(void)
 {
 	return (_topic_restricted);
+}
+
+bool Channel::is_invite_only(void)
+{
+	return (_invite_only);
 }
 
 bool Channel::is_operator(User &user)

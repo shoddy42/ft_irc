@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:46:16 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:46:21 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/06 03:45:02 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,14 @@ class Command
 
 	//	mode functions  //
 
-		void	mode(void);
-		void	mode_password(Channel &channel, bool is_plus, std::string password);
-		void	mode_limit(Channel &channel, bool is_plus, std::string limit);
-		void	mode_operator(Channel &channel, bool is_plus, User &user);
-		void	mode_invite(Channel &channel, bool is_plus);
-		void	mode_topic(Channel &channel, bool is_plus);
-		void	mode_channel(Channel &channel);
-		void	mode_user(User &user, std::string flag);
+		void		mode(void);
+		void		mode_user(User &user, std::string flag);
+		void		mode_channel(Channel &channel);
+		std::string	mode_password(Channel &channel, bool is_plus, std::string password);
+		std::string	mode_limit(Channel &channel, bool is_plus, std::string limit);
+		std::string	mode_operator(Channel &channel, bool is_plus, User &user);
+		std::string	mode_invite(Channel &channel, bool is_plus);
+		std::string	mode_topic(Channel &channel, bool is_plus);
 		
 		class InputException
 		{

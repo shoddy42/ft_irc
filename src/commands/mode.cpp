@@ -3,53 +3,33 @@
 /*                                                        ::::::::            */
 /*   mode.cpp                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
+/*   By: shoddy <shoddy@student.codam.nl>             +#+                     add_userv*/
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:05:52 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:45:19 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/06 03:37:49 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Command.hpp"
 
-void	Command::mode_password(Channel &channel, bool is_plus, std::string password)
+std::string	Command::mode_password(Channel &channel, bool is_plus, std::string password)
 {
 	if (is_plus == true)
 	{
+		if (channel.get_password() == password)
+			return ("");
 		channel.set_password(password);
 		std::cout << "Password set to: " << password << std::endl;
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +k";
-		_caller.add_response(reply);
-
-		return;
+		return (usermask(_caller) + " MODE " + channel.get_name() + " +k");
 	}
+	if (channel.has_password() == false)
+		return ("");
 	channel.remove_password();
 	std::cout << "Password removed" << std::endl;
-	std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -k";
-	_caller.add_response(reply);
+	return (usermask(_caller) + " MODE " + channel.get_name() + " -k");	
 }
 
-void	Command::mode_operator(Channel &channel, bool is_plus, User &user)
-{
-	std::cout << ORANGE << "mode op: " << channel.is_operator(_caller) << " ? " << _caller.get_nickname() << END_LINE;
-	std::cout << ORANGE << "mode op2: " << channel.is_operator(user) << " ? " << user.get_nickname() << END_LINE;
-	if (is_plus == false)
-	{
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -o :" + user.get_nickname();
-		user.add_response(reply);
-
-		channel.remove_operator(user);
-		return;
-	}
-	if (channel.is_operator(user) == true)
-		return;
-	std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +o";
-	user.add_response(reply);
-
-	channel.add_operator(user);
-}
-
-void	Command::mode_limit(Channel &channel, bool is_plus, std::string str_limit)
+std::string	Command::mode_limit(Channel &channel, bool is_plus, std::string str_limit)
 {
 	int limit = -1;
 	try
@@ -59,56 +39,74 @@ void	Command::mode_limit(Channel &channel, bool is_plus, std::string str_limit)
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
-		return;
+		return ("");
 	}
 	if (is_plus == true)
 	{
+		if (channel.get_user_limit() == limit)
+			return ("");
 		channel.set_user_limit(limit);
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " +l : " + _caller.get_nickname();
-		_caller.add_response(reply);
+		return (usermask(_caller) + " MODE " + channel.get_name() + " +l");
 	}
-	else
-	{
-		channel.set_user_limit(-1);
-		std::string reply = SERVER_SIGNATURE;
-		reply += " 324 " + _caller.get_nickname() + " " + channel.get_name() + " -l : " + _caller.get_nickname();
-		_caller.add_response(reply);
-	}
+	if (channel.get_user_limit() == -1)
+		return ("");
+	channel.set_user_limit(-1);
+	return (usermask(_caller) + " MODE " + channel.get_name() + " -l");	
 }
 
-void	Command::mode_topic(Channel &channel, bool is_plus)
+std::string	Command::mode_operator(Channel &channel, bool is_plus, User &user)
 {
-	if (is_plus == true)
-	{
-		channel.set_topic_restriction(is_plus);
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +t";
-		_caller.add_response(reply);
-	}
-	else
-	{
-		channel.set_topic_restriction(is_plus);
-		std::cout << PURPLE << "Channel " << channel.get_name() << " is set to invite only" << RESET << std::endl;
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -t";
-		_caller.add_response(reply);
-	}
-}
-
-void	Command::mode_invite(Channel &channel, bool is_plus)
-{
-	channel.set_invite_only(is_plus);
 	if (is_plus == false)
 	{
-		std::cout << PURPLE << "Channel " << channel.get_name() << " is set to public" << std::endl;
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " -i";
-		_caller.add_response(reply);
+		if (channel.is_operator(user) == false)
+			return ("");
+		channel.remove_operator(user);
+		return (usermask(_caller) + " MODE " + channel.get_name() + " -o :" + user.get_nickname());
 	}
+	if (channel.is_operator(user) == true)
+		return ("");
+	channel.add_operator(user);
+	return (usermask(_caller) + " MODE " + channel.get_name() + " +o :" + user.get_nickname());
+}
+
+
+std::string	Command::mode_topic(Channel &channel, bool is_plus)
+{
 	if (is_plus == true)
 	{
-		std::cout << PURPLE << "Channel " << channel.get_name() << " is set to invite only" << std::endl;
-		std::string reply = usermask(_caller) + " MODE " + channel.get_name() + " +i";
-		_caller.add_response(reply);
+		if (channel.is_topic_restricted() == true)
+			return ("");
+		channel.set_topic_restriction(is_plus);
+		return (usermask(_caller) + " MODE " + channel.get_name() + " +t");
 	}
+	if (channel.is_topic_restricted() == false)
+		return ("");
+	channel.set_topic_restriction(is_plus);
+	return (usermask(_caller) + " MODE " + channel.get_name() + " -t");
+}
+
+std::string	Command::mode_invite(Channel &channel, bool is_plus)
+{
+	channel.set_invite_only(is_plus);
+	if (is_plus == true)
+	{
+		if (channel.is_invite_only() == true)
+			return ("");
+		return (usermask(_caller) + " MODE " + channel.get_name() + " +i");
+	}
+	if (channel.is_invite_only() == false)
+		return ("");
+	return (usermask(_caller) + " MODE " + channel.get_name() + " -i");
+}
+
+void	Command::mode_user(User &user, std::string flag)
+{
+	if (flag == "+i")
+	{
+		user.add_response(std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag);
+		return;
+	}
+	user.add_response(std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag);
 }
 
 void	Command::mode_channel(Channel &channel)
@@ -121,20 +119,6 @@ void	Command::mode_channel(Channel &channel)
 		return;
 	}
 	channel.mode(_caller);
-}
-
-void	Command::mode_user(User &user, std::string flag)
-{
-	if (flag == "+i")
-	{
-		std::string reply = std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag;
-		user.add_response(reply);
-	}
-	if (flag == "-i")
-	{
-		std::string reply = std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag;
-		user.add_response(reply);
-	}
 }
 
 void	Command::mode(void)
@@ -162,14 +146,16 @@ void	Command::mode(void)
 		return;
 	}
 
+	std::string reply;
 	if (flag[1] == 'l')
-		mode_limit(channel, is_plus, _arguments[3]);
+		reply = mode_limit(channel, is_plus, _arguments[3]);
 	else if (flag[1] == 'i')
-		mode_invite(channel, is_plus);
+		reply = mode_invite(channel, is_plus);
 	else if (flag[1] == 't')
-		mode_topic(channel, is_plus);
+		reply = mode_topic(channel, is_plus);
 	else if (flag[1] == 'o')
-		mode_operator(channel, is_plus, _server.get_user(_arguments[3]));
+		reply = mode_operator(channel, is_plus, _server.get_user(_arguments[3]));
 	else if (flag[1] == 'k')
-		mode_password(channel, is_plus, _arguments[3]);
+		reply = mode_password(channel, is_plus, _arguments[3]);
+	channel.send_notice(reply);
 }

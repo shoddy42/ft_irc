@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 15:46:53 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/06 03:59:58 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ class Channel
 
 		bool	has_password(void);
 		bool	is_topic_restricted(void);
+		bool	is_invite_only(void);
 		bool 	is_operator(User &user);
 		bool 	is_invited(User &user);
 		bool 	is_user(User &user);

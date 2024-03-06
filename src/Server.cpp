@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 17:32:24 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/06 04:04:21 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void	Server::respond(User &user)
 	{
 		std::string response = user.give_response();
 		if (response.empty())
-			break;
+			continue;
 		std::cout << user.get_nickname() << " (" << user.get_username() << ")" " >> " << YELLOW << response << RESET << std::endl;
 		response += "\r\n";
 
