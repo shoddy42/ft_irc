@@ -19,7 +19,7 @@ void	Command::user(void)
 	std::string hostname = limit_name_length(_arguments[3]);
 	std::string realname = limit_name_length(_arguments[4]);
 
-	if (&_server.get_user(username) != &_server.get_user(-42))
+	if (_server.get_user(username).get_username() != NULL_USER)
 	{
 		//reprompt user, user already exists error.
 		std::string response = "462 :Unauthorized command (already registered)";
@@ -40,7 +40,7 @@ void	Command::user(void)
 	if (_server.get_password() == "")
 		_caller.authenticate();
 		
-	std::string reply = usermask(_caller) + " NICK " + nickname;
-	std::cout << L_BLUE << reply << RESET << std::endl;
-	_caller.add_response(reply);
+	// std::string reply = usermask(_caller) + " NICK " + nickname;
+	// std::cout << L_BLUE << reply << RESET << std::endl;
+	// _caller.add_response(reply);
 }

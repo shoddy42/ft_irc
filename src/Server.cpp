@@ -69,7 +69,7 @@ Server &Server::operator=(Server const &src)
 void	Server::start(int port, std::string password)
 {
 	_listen_socket = guard(socket(AF_INET, SOCK_STREAM, 0), "Failed to create socket. errno:");
-	guard(fcntl(_listen_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+	// guard(fcntl(_listen_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 	
 	sockaddr_in sock_address;
 	sock_address.sin_port = htons(port);

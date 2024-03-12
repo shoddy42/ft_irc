@@ -84,7 +84,8 @@ debug:
 	@$(CC) $(FLAGS) $(DEBUG) $(OBJS) -o $(NAME) 
 	@printf "$(BLUE)The Executable $(YELLOW)$(NAME) $(BLUE)Compiled With $(RED)fsantize!\n$(END)"
 
-all: $(NAME)
+all:
+	$(MAKE) $(NAME) -j8
 
 run: all
 	./$(NAME)

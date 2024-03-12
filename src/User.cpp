@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-User::User(int sock): _username(""), _nickname(""), _authenticated(false), _socket(sock)
+User::User(int sock): _username(NULL_USER), _nickname(NULL_USER), _authenticated(false), _socket(sock)
 {
 
 }

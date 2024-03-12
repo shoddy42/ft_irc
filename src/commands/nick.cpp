@@ -15,7 +15,9 @@
 static bool name_exists(std::string name, Server &server, User &caller)
 {
 	User &user = server.get_user(name);
-	if (user.get_nickname() == name || (user.get_username() == name && &user != &caller))
+	if (&user == &caller || user.get_username() == NULL_USER)
+		return (false);
+	if (user.get_nickname() == name || (user.get_username() == name))
 		return (true);
 	return (false);
 }
@@ -24,7 +26,7 @@ void	Command::nick()
 {
 	std::string desired_name = limit_name_length(_arguments[1]);
 
-	if (!is_alnum(desired_name) )
+	if (!is_alnum(desired_name))
 		return;
 	if (name_exists(desired_name, _server, _caller))
 	{

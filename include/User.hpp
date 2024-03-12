@@ -16,6 +16,8 @@
 # include <poll.h>
 # include <queue>
 
+# define NULL_USER "" //dont change pls
+
 class User
 {
 	private:
