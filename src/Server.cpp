@@ -115,7 +115,7 @@ void	Server::serve(void)
 		else if (pollfds[i].revents & POLLIN) //client sent server a message
 		{
 			_unfinished_packets[i] += receive(i);
-			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos && _unfinished_packets[i].empty() == true)
+			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos)
 				std::cout << RED << "Received Unfinished packet [" << _unfinished_packets[i] << "]" << std::endl << RESET;
 			if (_unfinished_packets.empty())
 			{
@@ -151,21 +151,24 @@ std::string	Server::receive(int sock)
 
 static bool border_patrol(std::string response, User &user, Server &server)
 {
-
+	std::string disconnect_msg;
 	if (response == "462 :Unauthorized command (already registered)\r\n")
 	{
 		std::cout << "Registered user getting booted!\n";
 		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
-		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-		server.remove_user(user);
 	}
 	else if (response == "464 * :Password incorrect!\r\n")
 	{
 		std::cout << "Unregistered user getting booted!\n";
 		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
-		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-		server.remove_user(user);
 	}
+	else if (response == "464 * :Please provide a password.\r\n")
+	{
+		std::cout << "Unregistered user getting booted!\n";
+		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Please send PASS first)." ;
+	}
+	send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
+	server.remove_user(user);
 	return (true);
 }
 
