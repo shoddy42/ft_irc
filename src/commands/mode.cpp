@@ -87,7 +87,6 @@ std::string	Command::mode_topic(Channel &channel, bool is_plus)
 
 std::string	Command::mode_invite(Channel &channel, bool is_plus)
 {
-	channel.set_invite_only(is_plus);
 	if (is_plus == true)
 	{
 		if (channel.is_invite_only() == true)
@@ -96,6 +95,7 @@ std::string	Command::mode_invite(Channel &channel, bool is_plus)
 	}
 	if (channel.is_invite_only() == false)
 		return ("");
+	channel.set_invite_only(is_plus);
 	return (usermask(_caller) + " MODE " + channel.get_name() + " -i");
 }
 
