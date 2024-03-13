@@ -19,15 +19,14 @@ void	Command::user(void)
 	std::string hostname = limit_name_length(_arguments[3]);
 	std::string realname = limit_name_length(_arguments[4]);
 
-	if (_server.get_user(username).get_username() != NULL_USER)
+	if (_server.get_user(username).get_username() != NULL_USER) //reprompt user, user already exists error.
 	{
-		//reprompt user, user already exists error.
 		std::string response = "462 :Unauthorized command (already registered)";
 		_caller.add_response(response);
 		return;
 	}
 	//accept user because it doesnt already exist
-	std::cout << PURPLE << "USER " << username << " registered\n" << RESET;
+	std::cout << PURPLE << "USER " << username << " registered" << std::endl << RESET;
 	std::string response = std::string(SERVER_SIGNATURE) + " 001 " + username + " " + std::string(RPL_WELCOME);
 	_caller.set_username(username);
 	_caller.set_nickname(nickname);
@@ -40,7 +39,6 @@ void	Command::user(void)
 	if (_server.get_password() == "")
 		_caller.authenticate();
 		
-	// std::string reply = usermask(_caller) + " NICK " + nickname;
-	// std::cout << L_BLUE << reply << RESET << std::endl;
-	// _caller.add_response(reply);
+	std::string reply = usermask(_caller) + " NICK " + nickname;
+	_caller.add_response(reply);
 }

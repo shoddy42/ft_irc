@@ -22,7 +22,7 @@ Server::Server(void)
 	_creation_time = ctime(&now);
 	if (!_creation_time.empty() && _creation_time[_creation_time.length() - 1] == '\n')
 		_creation_time.pop_back();
-	_unfinished_packets.resize(MAX_CLIENTS);
+	// _unfinished_packets.resize(MAX_CLIENTS + 1);
 }
 
 Server::Server(const Server &src)
@@ -79,7 +79,7 @@ void	Server::start(int port, std::string password)
 	int opt = 1;
 	guard(setsockopt(_listen_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)), "Failed to set socket to reusable. errno: ");
 	guard(bind(_listen_socket, (struct sockaddr*)&sock_address, sizeof(sockaddr_in)), "Failed to bind to port. errno: ");
-	guard(listen(_listen_socket, MAX_CLIENTS), "Failed to listen on socket. errno: ");
+	guard(listen(_listen_socket, MAX_CLIENTS + 1), "Failed to listen on socket. errno: ");
    
 	pollfd listen_socket;
 	listen_socket.fd = _listen_socket;
@@ -115,13 +115,18 @@ void	Server::serve(void)
 		else if (pollfds[i].revents & POLLIN) //client sent server a message
 		{
 			_unfinished_packets[i] += receive(i);
-			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos)
+			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos && _unfinished_packets[i].empty() == true)
 				std::cout << RED << "Received Unfinished packet [" << _unfinished_packets[i] << "]" << std::endl << RESET;
+			if (_unfinished_packets.empty())
+			{
+				std::cout << "C";
+			}
 			else
 			{
 				do_command(_unfinished_packets[i], get_user(pollfds[i].fd));
 				_unfinished_packets[i].clear();
 			}
+			pollfds[i].revents = 0;
 		}
 		else if (pollfds[i].revents & POLLOUT) //client is ready for a response
 			respond(get_user(pollfds[i].fd));
@@ -214,7 +219,7 @@ void	Server::accept_new_connection(void)
 	{
 		std::cout << "New connection found." << std::endl;
 		int client_socket = guard(accept(pollfds[0].fd, nullptr, nullptr), "Failed to accept socket. errno: ");
-		guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
+		// guard(fcntl(client_socket, F_SETFL, O_NONBLOCK), "Failed to set socket to non-blocking. errno: ");
 		add_user(client_socket);
 	}
 }
@@ -224,13 +229,18 @@ void	Server::accept_new_connection(void)
  */
 void	Server::socket_cleanup(int sock)
 {
-	if (sock == INVALID_FD)
+	if (sock == INVALID_FD || sock == 0)
 		return;
 	std::cout << PURPLE << "Socket cleanup on aisle " << sock << RESET << std::endl;
 	close(sock);
 	for (std::list<User>::iterator it = users.begin(); it != users.end(); it++)
+	{
 		if (it->get_socket() == sock)
+		{
 			it->set_socket(INVALID_FD);
+			break;
+		}
+	}
 
 	for (size_t i = 0; i < pollfds.size(); i++)
 	{
@@ -245,6 +255,8 @@ void	Server::socket_cleanup(int sock)
 
 void	Server::remove_user(User &user_to_delete)
 {
+	if (user_to_delete.get_socket() == -42)
+		return;
 	for (std::list<Channel>::iterator channel = channels.begin(); channel != channels.end(); channel++)
 		if (channel->remove_user(user_to_delete, "User has left the server") == true)
 			channel = channels.begin();
@@ -286,8 +298,30 @@ void Server::add_user(int sock)
 	new_fd.fd = sock;
 	new_fd.events = POLLIN | POLLOUT;
 	new_fd.revents = 0;
-	pollfds.push_back(new_fd);
 
+	bool added_user = false;
+
+	for (size_t i = 1; i < pollfds.size(); i++) //check if any of the old pollfds have since left.
+	{
+		if (pollfds[i].fd == INVALID_FD)
+		{
+			pollfds[i] = new_fd;
+			added_user = true;
+			break;
+		}
+	}
+	if (added_user == false) //if there is no reusable space, push more space instead.
+	{
+		if (pollfds.size() >= MAX_CLIENTS + 1)
+		{
+			std::cout << RED << "Server is full." << END_LINE;
+			socket_cleanup(sock);
+			return;
+		}
+		pollfds.push_back(new_fd);
+	}
+	if (pollfds.size() > _unfinished_packets.size())
+		_unfinished_packets.resize(pollfds.size());
 	User new_user(sock);
 	users.push_back(new_user);
 }

@@ -26,7 +26,7 @@ void	Command::nick()
 {
 	std::string desired_name = limit_name_length(_arguments[1]);
 
-	if (!is_alnum(desired_name))
+	if (!is_alnum(desired_name) || desired_name.empty() || _caller.get_nickname().empty())
 		return;
 	if (name_exists(desired_name, _server, _caller))
 	{

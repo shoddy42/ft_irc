@@ -16,10 +16,10 @@ void Command::kick(void)
 {
 	std::string mem = _arguments[2];
 	std::string chan = _arguments[1];
-	std::string reason = "";
-	for (size_t i = 3; i < _arguments.size(); i++)
-		reason += _arguments[i] + " ";
-	
+	std::string reason;
+	for (size_t i = 3; i < _arguments.size() && _arguments[i].empty() == false; i++)
+		reason += _arguments[i] + (i < _arguments.size() -1 ? " " : "");
+
 	Channel &channel = _server.get_channel(chan);
 	User	&member = _server.get_user(mem);
 
@@ -34,8 +34,6 @@ void Command::kick(void)
 
 	if (channel.is_user(member) == false)
 		return;
-	// if (channel.is_operator(member) == true)
-	// 	return;
 
 	std::string channel_response = usermask(member);
 	channel_response += " KICK " + channel.get_name() + " " + member.get_nickname() + " " + reason;

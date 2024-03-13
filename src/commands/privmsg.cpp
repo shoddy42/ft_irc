@@ -18,7 +18,8 @@ void	Command::privmsg(void)
 
 	//finish packet, except for CRLF
 	for(size_t i = 0; i < _arguments.size(); i++)
-		msg_text += " " + _arguments[i];
+		if (_arguments[i].empty() == false)
+			msg_text += " " + _arguments[i];
 
 	std::string recipient = _arguments[1];
 	if (recipient[0] == '#' || recipient[0] == '+' || recipient[0] == '&' || recipient[0] == '!') //message to channel

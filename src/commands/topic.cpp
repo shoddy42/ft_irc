@@ -17,7 +17,8 @@ void Command::topic(void)
 	std::string chan = _arguments[1];
 	std::string topic = _arguments[2];
 	for (size_t i = 3; i < _arguments.size(); i++)
-		topic += " " + _arguments[i];
+		if (_arguments[i].empty() == false)
+			topic += " " + _arguments[i];
 
 	Channel &channel = _server.get_channel(chan);
 

@@ -29,7 +29,6 @@ class User
 		bool		_authenticated;
 		int			_socket;
 
-		std::string _unfinished_packet;
 	public:
 	//	constructors  //
 	

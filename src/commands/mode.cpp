@@ -101,34 +101,31 @@ std::string	Command::mode_invite(Channel &channel, bool is_plus)
 
 void	Command::mode_user(User &user, std::string flag)
 {
-	if (flag == "+i")
-	{
+	if (flag == "+i" || flag == "-i")
 		user.add_response(std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag);
-		return;
-	}
-	user.add_response(std::string(SERVER_SIGNATURE) + " MODE " + user.get_nickname() + " " + flag);
 }
 
 void	Command::mode_channel(Channel &channel)
 {
-	if (_arguments.size() == 3 && _arguments[2] == "b")
+	if (_arguments[2] == "b")
 	{
 		std::string ban_reply = SERVER_SIGNATURE;
 		ban_reply += " 368 " + _caller.get_nickname() + " " + channel.get_name() + " :End of channel ban list";
 		_caller.add_response(ban_reply);
-		return;
 	}
-	channel.mode(_caller);
+	else
+		channel.mode(_caller);
 }
 
 void	Command::mode(void)
 {
-	std::string flag = "";
-	if (_arguments.size() > 2)
-		flag = _arguments[2];
 	Channel &channel = _server.get_channel(_arguments[1]);
+	std::string flag = _arguments[2];
+
 	if ((flag.empty() || flag == "b") && channel.get_name() != NULL_CHANNEL_NAME)
-		mode_channel(channel);
+		return (mode_channel(channel));
+	if (_arguments[1] == _caller.get_nickname() || _arguments[1] == _caller.get_username())
+		return(mode_user(_caller, flag));
 	if (channel.is_operator(_caller) == false)
 		return;
 
@@ -137,14 +134,6 @@ void	Command::mode(void)
 	bool is_plus = false;
 	if (flag[0] == '+')
 		is_plus = true;	
-	if (channel.get_name() == NULL_CHANNEL_NAME)
-	{
-		User &user = _server.get_user(_arguments[2]);
-		if (user.get_socket() == -42)	
-			return;
-		mode_user(user, flag);
-		return;
-	}
 
 	std::string reply;
 	if (flag[1] == 'l')

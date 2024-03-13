@@ -43,14 +43,16 @@ void Command::add_argument(std::string argument)
 
 void Command::execute(void)
 {
+	while (_arguments.size() < 5)
+		_arguments.push_back("");
 	std::string key = _arguments[0].data();
 
 	if (key == "CAP" || (key == "NICK" && _caller.get_authenticated() == false))
 		return;
 	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
 	{
-		std::string wrong_pass = "464 * :Password incorrect!";
-		_caller.add_response(wrong_pass);
+		std::string not_pass = "464 * :Please provide a password.";
+		_caller.add_response(not_pass);
 		return;
 	}
 	if (command_map.find(key) == command_map.end())
@@ -94,6 +96,8 @@ std::vector<std::string> Command::split_argument(std::string input)
 
 bool Command::is_alnum(const std::string &str) {
 	// for (char c : str)
+	if (str.empty())
+		return (false);
 	for (size_t i = 0; i < str.size(); i++)
 		if (!std::isalnum(str[i]))
 			return (false);

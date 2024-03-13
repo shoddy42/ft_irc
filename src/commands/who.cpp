@@ -14,8 +14,6 @@
 
 void	Command::who(void)
 {
-	if (_arguments.size() < 2)
-		return;
 	Channel &channel = _server.get_channel(_arguments[1]);
 	if (channel.get_name() == NULL_CHANNEL_NAME)
 		return;

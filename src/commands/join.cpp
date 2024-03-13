@@ -15,9 +15,7 @@
 void	Command::join(void)
 {
 	std::vector<std::string> channel_names = split_argument(_arguments[1]);
-	std::vector<std::string> channel_passwords;
-	if (_arguments.size() > 2)
-		channel_passwords = split_argument(_arguments[2]);
+	std::vector<std::string> channel_passwords = split_argument(_arguments[2]);
 
 	for (size_t i = 0; i < channel_names.size(); i++)
 	{
