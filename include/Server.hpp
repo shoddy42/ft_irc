@@ -87,6 +87,7 @@ class Server
 		void		serve(void);
 		std::string	receive(int sock);
 		void		respond(User &user);
+		void		respond_(User &user);
 
 		void		do_command(std::string buffer, User &caller);
 		void		add_channel(std::string name, User &creator);

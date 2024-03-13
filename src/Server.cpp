@@ -149,6 +149,26 @@ std::string	Server::receive(int sock)
 	return ("");
 }
 
+static bool border_patrol(std::string response, User &user, Server &server)
+{
+
+	if (response == "462 :Unauthorized command (already registered)\r\n")
+	{
+		std::cout << "Registered user getting booted!\n";
+		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
+		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
+		server.remove_user(user);
+	}
+	else if (response == "464 * :Password incorrect!\r\n")
+	{
+		std::cout << "Unregistered user getting booted!\n";
+		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
+		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
+		server.remove_user(user);
+	}
+	return (true);
+}
+
 void	Server::respond(User &user)
 {
 	while (user.check_response() > 0)
@@ -158,23 +178,8 @@ void	Server::respond(User &user)
 			continue;
 		std::cout << user.get_nickname() << " (" << user.get_username() << ")" " >> " << YELLOW << response << RESET << std::endl;
 		response += "\r\n";
-
-		if (response == "462 :Unauthorized command (already registered)\r\n")
-		{
-			std::cout << "Registered user getting booted!\n";
-			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
-			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-			remove_user(user);
+		if (border_patrol(response, user, *this) == false)
 			break;
-		}
-		else if (response == "464 * :Password incorrect!\r\n")
-		{
-			std::cout << "Unregistered user getting booted!\n";
-			std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
-			send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-			remove_user(user);
-			break;
-		}
 		send(user.get_socket(), response.c_str(), response.length(), 0);
 	}
 }
@@ -208,7 +213,7 @@ void	Server::do_command(std::string buffer, User &caller)
 
 void	Server::shutdown(void)
 {
-	for (size_t i = 0; i < pollfds.size(); i++)
+	for (size_t i = 0; i < pollfds.size() && i < MAX_CLIENTS; i++)
 		if (pollfds[i].fd > 0)
 			socket_cleanup(pollfds[i].fd);
 }
@@ -248,7 +253,8 @@ void	Server::socket_cleanup(int sock)
 		{
 			pollfds[i].fd = INVALID_FD;
 			pollfds[i].revents = 0;
-			_unfinished_packets[i].clear();
+			if (_unfinished_packets.size() < i)
+				_unfinished_packets[i].clear();
 		}
 	}
 }
