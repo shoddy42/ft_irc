@@ -28,7 +28,7 @@ SRC_DIR		:= src
 S_CMD		:= commands
 
 HDR_DIR		:= include
-OBJ_DIR		:= src
+OBJ_DIR		:= obj
 
 # ----------------------------------------- #
 # --------------- FILES ------------------- #
