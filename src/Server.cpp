@@ -117,10 +117,6 @@ void	Server::serve(void)
 			_unfinished_packets[i] += receive(i);
 			if (_unfinished_packets[i].find(std::string("\n")) == std::string::npos)
 				std::cout << RED << "Received Unfinished packet [" << _unfinished_packets[i] << "]" << std::endl << RESET;
-			if (_unfinished_packets.empty())
-			{
-				std::cout << "C";
-			}
 			else
 			{
 				do_command(_unfinished_packets[i], get_user(pollfds[i].fd));
