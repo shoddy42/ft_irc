@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2024/03/05 16:37:31 by shoddy        ########   odam.nl          #
+#    Updated: 2024/03/15 00:36:51 by shoddy        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,11 @@
 # --------------- VARIABLES --------------- #
 # ----------------------------------------- #
 
-NAME 	:= irc_bot
-FLAGS 	= #-Wall -Wextra -Werror
+NAME 	:= simple_bot
+FLAGS 	=  #-Wall -Wextra -Werror
 DEBUG 	:= -g -fsanitize=address
 CC		:= c++
+LIB_FLAG := -lcurl
 
 # ---------------------------------------- #
 # --------------- DIRECTORIES ------------ #
@@ -38,8 +39,9 @@ HEADER_FILES := Bot colours
 
 MAIN_FILES	:= main Bot
 CMD_FILES :=
+BONUS_FILES := src/bonus.cpp
 
-FILES	:=	$(MAIN_FILES:%=%.cpp) \
+FILES	=	$(MAIN_FILES:%=%.cpp) \
 			$(addprefix $(S_CMD)/, $(CMD_FILES:%=%.cpp))
 
 SRCS	:=	$(addprefix $(SRC_DIR)/, $(FILES))
@@ -47,6 +49,7 @@ SRCS	:=	$(addprefix $(SRC_DIR)/, $(FILES))
 OBJS	:=	$(addprefix $(OBJ_DIR)/, $(FILES:%.cpp=%.o))
 # HEADERS	:=	$(HEADER_FILES:%=%.hpp)
 HEADERS :=	$(addprefix $(HDR_DIR)/, $(HEADER_FILES:%=%.hpp))
+
 
 # ----------------------------------------- #
 # --------- COLOURS / FORMATTING ---------- #
@@ -76,10 +79,10 @@ VIOLET	:= \1\33[38;5;183m\2
 
 $(NAME): $(HEADERS) $(OBJS)
 	@printf "$(BLUE)Compiling $(YELLOW)$(NAME)\n$(END)"
-	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) 
+	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) -lcurl
 	@printf "$(YELLOW)$(NAME) Compiled!\n$(END)"
 
-debug:
+debug: $(HEADERS) $(OBJS)
 	@printf "$(BLUE)Compiling With Debug Flags $(YELLOW)$(NAME)\n$(END)"
 	@$(CC) $(FLAGS) $(DEBUG) $(OBJS) -o $(NAME) 
 	@printf "$(BLUE)The Executable $(YELLOW)$(NAME) $(BLUE)Compiled With $(RED)fsantize!\n$(END)"
@@ -105,6 +108,12 @@ fclean:	clean
 
 re: fclean all
 
+bonus: $(HEADERS) $(OBJS)
+	@printf "$(BLUE)Compiling $(PURPLE) BONUS MODE $(YELLOW)$(NAME)\n$(END)"
+	$(CC) $(FLAGS) $(OBJS) src/bonus.cpp -o $(NAME) -lcurl
+	@printf "$(YELLOW)$(NAME) Compiled!\n$(END)"
+	@exit 0
+
 pog:
 	@printf "\n$(RED)"
 	@printf "⣿⣿⣿⣿⡿⠟⠛⠛⠛⠛⠉⠉⠙⠛⠛⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠟   \n"
@@ -124,4 +133,4 @@ pog:
 	@printf "⠄⠈⠉⠻⢿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠉          \n"
 	@printf "$(END)"
 
-.PHONY: all clean fclean re pog debug
+.PHONY: all clean fclean re pog debug bonus

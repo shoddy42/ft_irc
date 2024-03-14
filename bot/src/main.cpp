@@ -47,11 +47,10 @@ int main(int argc, char* argv[]) {
     srand(time(NULL)); //Set a seed based on time for future rand() calls.
     escape = false;
     Bot irc_bot(argv[1], argv[2]);
-    irc_bot.start(DEFAULT_IP);
-    // Add further functionality here
+    irc_bot.login();
     while(escape == false)
     {
-        sleep (1);
+        // sleep (1);
         irc_bot.serve();
     }
     irc_bot.stop();

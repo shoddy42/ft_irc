@@ -18,24 +18,40 @@
 # include <iostream>
 # include <string>
 # include <cstring>
+# include <sstream>
 # include <queue>
+# include <chrono>
 
-# include <stdlib.h>     /* srand, rand */
-# include <time.h>       /* time */
+# include <stdlib.h>
+# include <time.h>
 # include <unistd.h>
 # include <poll.h>
 # include <signal.h>
 # include <arpa/inet.h>
 # include <sys/socket.h>
 
-# define DEFAULT_NAME	"FT_IRC_BOT"
-# define DEFAULT_IP		"127.0.0.1"
-# define DEFAULT_CHANNEL "#general"
-# define DEFAULT_CHANNEL_PASS ""
+// #  ifdef BONUS
+// #  endif
+// # include <curl/curl.h> /* for html to huggingface */
+
+// Name the bot will register to the server with, using USER
+# define BOT_NAME	"Quantum1.0"
+# define BOT_USER	"AdvancedAI"
+# define BOT_HOST	"OpenAI"
+# define BOT_REAL	"QuantumSuperAI3.5"
+
+# define API_KEY	"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"
+
+# define BOT_IP		"127.0.0.1"
+# define BOT_CHANNEL "#general"
+# define BOT_CHANNEL_PASS ""
+# define JOIN_MESSAGE_WINDOW 2
+# define GPT_COOLDOWN	10
 # define POLL_TIMEOUT	2000
 # define BUFFER_SIZE	512
 
 int guard(int n, std::string error_msg);
+std::string ask_question(const std::string& question);std::string ask_question(const std::string& question);
 
 class Bot
 {
@@ -43,16 +59,26 @@ class Bot
 		std::queue<std::string> _received;
 		std::queue<std::string> _responses;
 
+		std::chrono::steady_clock::time_point _join_time;
+		std::chrono::steady_clock::time_point _gpt_time;
 		std::string _unfinished_packet;
 		std::string _password;
-		std::string	_botname;
 		pollfd		_server;
 
 		int	_socket;
 		int _port;
 
+
 		bool _in_server;
 		bool _in_channel;
+
+		std::string mask(void);
+		void message_channel(std::string msg);
+		std::string generate_text(const std::string& prompt);
+		void execute_advanced_ai(std::string);
+		void process(std::string packet);
+		std::string receive(void);
+		void respond(void);
 
 	public:
 	//	constructors  //
@@ -64,15 +90,9 @@ class Bot
 
 	//	methods  //
 	
-		void start(std::string ip);
-		void stop(void);
-		void serve(void);
-		void respond(void);
-		std::string receive(void);
-
-		void message_channel(std::string msg);
 		void login(void);
-		void process(std::string packet);
+		void serve(void);
+		void stop(void);
 
 	//	getters/setters  //
 	
