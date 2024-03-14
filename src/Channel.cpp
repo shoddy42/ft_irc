@@ -223,7 +223,8 @@ void	Channel::add_operator(User &user)
  */
 bool	Channel::remove_user(User &user, std::string reason)
 {
-	// if (get_name() ==)
+	if (get_name() == NULL_CHANNEL_NAME)
+		return (false);
 	std::cout << PURPLE << "Remove user called on " << get_name() << "\n" << RESET;
 	for(std::list<User *>::iterator usr = _user_list.begin(); usr != _user_list.end(); usr++)
 	{
