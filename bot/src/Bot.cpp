@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/15 00:56:49 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/15 02:21:07 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,36 +58,108 @@ Bot &Bot::operator=(Bot const &src)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+static std::string to_lowercase(const std::string& str)
+{
+    std::string ret;
+    for (char c : str)
+        ret += std::tolower(c);
+    return (ret);
+}
+
+/**
+ * @brief simply add another else if block and use simple string parsing for additional features.
+ * @param packet the entire string received by the server, but will made made all lower case.
+ */
 void Bot::execute_advanced_ai(std::string packet)
 {
-	// Check if the message is received within a certain time window after joining
-	std::cout << "test: [" << (mask() + " JOIN :" + std::string(BOT_CHANNEL)) << "]\n";
-
-	if (packet.find(mask() + " KICK :" + std::string(BOT_CHANNEL)) != std::string::npos)
+	// std::cout << "test   << " << PINK << (mask() + " KICK " + std::string(BOT_CHANNEL)) << END_LINE;
+	packet = to_lowercase(packet);
+	if (packet.find(mask() + " mode " + std::string(BOT_CHANNEL)) != std::string::npos)
 	{
 		std::cout << RED << "Kicked from channel" << END_LINE;
 		_in_channel = false;
+		_was_kicked = true;
+	}
+	else if (packet.find(mask() + " mode " + std::string(BOT_CHANNEL) + " +o") != std::string::npos)
+	{
+		std::cout << GREEN << "Modded in channel!" << END_LINE;
+		_was_kicked = false;
+		_was_modded = true;
+	}
+	else if (packet.find("sorry") != std::string::npos)
+	{
+		message_channel("okay, no problem. I'll answer questions again :)");
+		_was_kicked = false;
 	}
 	else if (packet.find("?") != std::string::npos)
 	{
-		int chance = rand() % 2;
-		if (chance == 0)
+		int chance = rand() % 10;
+		if (_was_kicked)
+			message_channel("I don't want to answer questions, unless you say sorry.");
+		else if (chance >= 0 && chance <= 3)
 			message_channel("Yes.");
-		else
+		else if (chance >= 4 && chance <= 7)
 			message_channel("No.");
+		else if (chance == 8)
+			message_channel("¯\\_(ツ)_/¯");
+		else if (chance == 9)
+			message_channel("Maybe...");
 	}
-	else if (packet.find("GPT") != std::string::npos || packet.find("gpt") != std::string::npos)
+	else if (packet.find("gpt") != std::string::npos)
+		message_channel("I'm better");
+	else if (packet.find("quantum") != std::string::npos)
+		message_channel("whats up?");
+	else if (packet.find("fact") != std::string::npos || packet.find("facts") != std::string::npos)
 	{
-		// std::string gpt_answer = ask_question("Once upon a time");
-		// std::cout << GREEN << gpt_answer << END_LINE; 
-		// message_channel(gpt_answer);
+		int chance = rand() % 8;
+		if (_was_kicked)
+			message_channel("You're annoying.");
+		else if (chance == 0)
+			message_channel("The Eiffel Tower can be 15 cm taller during the summer.");
+		else if (chance == 1)
+			message_channel("Octopuses have three hearts.");
+		else if (chance == 2)
+			message_channel("A group of flamingos is called a \"flamboyance.\"");
+		else if (chance == 3)
+			message_channel("Honey never spoils.");
+		else if (chance == 4)
+			message_channel("The shortest war in history lasted only 38 minutes.");
+		else if (chance == 5)
+			message_channel("The unicorn is the national animal of Scotland.");
+		else if (chance == 6)
+			message_channel("The world's oldest known recipe is for beer.");
+		else if (chance == 7)
+			message_channel("The human brain is more active during sleep than during the day when awake.");
 	}
-	else if (packet.find("noob") != std::string::npos)
+	else if (packet.find("hey") || packet.find("hi") || packet.find("hello"))
 	{
-		message_channel("no u");
+		int chance = rand() % 2;
+		if (_was_kicked)
+			message_channel("Bye.");
+		else if (chance == 0)
+			message_channel("Hey");
+		else if (chance == 1)
+			message_channel("Hello");
+	}
+	else if (packet.find("rock") || packet.find("paper") || packet.find("shotgun"))
+	{
+		int chance = rand() % 4;
+		if (_was_kicked)
+			return;
+		else if (chance == 0)
+			message_channel("Rock!");
+		else if (chance == 1)
+			message_channel("Paper!");
+		else if (chance == 2)
+			message_channel("Scissors!");
+		else if (chance == 2)
+			message_channel("Shotgun!");
 	}
 }
 
+/**
+ * @brief Connects to server, and to channel if needed.
+ */
 void	Bot::login(void)
 {
 	if (!_in_server)
@@ -97,17 +169,24 @@ void	Bot::login(void)
 			close(_socket);
 			_socket = -1;
 		}
-		guard(_socket = socket(AF_INET, SOCK_STREAM, 0), "Could not create socket.");
-
+		_socket = socket(AF_INET, SOCK_STREAM, 0);
+		if (_socket < 0)
+		{
+			perror("Could not create socket.");
+			return;
+		}
 		sockaddr_in server_address;
 		server_address.sin_port = htons(_port);
 		server_address.sin_family = AF_INET;
 		server_address.sin_addr.s_addr = inet_addr(BOT_IP);
 
-		if (connect(_socket, reinterpret_cast<sockaddr*>(&server_address), sizeof(server_address)) == -1) {
+		if (connect(_socket, reinterpret_cast<sockaddr*>(&server_address), sizeof(server_address)) < 0)
+		{
 			perror("Connection failed");
 			close(_socket);
+			return;
 		}
+
 		_server.fd =_socket;
 		_server.events = POLLIN | POLLOUT;
 		std::cout << "Connected to the server successfully\n";
@@ -117,6 +196,7 @@ void	Bot::login(void)
 		std::string user = "USER " + std::string(BOT_USER) + " " + std::string(BOT_NAME) + " " + std::string(BOT_HOST) + " :" + std::string(BOT_REAL);
 		_responses.push(user);
 
+		_was_kicked = false;
 		_in_server = true;
 	}
 	if (!_in_channel)
@@ -124,8 +204,13 @@ void	Bot::login(void)
 		std::string join = "JOIN " + std::string(BOT_CHANNEL) + " " + std::string(BOT_CHANNEL_PASS);
 		_responses.push(join);
 		std::cout << "Connecting to channel " << BOT_CHANNEL << END_LINE;
-		message_channel(std::string(BOT_NAME) + " has joined to answer all your questions.");
+		if (_was_kicked)
+			message_channel(std::string(BOT_NAME) + " I can't believe you kicked me... ");
+		else		
+			message_channel(std::string(BOT_NAME) + " has joined to answer all your questions.");
 		_in_channel = true;
+		_was_modded = false;
+		_disregarding_notice = false;
 		_join_time = std::chrono::steady_clock::now();
 	}
 }
@@ -155,19 +240,24 @@ std::string Bot::receive(void)
 		return ("");
 	else if (bytes_read == 0) // Connection closed by the client
 	{
-
 	}
 	else  				      // Actually received a message
 		return (std::string(buffer));
 	return ("");
 }
 
+/**
+ * @brief Returns the mask the server sends to signify it's for the bot.
+ * 		  if find(mask()) != npos), its almost definitely for the bot.
+ */
 std::string Bot::mask(void)
 {
 	return (":" + std::string(BOT_NAME) + "!" + std::string(BOT_USER) + "@" + std::string(BOT_HOST));
 }
 
-
+/**
+ * @brief Adds "PRIVMSG @b (channel_name) " before your message.
+ */
 void Bot::message_channel(std::string msg)
 {
 	std::string response = "PRIVMSG " + std::string(BOT_CHANNEL);
@@ -175,22 +265,28 @@ void Bot::message_channel(std::string msg)
 	_responses.push(response);
 }
 
-// Hugging Face API endpoint for text generation
-// const std::string API_URL = "https://api-inference.huggingface.co/models/gpt2";
-
-
+/**
+ * @brief splits string into smaller strings to feed to the insane ai
+ */
 void Bot::process(std::string buffer)
 {
 	if (buffer.empty())
 		return;
+
+	// Check if the message is received within a certain time window after joining, to avoid responding to history.
 	auto now = std::chrono::steady_clock::now();
 	auto time_elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - _join_time).count();
 	if (time_elapsed < JOIN_MESSAGE_WINDOW)
 	{
-		std::cout << PURPLE << "Disregarding" << END_LINE;
+		if (_disregarding_notice == false)
+		{
+			std::cout << PURPLE << "Disregarding for " << JOIN_MESSAGE_WINDOW - time_elapsed << " seconds" << END_LINE;
+			_disregarding_notice = true;
+		}
 		_unfinished_packet.clear();
 		return;
 	}
+	
 	std::stringstream ss(buffer);
 	std::string line;
 	while (std::getline(ss, line, '\n'))
@@ -228,19 +324,11 @@ void Bot::stop(void)
 {
 	send(_socket, "QUIT\r\n", 6, 0);
 	_unfinished_packet.clear();
-	// _responses.c.clear();
 	close(_socket);
 }
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
-
-// getters
-
-
-
-// setters
-
 
 /* ************************************************************************** */

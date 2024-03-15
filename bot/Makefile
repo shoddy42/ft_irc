@@ -6,7 +6,7 @@
 #    By: wkonings <wkonings@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/01/16 15:30:52 by wkonings      #+#    #+#                  #
-#    Updated: 2024/03/15 00:36:51 by shoddy        ########   odam.nl          #
+#    Updated: 2024/03/15 01:02:21 by shoddy        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 # ----------------------------------------- #
 
 NAME 	:= simple_bot
-FLAGS 	=  #-Wall -Wextra -Werror
+FLAGS 	:=  -Wall -Wextra -Werror
 DEBUG 	:= -g -fsanitize=address
 CC		:= c++
 LIB_FLAG := -lcurl

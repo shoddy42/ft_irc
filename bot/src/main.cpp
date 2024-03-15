@@ -15,19 +15,6 @@
 bool escape;
 
 /**
- * @brief if n == -1, will exit the program, writing error_msg.
- * 		  use instead of small if blocks.
- * 
- * @return @b int n
- */
-int guard(int n, std::string error_msg)
-{
-	if (n == -1)
-		escape = true;
-	return (n);
-}
-
-/**
  * @brief Just makes ctrl+c quit the program when used with Signal()
  * 
  * @param signum automatically gets set by signals.
@@ -50,7 +37,7 @@ int main(int argc, char* argv[]) {
     irc_bot.login();
     while(escape == false)
     {
-        // sleep (1);
+        sleep (REACTION_TIME);
         irc_bot.serve();
     }
     irc_bot.stop();

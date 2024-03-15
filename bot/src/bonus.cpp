@@ -2,6 +2,11 @@
 #include <string>     // For std::string
 #include <curl/curl.h>  // For libcurl functionality
 #include "../include/Bot.hpp"
+
+
+// Hugging Face API endpoint for text generation
+// const std::string API_URL = "https://api-inference.huggingface.co/models/gpt2";
+
 // Callback function to write response data
 size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::string *response) {
     response->append((char *)contents, size * nmemb);
