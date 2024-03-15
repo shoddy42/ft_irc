@@ -40,7 +40,7 @@
 # define BOT_HOST	"OpenAI"
 # define BOT_REAL	"QuantumSuperAI3.5"
 
-# define API_KEY	"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"
+# define API_KEY	""
 
 # define BOT_IP		"127.0.0.1"
 # define BOT_CHANNEL "#general"
