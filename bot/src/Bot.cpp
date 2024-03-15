@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/15 02:23:12 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/15 02:31:33 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,15 @@ void Bot::execute_advanced_ai(std::string packet)
 {
 	// std::cout << "test   << " << PINK << (mask() + " KICK " + std::string(BOT_CHANNEL)) << END_LINE;
 	packet = to_lowercase(packet);
-	if (packet.find(mask() + " mode " + std::string(BOT_CHANNEL)) != std::string::npos)
+	if (packet.find(mask() + " kick " + to_lowercase(BOT_CHANNEL)) != std::string::npos)
 	{
 		std::cout << RED << "Kicked from channel" << END_LINE;
 		_in_channel = false;
 		_was_kicked = true;
 	}
-	else if (packet.find(mask() + " mode " + std::string(BOT_CHANNEL) + " +o") != std::string::npos)
+	else if (packet.find(":you are not in the channel " + to_lowercase(BOT_CHANNEL)) != std::string::npos)
+		_in_channel = false;
+	else if (packet.find(mask() + " mode " + to_lowercase(BOT_CHANNEL) + " +o") != std::string::npos)
 	{
 		std::cout << GREEN << "Modded in channel!" << END_LINE;
 		_was_kicked = false;
@@ -91,24 +93,8 @@ void Bot::execute_advanced_ai(std::string packet)
 		message_channel("okay, no problem. I'll answer questions again :)");
 		_was_kicked = false;
 	}
-	else if (packet.find("?") != std::string::npos)
-	{
-		int chance = rand() % 10;
-		if (_was_kicked)
-			message_channel("I don't want to answer questions, unless you say sorry.");
-		else if (chance >= 0 && chance <= 3)
-			message_channel("Yes.");
-		else if (chance >= 4 && chance <= 7)
-			message_channel("No.");
-		else if (chance == 8)
-			message_channel("¯\\_(ツ)_/¯");
-		else if (chance == 9)
-			message_channel("Maybe...");
-	}
 	else if (packet.find("gpt") != std::string::npos)
 		message_channel("I'm better");
-	else if (packet.find("quantum") != std::string::npos)
-		message_channel("whats up?");
 	else if (packet.find("fact") != std::string::npos || packet.find("facts") != std::string::npos)
 	{
 		int chance = rand() % 8;
@@ -155,6 +141,22 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 2)
 			message_channel("Shotgun!");
 	}
+	else if (packet.find("?") != std::string::npos)
+	{
+		int chance = rand() % 10;
+		if (_was_kicked)
+			message_channel("I don't want to answer questions, unless you say sorry.");
+		else if (chance >= 0 && chance <= 3)
+			message_channel("Yes.");
+		else if (chance >= 4 && chance <= 7)
+			message_channel("No.");
+		else if (chance == 8)
+			message_channel("¯\\_(ツ)_/¯");
+		else if (chance == 9)
+			message_channel("Maybe...");
+	}
+	// else if (packet.find("quantum") != std::string::npos)
+	// 	message_channel("whats up?");
 }
 
 /**
@@ -247,12 +249,12 @@ std::string Bot::receive(void)
 }
 
 /**
- * @brief Returns the mask the server sends to signify it's for the bot.
+ * @brief Returns the mask the server sends to signify it's for the bot IN LOWER CASE!!!.
  * 		  if find(mask()) != npos), its almost definitely for the bot.
  */
 std::string Bot::mask(void)
 {
-	return (":" + std::string(BOT_NAME) + "!" + std::string(BOT_USER) + "@" + std::string(BOT_HOST));
+	return (":" + to_lowercase(BOT_NAME) + "!" + to_lowercase(BOT_USER) + "@" + to_lowercase(BOT_HOST));
 }
 
 /**
