@@ -79,7 +79,7 @@ VIOLET	:= \1\33[38;5;183m\2
 
 $(NAME): $(HEADERS) $(OBJS)
 	@printf "$(BLUE)Compiling $(YELLOW)$(NAME)\n$(END)"
-	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) -lcurl
+	@$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 	@printf "$(YELLOW)$(NAME) Compiled!\n$(END)"
 
 debug: $(HEADERS) $(OBJS)

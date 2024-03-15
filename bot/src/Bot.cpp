@@ -98,7 +98,7 @@ void Bot::execute_advanced_ai(std::string packet)
 	}
 	else if (packet.find("sorry") != std::string::npos)
 	{
-		message_channel("okay, no problem. I'll answer questions again :)");
+		message_channel("okay, no problem. I'll answer questions again =)");
 		_was_kicked = false;
 	}
 	else if (packet.find("gpt") != std::string::npos)
@@ -146,7 +146,7 @@ void Bot::execute_advanced_ai(std::string packet)
 			message_channel("Paper!");
 		else if (chance == 2)
 			message_channel("Scissors!");
-		else if (chance == 2)
+		else if (chance == 3)
 			message_channel("Shotgun!");
 	}
 	else if (packet.find("?") != std::string::npos)
@@ -163,7 +163,7 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 9)
 			message_channel("Maybe...");
 	}
-	else if (packet.find("quantum") != std::string::npos)
+	else if (packet.find(to_lowercase(BOT_NAME)) != std::string::npos)
 		message_channel("whats up?");
 	else
 	{
@@ -229,7 +229,7 @@ void	Bot::login(void)
 		_responses.push(join);
 		std::cout << "Connecting to channel " << BOT_CHANNEL << END_LINE;
 		if (_was_kicked)
-			message_channel(std::string(BOT_NAME) + " I can't believe you kicked me... ");
+			message_channel("I can't believe you kicked me... ");
 		else		
 			message_channel(std::string(BOT_NAME) + " has joined to answer all your questions.");
 		_in_channel = true;
