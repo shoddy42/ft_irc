@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/15 02:31:33 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/15 02:38:33 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static std::string to_lowercase(const std::string& str)
  */
 void Bot::execute_advanced_ai(std::string packet)
 {
-	// std::cout << "test   << " << PINK << (mask() + " KICK " + std::string(BOT_CHANNEL)) << END_LINE;
+	std::cout << "test   << " << PINK << (mask() + " mode " + to_lowercase(BOT_CHANNEL) + " +o") << END_LINE;
 	packet = to_lowercase(packet);
 	if (packet.find(mask() + " kick " + to_lowercase(BOT_CHANNEL)) != std::string::npos)
 	{
@@ -82,11 +82,19 @@ void Bot::execute_advanced_ai(std::string packet)
 	}
 	else if (packet.find(":you are not in the channel " + to_lowercase(BOT_CHANNEL)) != std::string::npos)
 		_in_channel = false;
-	else if (packet.find(mask() + " mode " + to_lowercase(BOT_CHANNEL) + " +o") != std::string::npos)
+	else if (packet.find(" mode " + to_lowercase(BOT_CHANNEL) + " +o :" + to_lowercase(BOT_NAME)) != std::string::npos)
 	{
 		std::cout << GREEN << "Modded in channel!" << END_LINE;
 		_was_kicked = false;
 		_was_modded = true;
+		message_channel("Thanks!");
+	}
+	else if (packet.find(" mode " + to_lowercase(BOT_CHANNEL) + " -o :" + to_lowercase(BOT_NAME)) != std::string::npos)
+	{
+		std::cout << RED << "Unmodded in channel!" << END_LINE;
+		_was_kicked = true;
+		_was_modded = false;
+		message_channel("What did I do wrong? >:[");
 	}
 	else if (packet.find("sorry") != std::string::npos)
 	{
@@ -155,8 +163,22 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 9)
 			message_channel("Maybe...");
 	}
-	// else if (packet.find("quantum") != std::string::npos)
-	// 	message_channel("whats up?");
+	else if (packet.find("quantum") != std::string::npos)
+		message_channel("whats up?");
+	else
+	{
+		int chance = rand() % 100;
+		if (chance == 0)
+			message_channel("can i have op pls?");
+		else if (chance == 1)
+			message_channel("please dont kick me");
+		else if (chance == 2)
+			message_channel("ask me a question!");
+		else if (chance == 3)
+			message_channel("play rock paper scissors with me");
+		else if (chance == 4)
+			message_channel("ask me for a fact");
+	}
 }
 
 /**
