@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:51 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/15 02:21:07 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/03/15 02:23:12 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 7)
 			message_channel("The human brain is more active during sleep than during the day when awake.");
 	}
-	else if (packet.find("hey") || packet.find("hi") || packet.find("hello"))
+	else if (packet.find("hey") != std::string::npos || packet.find("hi") != std::string::npos || packet.find("hello") != std::string::npos)
 	{
 		int chance = rand() % 2;
 		if (_was_kicked)
@@ -141,7 +141,7 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 1)
 			message_channel("Hello");
 	}
-	else if (packet.find("rock") || packet.find("paper") || packet.find("shotgun"))
+	else if (packet.find("rock") != std::string::npos || packet.find("paper") != std::string::npos || packet.find("scissors") != std::string::npos)
 	{
 		int chance = rand() % 4;
 		if (_was_kicked)
