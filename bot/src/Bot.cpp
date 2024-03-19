@@ -149,6 +149,17 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 3)
 			message_channel("Shotgun!");
 	}
+	else if (packet.find(to_lowercase(BOT_NAME)) != std::string::npos)
+		message_channel("whats up?");
+	else if (packet.find("117") != std::string::npos)
+	{
+		message_channel("OMG! Are you talking about Spartan 117, THE Master Chief?");
+		message_channel("Did you know I was almost chosen to be his Construct, over that stuck up b*t** Cortana?");
+	}
+	else if (packet.find(to_lowercase("halo")) != std::string::npos)
+	{
+		message_channel("Halo is an amazing Game Universe, Halo 2 is my favourite");
+	}
 	else if (packet.find("?") != std::string::npos)
 	{
 		int chance = rand() % 10;
@@ -163,8 +174,6 @@ void Bot::execute_advanced_ai(std::string packet)
 		else if (chance == 9)
 			message_channel("Maybe...");
 	}
-	else if (packet.find(to_lowercase(BOT_NAME)) != std::string::npos)
-		message_channel("whats up?");
 	else
 	{
 		int chance = rand() % 100;

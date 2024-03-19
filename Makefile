@@ -88,7 +88,7 @@ all:
 	$(MAKE) $(NAME) -j8
 
 run: all
-	./$(NAME)
+	./$(NAME) 6667 ""
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
