@@ -39,7 +39,6 @@ int parsePort(std::string portNumber)
 	return (port);
 }
 
-// todo: actual parsing, alphanum only, < 500
 /**
  * @brief Parses password, If Need Be.
  */
