@@ -47,9 +47,27 @@ Bot::~Bot(void)
 */
 
 Bot &Bot::operator=(Bot const &src)
-{ //todo:
+{
 	if (this == &src)
 		return (*this);
+		_received = src._received;
+		_responses = src._responses;
+
+		_join_time = src._join_time;
+		_gpt_time = src._gpt_time;
+		_unfinished_packet = src._unfinished_packet;
+		_password = src._password;
+		_server = src._server;
+
+		_socket = src._socket;
+		_port = src._port;
+
+		_was_kicked = src._was_kicked;
+		_was_modded = src._was_modded;
+
+		_disregarding_notice = src._disregarding_notice;
+		_in_server = src._in_server;
+		_in_channel = src._in_channel;
 
 	return (*this);
 }
