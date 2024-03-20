@@ -85,7 +85,7 @@ debug:
 	@printf "$(BLUE)The Executable $(YELLOW)$(NAME) $(BLUE)Compiled With $(RED)fsantize!\n$(END)"
 
 all:
-	$(MAKE) $(NAME) -j8
+	$(MAKE) $(NAME) -j4
 
 run: all
 	./$(NAME) 6667 ""
@@ -125,3 +125,5 @@ pog:
 	@printf "$(END)"
 
 .PHONY: all clean fclean re pog debug
+
+.DEFAULT_GOAL=all
