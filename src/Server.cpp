@@ -124,7 +124,7 @@ void	Server::serve(void)
 			}
 			// pollfds[i].revents = 0;
 		}
-		else if (pollfds[i].revents & POLLOUT) //client is ready for a response
+		else if (pollfds[i].revents & POLLOUT && pollfds[i].fd != INVALID_FD) //client is ready for a response
 			respond(get_user(pollfds[i].fd));
 	}
 }
@@ -149,27 +149,17 @@ static bool border_patrol(std::string response, User &user, Server &server)
 {
 	std::string disconnect_msg;
 	if (response == "462 :Unauthorized command (already registered)\r\n")
-	{
-		std::cout << "Registered user getting booted!\n";
-		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
-		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-		server.remove_user(user);
-	}
+		disconnect_msg = "ERROR :You have been kicked from the server (Reason: Account Already Registered)." ;
 	else if (response == "464 * :Password incorrect!\r\n")
-	{
-		std::cout << "Unregistered user getting booted!\n";
-		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
-		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-		server.remove_user(user);
-	}
+		disconnect_msg = "ERROR :You have been kicked from the server (Reason: Invalid password)." ;
 	else if (response == "464 * :Please provide a password.\r\n")
-	{
-		std::cout << "Unregistered user getting booted!\n";
-		std::string disconnect_msg = "ERROR :You have been kicked from the server (Reason: Please send PASS first)." ;
-		send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
-		server.remove_user(user);
-	}
-	return (true);
+		disconnect_msg = "ERROR :You have been kicked from the server (Reason: Please send PASS first)." ;
+	else
+		return (true);
+	std::cout << "Unregistered user getting booted!\n";
+	send(user.get_socket(), disconnect_msg.c_str(), disconnect_msg.length(), 0);
+	server.remove_user(user);
+	return (false);
 }
 
 void	Server::respond(User &user)

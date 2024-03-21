@@ -84,6 +84,7 @@ void    Command::invite(void)
 			continue;
 		}
 		if (channel->is_invited(*target))
+			return;
 		channel->add_invited(*target);
 		std::cout << PURPLE << "sending invite to " << target->get_nickname() << RESET << std::endl;
 		std::string msg_text = usermask(_caller) + " INVITE " + _caller.get_nickname() + " " + channel_name;

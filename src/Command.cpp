@@ -51,8 +51,12 @@ void Command::execute(void)
 		return;
 	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
 	{
-		std::string not_pass = "464 * :Please provide a password.";
-		_caller.add_response(not_pass);
+		_caller.add_response("464 * :Please provide a password.");
+		return;
+	}
+	else if (_caller.get_sign_up() == false && key != "USER" && !(_caller.get_authenticated() == false && key == "PASS"))
+	{
+		_caller.add_response("464 * :Please sign up with USER * * * *");
 		return;
 	}
 	if (command_map.find(key) == command_map.end())

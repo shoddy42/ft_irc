@@ -32,17 +32,17 @@ std::string	Command::mode_password(Channel &channel, bool is_plus, std::string p
 std::string	Command::mode_limit(Channel &channel, bool is_plus, std::string str_limit)
 {
 	int limit = -1;
-	try
-	{
-		limit = std::stoi(str_limit); 
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		return ("");
-	}
 	if (is_plus == true)
 	{
+		try
+		{
+			limit = std::stoi(str_limit); 
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+			return ("");
+		}
 		if (channel.get_user_limit() == limit)
 			return ("");
 		channel.set_user_limit(limit);
@@ -50,7 +50,7 @@ std::string	Command::mode_limit(Channel &channel, bool is_plus, std::string str_
 	}
 	if (channel.get_user_limit() == -1)
 		return ("");
-	channel.set_user_limit(-1);
+	channel.set_user_limit(limit);
 	return (usermask(_caller) + " MODE " + channel.get_name() + " -l");	
 }
 
@@ -91,6 +91,7 @@ std::string	Command::mode_invite(Channel &channel, bool is_plus)
 	{
 		if (channel.is_invite_only() == true)
 			return ("");
+		channel.set_invite_only(is_plus);
 		return (usermask(_caller) + " MODE " + channel.get_name() + " +i");
 	}
 	if (channel.is_invite_only() == false)

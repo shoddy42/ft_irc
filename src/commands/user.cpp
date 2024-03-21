@@ -38,7 +38,7 @@ void	Command::user(void)
 	_caller.add_response(creation_date);
 	if (_server.get_password() == "")
 		_caller.authenticate();
-		
+	_caller.sign_up();
 	std::string reply = usermask(_caller) + " NICK " + nickname;
 	_caller.add_response(reply);
 }

@@ -16,7 +16,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-User::User(int sock): _username(NULL_USER), _nickname(NULL_USER), _authenticated(false), _socket(sock)
+User::User(int sock): _username(NULL_USER), _nickname(NULL_USER), _authenticated(false), _signed_up(false), _socket(sock)
 {
 
 }
@@ -50,6 +50,7 @@ User &User::operator=(User const &src)
 	_hostname = src._hostname;
 	_socket = src._socket;
 	_authenticated = src._authenticated;
+	_signed_up = src._signed_up;
 	return (*this);
 }
 
@@ -93,6 +94,11 @@ const bool	&User::get_authenticated(void)
 	return(_authenticated);
 }
 
+const bool	&User::get_sign_up(void)
+{
+	return(_signed_up);
+}
+
 const std::string	&User::get_username(void)
 {
 	return(_username);
@@ -114,6 +120,7 @@ const std::string	&User::get_hostname(void)
 }
 
 // setters
+
 void	User::set_socket(int socket)
 {
 	_socket = socket;
@@ -142,6 +149,11 @@ void	User::set_hostname(std::string hostname)
 void	User::authenticate(void)
 {
 	_authenticated = true;
+}
+
+void	User::sign_up(void)
+{
+	_signed_up = true;
 }
 
 /* ************************************************************************** */

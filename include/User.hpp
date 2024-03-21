@@ -27,6 +27,7 @@ class User
 		std::string _realname;
 		std::string _hostname;
 		bool		_authenticated;
+		bool		_signed_up;
 		int			_socket;
 
 	public:
@@ -43,6 +44,7 @@ class User
 		std::string	give_response(void);
 		int			check_response(void);
 		void		authenticate(void);
+		void		sign_up(void);
 
 	//	getters/setters  //
 	
@@ -51,6 +53,7 @@ class User
 		const std::string	&get_realname(void);
 		const std::string	&get_hostname(void);
 		const bool			&get_authenticated(void);
+		const bool			&get_sign_up(void);
 		const int			&get_socket(void);
 
 		void		set_socket(int socket);
