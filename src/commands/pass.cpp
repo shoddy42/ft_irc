@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 17:23:24 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 18:50:51 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 18:54:04 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	Command::pass(void)
 		password = password.erase(0, 1);
 
 	std::cout << "Server PASS [" << _server.get_password() << "]\n";
+	std::cout << "Sent PASS [" << password << "]\n";
 	if (password != _server.get_password())
 	{
 		std::string wrong_pass = "464 * :Password incorrect!";
