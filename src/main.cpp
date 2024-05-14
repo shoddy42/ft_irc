@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 18:11:52 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 18:43:53 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int ac, char **av)
 	// }
 	int port = parsePort(av[1]);
 	std::string password = "";
-	if (ac > 3)
+	if (ac >= 3)
 		password = av[2]; 
 	if (port == -1)
 		return (1);
