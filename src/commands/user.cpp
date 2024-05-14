@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/13 16:49:45 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:39:28 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 18:40:08 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	Command::user(void)
 {
 	std::string username = limit_name_length(_arguments[1]);
-	std::string nickname = limit_name_length(_arguments[2]);
+	std::string nickname = limit_name_length(_arguments[1]);
 	std::string hostname = limit_name_length(_arguments[3]);
 	std::string realname = limit_name_length(_arguments[4]);
 
