@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 17:02:30 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 17:08:00 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@ const std::string usermask(User &user)
 
 int	main(int ac, char **av)
 {
-	if (ac != 3)
-	{
-		std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
-		return (1);
-	}
+	// if (ac != 3)
+	// {
+	// 	std::cout << RED << "Error: Please Provide The Correct Number Of Arguments.\n" << GREEN << "Usage: " << av[0] << " <Port> <Password>" << RESET << std::endl;
+	// 	return (1);
+	// }
 	int port = parsePort(av[1]);
 	std::string password = av[2]; 
 	if (port == -1)
