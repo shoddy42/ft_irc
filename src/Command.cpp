@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:06:47 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 17:31:13 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 17:58:21 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,17 @@ void Command::execute(void)
 		_arguments.push_back("");
 	std::string key = _arguments[0].data();
 
-	if (key == "CAP" || (key == "NICK" && _caller.get_authenticated() == false))
+	if (key == "CAP")
+	{
+		_caller.add_response("410" + _caller.get_nickname() + " :CAP LS Not supported");
 		return;
+	}
+
+	if (key == "CAP" || (key == "NICK" && _caller.get_authenticated() == false))
+	{
+		
+		return;
+	}
 
 	// if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
 	// {
