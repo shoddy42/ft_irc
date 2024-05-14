@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:06:47 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:44:32 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 16:56:49 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ std::vector<std::string> Command::split_argument(std::string input)
 }
 
 bool Command::is_alnum(const std::string &str) {
-	// for (char c : str)
 	if (str.empty())
 		return (false);
 	for (size_t i = 0; i < str.size(); i++)

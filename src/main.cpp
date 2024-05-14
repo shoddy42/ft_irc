@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 16:47:17 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 17:02:30 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,14 @@ int	main(int ac, char **av)
 	g_server = &server;
 	signal(SIGINT, sig_handler); //Signals to make ctrl+c quit program as expected
 
-	server.start(port, password);
+	// server.start(port, password);
 
-	// if (ac == 2)
-	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
-	// else if (ac >= 3)
-	// 	server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), parsePassword(av[2]));
-	// else
-	// 	server.start(DEFAULT_PORT, "");
+	if (ac == 2)
+		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), "");
+	else if (ac >= 3)
+		server.start(guard(parsePort(av[1]), "Incorrect Input, errno: "), password);
+	else
+		server.start(DEFAULT_PORT, "");
 	
 	while (escape == false)
 		server.serve();
