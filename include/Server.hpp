@@ -6,7 +6,7 @@
 /*   By: wkonings <wkonings@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/19 13:21:59 by wkonings      #+#    #+#                 */
-/*   Updated: 2024/03/05 17:21:03 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 18:03:44 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define MAX_LENGTH   512 //maximum length for user/nick/real/channel names. Sadly bugged with irssi, keep at 512.
 # define DEFAULT_PORT 6667 //the default TCP/IP port to use for the server
 # define POLL_TIMEOUT 2000 //in ms
+# define SERVER_DELAY 10 //in microseconds
 
 	// Variables you shouldn't change //
 
