@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:07:00 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 17:56:02 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 18:11:52 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	main(int ac, char **av)
 	
 	while (escape == false)
 	{
-		sleep(1);
+		usleep(SERVER_DELAY);
 		server.serve();
 	}
 	server.shutdown();
