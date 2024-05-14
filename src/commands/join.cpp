@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:05:59 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/03/05 15:45:28 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 21:33:33 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	Command::join(void)
 		//make sure user is permitted to join channel
 		if (channel.is_user(_caller)) //user is already a member of the channel
 			continue;
-		if (channel.is_invited(_caller) == false) //user is not invited
+		if (channel.is_invite_only() && channel.is_invited(_caller) == false) //user is not invited
 		{
 			std::string reply = std::string(SERVER_SIGNATURE) + " 473 " + _caller.get_nickname() + " " + channel.get_name() + " :Channel is invite only";
 			_caller.add_response(reply);

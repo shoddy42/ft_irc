@@ -366,8 +366,8 @@ bool Channel::is_operator(User &user)
 
 bool Channel::is_invited(User &user)
 {
-	if (_invite_only == false)
-		return (true);
+	// if (_invite_only == false)
+	// 	return (true);
 	for(std::list<User *>::iterator usr = _invited_list.begin(); usr != _invited_list.end(); usr++)
 		if (*usr == &user)
 			return(true);
