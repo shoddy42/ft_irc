@@ -6,7 +6,7 @@
 /*   By: shoddy <shoddy@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/03/05 15:06:47 by shoddy        #+#    #+#                 */
-/*   Updated: 2024/05/14 16:56:49 by shoddy        ########   odam.nl         */
+/*   Updated: 2024/05/14 17:31:13 by shoddy        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@ void Command::execute(void)
 
 	if (key == "CAP" || (key == "NICK" && _caller.get_authenticated() == false))
 		return;
-	if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
-	{
-		_caller.add_response("464 * :Please provide a password.");
-		return;
-	}
+
+	// if (_server.get_password() != "" && _caller.get_authenticated() == false && key != "PASS")
+	// {
+	// 	_caller.add_response("464 * :Please provide a password.");
+	// 	return;
+	// }
 	else if (_caller.get_sign_up() == false && key != "USER" && !(_caller.get_authenticated() == false && key == "PASS"))
 	{
 		_caller.add_response("464 * :Please sign up with USER * * * *");
